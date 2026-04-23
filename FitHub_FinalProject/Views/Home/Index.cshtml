@@ -1,8 +1,104 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid-lines"></div>
+    <div class="hero-content">
+        <div>
+            <div class="hero-eyebrow">
+                <span class="hero-line"></span>
+                <span>No. 1 Gym Membership Platform</span>
+            </div>
+            <h1 class="h-display hero-title">
+                TRAIN<span>SMARTER.</span>
+            </h1>
+            <p class="hero-desc">
+                FitHub is your all-in-one gym management platform. Track memberships,
+                manage transactions, and push your limits—every single day.
+            </p>
+            <div class="hero-actions">
+                <a asp-controller="Account" asp-action="Register" class="btn btn-lime btn-lg">
+                    Get Started <i class="fa fa-arrow-right"></i>
+                </a>
+                <a asp-controller="Membership" asp-action="Index" class="btn btn-outline btn-lg">
+                    View Plans
+                </a>
+            </div>
+        </div>
+
+        <div class="hero-stats">
+            <div class="stat-card">
+                <div class="stat-number">5K+</div>
+                <div class="stat-label">Active Members</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">3</div>
+                <div class="stat-label">Membership Tiers</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">24/7</div>
+                <div class="stat-label">Gym Access</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">98%</div>
+                <div class="stat-label">Satisfaction Rate</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section" style="background: var(--black-2);">
+    <div class="page-wrap">
+        <div style="text-align:center; margin-bottom:52px;">
+            <span class="tag">Why FitHub</span>
+            <h2 class="h-display" style="font-size:clamp(36px,5vw,56px);">
+                EVERYTHING YOU NEED<br>TO <span class="lime">MANAGE YOUR GYM</span>
+            </h2>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa fa-id-card"></i></div>
+                <div class="feature-title">Smart Memberships</div>
+                <p class="feature-desc">Flexible plans with automatic billing and renewal notifications — no paperwork, no hassle.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa fa-credit-card"></i></div>
+                <div class="feature-title">Easy Transactions</div>
+                <p class="feature-desc">Track every payment in real-time. Full transaction history with receipts at your fingertips.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa fa-user-circle"></i></div>
+                <div class="feature-title">Member Profiles</div>
+                <p class="feature-desc">Complete member management — update info, switch plans, and monitor status from one dashboard.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa fa-chart-bar"></i></div>
+                <div class="feature-title">Progress Tracking</div>
+                <p class="feature-desc">Give members the tools to log workouts, track goals, and celebrate milestones.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa fa-bell"></i></div>
+                <div class="feature-title">Notifications</div>
+                <p class="feature-desc">Automated alerts for expiring memberships, payment reminders, and gym announcements.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa fa-shield-alt"></i></div>
+                <div class="feature-title">Secure & Reliable</div>
+                <p class="feature-desc">Enterprise-grade security keeps member data safe with 99.9% platform uptime guaranteed.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cta-band">
+    <div class="cta-band-inner">
+        <h2 class="h-display">READY TO START?</h2>
+        <p>Join thousands of members who trust FitHub to power their gym experience.</p>
+        <a asp-controller="Account" asp-action="Register" class="btn btn-dark btn-lg">
+            Create Free Account <i class="fa fa-arrow-right"></i>
+        </a>
+    </div>
+</section>
