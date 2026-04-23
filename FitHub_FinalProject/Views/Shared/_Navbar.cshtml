@@ -1,0 +1,35 @@
+﻿<nav class="navbar" id="mainNav">
+    <div class="nav-inner">
+        <a class="nav-logo" asp-controller="Home" asp-action="Index">FIT<span>HUB</span></a>
+
+        <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+            <span></span><span></span><span></span>
+        </button>
+
+        <ul class="nav-links" id="navLinks">
+            <li><a asp-controller="Home" asp-action="Index" class="nav-link">Home</a></li>
+            <li><a asp-controller="Membership" asp-action="Index" class="nav-link">Membership</a></li>
+            <li><a asp-controller="Transaction" asp-action="Index" class="nav-link">Transactions</a></li>
+
+            @* Show these only when NOT logged in *@
+            <li class="nav-auth"><a asp-controller="Account" asp-action="Login" class="nav-link nav-btn-outline">Log In</a></li>
+            <li class="nav-auth"><a asp-controller="Account" asp-action="Register" class="nav-link nav-btn-lime">Join Now</a></li>
+
+            @* Show these only when logged in *@
+            {{-- Uncomment when auth is wired up --}}
+            @*
+            <li class="nav-user">
+                <a asp-controller="Profile" asp-action="Index" class="nav-avatar">
+                    <i class="fa fa-user-circle"></i>
+                    <span>@User.Identity.Name</span>
+                </a>
+            </li>
+            <li class="nav-user">
+                <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                    <button type="submit" class="nav-btn-outline nav-link">Log Out</button>
+                </form>
+            </li>
+            *@
+        </ul>
+    </div>
+</nav>
