@@ -1,2 +1,3 @@
 ﻿Added Change Log File
 Updated Index.html, Created Home Page
+Added CSS for Home Page 
