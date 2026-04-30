@@ -1,0 +1,100 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="FitHub - Your Fitness Journey Starts Here" />
+    <title>@ViewData["Title"] - FitHub</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+
+    <nav>
+        <div>
+            <a asp-controller="Home" asp-action="Index">
+                <span>Fit</span><span>Hub</span>
+            </a>
+        </div>
+
+        @if (User.Identity != null && User.Identity.IsAuthenticated)
+        {
+            <ul>
+                <li><a asp-controller="Home" asp-action="Dashboard">Dashboard</a></li>
+                <li><a asp-controller="Membership" asp-action="Index">Membership</a></li>
+                <li><a asp-controller="Transaction" asp-action="Index">Transactions</a></li>
+                <li><a asp-controller="Account" asp-action="Profile">Profile</a></li>
+                <li>
+                    <form asp-controller="Account" asp-action="Logout" method="post" style="display:inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit">Log Out</button>
+                    </form>
+                </li>
+            </ul>
+        }
+        else
+        {
+            <ul>
+                <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+                <li><a asp-controller="Membership" asp-action="Index">Membership</a></li>
+                <li><a asp-controller="Account" asp-action="Login">Log In</a></li>
+                <li><a asp-controller="Account" asp-action="Register">Register</a></li>
+            </ul>
+        }
+    </nav>
+
+    <main>
+        @RenderBody()
+    </main>
+
+    <footer>
+        <div>
+            <div>
+                <h4>FitHub</h4>
+                <p>Your fitness journey starts here. Train smart, live strong.</p>
+            </div>
+            <div>
+                <h4>Quick Links</h4>
+                <ul>
+                    @if (User.Identity != null && User.Identity.IsAuthenticated)
+                    {
+                        <li><a asp-controller="Home" asp-action="Dashboard">Dashboard</a></li>
+                        <li><a asp-controller="Membership" asp-action="Index">Membership</a></li>
+                        <li><a asp-controller="Transaction" asp-action="Index">Transactions</a></li>
+                        <li><a asp-controller="Account" asp-action="Profile">Profile</a></li>
+                    }
+                    else
+                    {
+                        <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+                        <li><a asp-controller="Membership" asp-action="Index">Membership</a></li>
+                        <li><a asp-controller="Account" asp-action="Login">Log In</a></li>
+                        <li><a asp-controller="Account" asp-action="Register">Register</a></li>
+                    }
+                </ul>
+            </div>
+            <div>
+                <h4>Contact</h4>
+                <p>123 Fitness Street, Cebu City</p>
+                <p>info@fithub.ph</p>
+                <p>+63 912 345 6789</p>
+            </div>
+        </div>
+        <div>
+            <p>&copy; @DateTime.Now.Year FitHub. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>
