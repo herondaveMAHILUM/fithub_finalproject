@@ -1,8 +1,147 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "FitHub - Your Fitness Journey Starts Here";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+@section Styles {
+    <link rel="stylesheet" href="~/css/landing.css" asp-append-version="true" />
+}
+
+<section id="hero">
+    <div>
+        <h1>Train Hard.<br />Live Strong.<br />Join FitHub.</h1>
+        <p>
+            The ultimate gym membership built for people who are serious about results.
+            Flexible plans, world-class equipment, and a community that pushes you forward.
+        </p>
+        <div>
+            <a asp-controller="Account" asp-action="Register">Get Started</a>
+            <a asp-controller="Membership" asp-action="Index">View Plans</a>
+        </div>
+    </div>
+    <div>
+        <img src="~/images/hero.jpg" alt="Athlete training at FitHub gym" />
+    </div>
+</section>
+
+<section id="stats">
+    <div>
+        <strong>500+</strong>
+        <span>Members</span>
+    </div>
+    <div>
+        <strong>20+</strong>
+        <span>Equipment Types</span>
+    </div>
+    <div>
+        <strong>7</strong>
+        <span>Days Open</span>
+    </div>
+    <div>
+        <strong>10+</strong>
+        <span>Expert Trainers</span>
+    </div>
+</section>
+
+<section id="features">
+    <h2>Why Choose FitHub?</h2>
+    <p>Everything you need to reach your fitness goals — under one roof.</p>
+    <div>
+
+        <div>
+            <img src="~/images/icon-equipment.svg" alt="Equipment icon" />
+            <h3>Top-Tier Equipment</h3>
+            <p>State-of-the-art machines and free weights maintained to the highest standard.</p>
+        </div>
+
+        <div>
+            <img src="~/images/icon-trainer.svg" alt="Trainer icon" />
+            <h3>Expert Trainers</h3>
+            <p>Certified coaches ready to build personalized programs tailored just for you.</p>
+        </div>
+
+        <div>
+            <img src="~/images/icon-plan.svg" alt="Plan icon" />
+            <h3>Flexible Memberships</h3>
+            <p>Monthly, quarterly, or annual plans — pick what fits your lifestyle and budget.</p>
+        </div>
+
+        <div>
+            <img src="~/images/icon-community.svg" alt="Community icon" />
+            <h3>Strong Community</h3>
+            <p>Join a motivated group of members who support and inspire each other every day.</p>
+        </div>
+
+    </div>
+</section>
+
+<section id="membership-preview">
+    <h2>Membership Plans</h2>
+    <p>Simple pricing. No hidden fees. Cancel anytime.</p>
+    <div>
+
+        <div>
+            <h3>Basic</h3>
+            <p>₱499 / month</p>
+            <ul>
+                <li>Gym Floor Access</li>
+                <li>Locker Room Access</li>
+                <li>1 Guest Pass / Month</li>
+            </ul>
+            <a asp-controller="Account" asp-action="Register">Get Basic</a>
+        </div>
+
+        <div>
+            <h3>Pro</h3>
+            <p>₱899 / month</p>
+            <ul>
+                <li>Everything in Basic</li>
+                <li>Group Classes Access</li>
+                <li>Nutrition Consultation</li>
+                <li>3 Guest Passes / Month</li>
+            </ul>
+            <a asp-controller="Account" asp-action="Register">Get Pro</a>
+        </div>
+
+        <div>
+            <h3>Elite</h3>
+            <p>₱1,499 / month</p>
+            <ul>
+                <li>Everything in Pro</li>
+                <li>Personal Trainer Sessions</li>
+                <li>Priority Booking</li>
+                <li>Unlimited Guest Passes</li>
+            </ul>
+            <a asp-controller="Account" asp-action="Register">Get Elite</a>
+        </div>
+
+    </div>
+    <a asp-controller="Membership" asp-action="Index">See Full Plan Details</a>
+</section>
+
+<section id="testimonials">
+    <h2>What Our Members Say</h2>
+    <div>
+
+        <blockquote>
+            <p>"FitHub completely changed how I train. The equipment is incredible and the trainers actually care about your progress."</p>
+            <footer>— Maria Santos, Member since 2023</footer>
+        </blockquote>
+
+        <blockquote>
+            <p>"I've tried three gyms in the city. FitHub is the only one that felt like a real community from day one."</p>
+            <footer>— Carlo Reyes, Pro Member</footer>
+        </blockquote>
+
+        <blockquote>
+            <p>"The flexible membership plans made it easy to get started without committing to a whole year upfront."</p>
+            <footer>— Jana Lim, Basic Member</footer>
+        </blockquote>
+
+    </div>
+</section>
+
+<section id="cta">
+    <h2>Ready to Start Your Journey?</h2>
+    <p>Join hundreds of members already transforming their lives at FitHub.</p>
+    <a asp-controller="Account" asp-action="Register">Create Your Account</a>
+</section>
