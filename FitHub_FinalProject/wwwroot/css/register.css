@@ -1,0 +1,136 @@
+﻿#register-hero {
+    text-align: center;
+    padding: 60px 24px 0;
+    max-width: var(--max-width);
+    margin: 0 auto;
+}
+
+    #register-hero h1 {
+        margin-bottom: 12px;
+    }
+
+    #register-hero p {
+        font-size: 1rem;
+    }
+
+#register-form-section {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 24px 80px;
+}
+
+#register-container {
+    width: 100%;
+    max-width: 560px;
+    background-color: var(--black-card);
+    border: 1px solid var(--black-border);
+    border-radius: var(--radius-md);
+    padding: 40px 36px;
+}
+
+    #register-container h2 {
+        font-size: 1.8rem;
+        margin-bottom: 28px;
+    }
+
+    #register-container form {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 20px;
+    }
+
+        #register-container form > div:has(select),
+        #register-container form > div:has(input[type="checkbox"]),
+        #register-container form > div:has(button[type="submit"]),
+        #register-container form > div[asp-validation-summary] {
+            grid-column: 1 / -1;
+        }
+
+        #register-container form > div:has(input[placeholder="Street, City, Province"]) {
+            grid-column: 1 / -1;
+        }
+
+        #register-container form > div:has(input[type="checkbox"]) {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+            #register-container form > div:has(input[type="checkbox"]) input {
+                margin-top: 3px;
+                flex-shrink: 0;
+            }
+
+            #register-container form > div:has(input[type="checkbox"]) label {
+                margin-bottom: 0;
+                text-transform: none;
+                font-size: 0.88rem;
+                letter-spacing: 0;
+                color: var(--white-muted);
+                line-height: 1.5;
+                cursor: pointer;
+            }
+
+    #register-container > div:last-child {
+        margin-top: 24px;
+        text-align: center;
+        border-top: 1px solid var(--black-border);
+        padding-top: 20px;
+    }
+
+        #register-container > div:last-child p {
+            font-size: 0.88rem;
+            color: var(--white-muted);
+        }
+
+        #register-container > div:last-child a {
+            color: var(--lime);
+            font-weight: 600;
+        }
+
+            #register-container > div:last-child a:hover {
+                color: var(--lime-muted);
+            }
+
+#register-page ~ footer {
+    padding: 24px 40px;
+}
+
+    #register-page ~ footer > div {
+        max-width: var(--max-width);
+        margin: 0 auto;
+        text-align: center;
+    }
+
+        #register-page ~ footer > div p {
+            font-size: 0.82rem;
+            color: #444;
+        }
+
+@media (max-width: 768px) {
+    #register-hero {
+        padding: 40px 20px 0;
+    }
+
+    #register-form-section {
+        padding: 32px 20px 60px;
+    }
+
+    #register-container {
+        padding: 28px 20px;
+    }
+
+        #register-container form {
+            grid-template-columns: 1fr;
+        }
+
+            #register-container form > div:has(select),
+            #register-container form > div:has(input[type="checkbox"]),
+            #register-container form > div:has(button[type="submit"]),
+            #register-container form > div:has(input[placeholder="Street, City, Province"]),
+            #register-container form > div[asp-validation-summary] {
+                grid-column: 1;
+            }
+}
