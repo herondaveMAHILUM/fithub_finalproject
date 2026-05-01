@@ -1,0 +1,61 @@
+﻿@{
+    ViewData["Title"] = "Log In - FitHub";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/login.css" asp-append-version="true" />
+}
+
+<main id="login-page">
+
+    <section id="login-hero">
+        <h1>Welcome Back</h1>
+        <p>Log in to your FitHub account to continue your journey.</p>
+    </section>
+
+    <section id="login-form-section">
+        <div id="login-container">
+
+            <h2>Log In</h2>
+
+            <form asp-controller="Account" asp-action="Login" method="post">
+
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="All"></div>
+
+                <div>
+                    <label>Email Address</label>
+                    <input type="email" placeholder="you@email.com" />
+                    <span></span>
+                </div>
+
+                <div>
+                    <label>Password</label>
+                    <input type="password" placeholder="Enter your password" />
+                    <span></span>
+                </div>
+
+                <div>
+                    <input type="checkbox" id="rememberMe" />
+                    <label for="rememberMe">Remember Me</label>
+                </div>
+
+                <div>
+                    <a asp-controller="Account" asp-action="ForgotPassword">Forgot your password?</a>
+                </div>
+
+                <div>
+                    <button type="submit">Log In</button>
+                </div>
+
+            </form>
+
+            <div>
+                <p>Don't have an account yet? <a asp-controller="Account" asp-action="Register">Register here</a></p>
+            </div>
+
+        </div>
+    </section>
+
+</main>
