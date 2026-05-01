@@ -1,0 +1,116 @@
+﻿#login-hero {
+    text-align: center;
+    padding: 60px 24px 0;
+    max-width: var(--max-width);
+    margin: 0 auto;
+}
+
+    #login-hero h1 {
+        margin-bottom: 12px;
+    }
+
+    #login-hero p {
+        font-size: 1rem;
+    }
+
+#login-form-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 24px 80px;
+}
+
+#login-container {
+    width: 100%;
+    max-width: 460px;
+    background-color: var(--black-card);
+    border: 1px solid var(--black-border);
+    border-radius: var(--radius-md);
+    padding: 40px 36px;
+}
+
+    #login-container h2 {
+        font-size: 1.8rem;
+        margin-bottom: 28px;
+    }
+
+    #login-container form > div:has(input[type="checkbox"]) {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+
+        #login-container form > div:has(input[type="checkbox"]) label {
+            margin-bottom: 0;
+            text-transform: none;
+            font-size: 0.9rem;
+            letter-spacing: 0;
+            color: var(--white-muted);
+            cursor: pointer;
+        }
+
+    #login-container form > div:has(a) {
+        margin-bottom: 24px;
+    }
+
+        #login-container form > div:has(a) a {
+            font-size: 0.85rem;
+            color: var(--white-muted);
+            border-bottom: 1px solid transparent;
+        }
+
+            #login-container form > div:has(a) a:hover {
+                color: var(--lime);
+                border-color: var(--lime);
+            }
+
+    #login-container > div:last-child {
+        margin-top: 24px;
+        text-align: center;
+        border-top: 1px solid var(--black-border);
+        padding-top: 20px;
+    }
+
+        #login-container > div:last-child p {
+            font-size: 0.88rem;
+            color: var(--white-muted);
+        }
+
+        #login-container > div:last-child a {
+            color: var(--lime);
+            font-weight: 600;
+        }
+
+            #login-container > div:last-child a:hover {
+                color: var(--lime-muted);
+            }
+
+#login-page ~ footer {
+    padding: 24px 40px;
+}
+
+    #login-page ~ footer > div {
+        max-width: var(--max-width);
+        margin: 0 auto;
+        text-align: center;
+    }
+
+        #login-page ~ footer > div p {
+            font-size: 0.82rem;
+            color: #444;
+        }
+
+@media (max-width: 768px) {
+    #login-hero {
+        padding: 40px 20px 0;
+    }
+
+    #login-form-section {
+        padding: 32px 20px 60px;
+    }
+
+    #login-container {
+        padding: 28px 20px;
+    }
+}
