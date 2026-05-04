@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewData["Title"] = "FitHub - Your Fitness Journey Starts Here";
 }
 
@@ -25,19 +25,19 @@
 
 <section id="stats">
     <div>
-        <strong>500+</strong>
+        <strong>@ViewBag.TotalMembers</strong>
         <span>Members</span>
     </div>
     <div>
-        <strong>20+</strong>
+        <strong>@ViewBag.TotalEquipmentTypes</strong>
         <span>Equipment Types</span>
     </div>
     <div>
-        <strong>7</strong>
+        <strong>@ViewBag.DaysOpen</strong>
         <span>Days Open</span>
     </div>
     <div>
-        <strong>10+</strong>
+        <strong>@ViewBag.TotalTrainers</strong>
         <span>Expert Trainers</span>
     </div>
 </section>
@@ -118,30 +118,24 @@
     <a asp-controller="Membership" asp-action="Index">See Full Plan Details</a>
 </section>
 
-<section id="testimonials">
-    <h2>What Our Members Say</h2>
-    <div>
-
-        <blockquote>
-            <p>"FitHub completely changed how I train. The equipment is incredible and the trainers actually care about your progress."</p>
-            <footer>— Maria Santos, Member since 2023</footer>
-        </blockquote>
-
-        <blockquote>
-            <p>"I've tried three gyms in the city. FitHub is the only one that felt like a real community from day one."</p>
-            <footer>— Carlo Reyes, Pro Member</footer>
-        </blockquote>
-
-        <blockquote>
-            <p>"The flexible membership plans made it easy to get started without committing to a whole year upfront."</p>
-            <footer>— Jana Lim, Basic Member</footer>
-        </blockquote>
-
-    </div>
-</section>
+@if (ViewBag.Testimonials != null && ViewBag.Testimonials.Count > 0)
+{
+    <section id="testimonials">
+        <h2>What Our Members Say</h2>
+        <div>
+            @foreach (var testimonial in ViewBag.Testimonials)
+            {
+                <blockquote>
+                    <p>"@testimonial.Quote"</p>
+                    <footer>— @testimonial.Author</footer>
+                </blockquote>
+            }
+        </div>
+    </section>
+}
 
 <section id="cta">
     <h2>Ready to Start Your Journey?</h2>
-    <p>Join hundreds of members already transforming their lives at FitHub.</p>
+    <p>Join our members already transforming their lives at FitHub.</p>
     <a asp-controller="Account" asp-action="Register">Create Your Account</a>
 </section>

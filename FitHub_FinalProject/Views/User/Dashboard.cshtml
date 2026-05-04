@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewData["Title"] = "Dashboard - FitHub";
 }
 
@@ -67,26 +67,24 @@
                 <div id="todays-workout">
                     <div id="today-label">
                         <span>Today</span>
-                        <span id="today-date">Monday — Chest & Triceps</span>
+                        <span id="today-date">@ViewBag.TodayWorkoutLabel</span>
                     </div>
 
                     <div id="today-exercises">
-                        <div class="exercise-row">
-                            <span class="exercise-name">Bench Press</span>
-                            <span class="exercise-sets">4 sets × 10 reps</span>
-                        </div>
-                        <div class="exercise-row">
-                            <span class="exercise-name">Incline Dumbbell Press</span>
-                            <span class="exercise-sets">3 sets × 12 reps</span>
-                        </div>
-                        <div class="exercise-row">
-                            <span class="exercise-name">Tricep Dips</span>
-                            <span class="exercise-sets">3 sets × 15 reps</span>
-                        </div>
-                        <div class="exercise-row">
-                            <span class="exercise-name">Cable Pushdown</span>
-                            <span class="exercise-sets">3 sets × 12 reps</span>
-                        </div>
+                        @if (ViewBag.TodayExercises != null && ViewBag.TodayExercises.Count > 0)
+                        {
+                            foreach (var exercise in ViewBag.TodayExercises)
+                            {
+                                <div class="exercise-row">
+                                    <span class="exercise-name">@exercise.Name</span>
+                                    <span class="exercise-sets">@exercise.Sets sets × @exercise.Reps reps</span>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p>No workout scheduled for today.</p>
+                        }
                     </div>
 
                     <a href="#" id="start-workout-btn">Start Workout</a>
@@ -95,34 +93,16 @@
                 <div id="weekly-schedule">
                     <h3>This Week</h3>
                     <div id="week-days">
-                        <div class="day-pill active">
-                            <span class="day-name">Mon</span>
-                            <span class="day-focus">Chest</span>
-                        </div>
-                        <div class="day-pill">
-                            <span class="day-name">Tue</span>
-                            <span class="day-focus">Back</span>
-                        </div>
-                        <div class="day-pill">
-                            <span class="day-name">Wed</span>
-                            <span class="day-focus">Rest</span>
-                        </div>
-                        <div class="day-pill">
-                            <span class="day-name">Thu</span>
-                            <span class="day-focus">Legs</span>
-                        </div>
-                        <div class="day-pill">
-                            <span class="day-name">Fri</span>
-                            <span class="day-focus">Shoulders</span>
-                        </div>
-                        <div class="day-pill">
-                            <span class="day-name">Sat</span>
-                            <span class="day-focus">Arms</span>
-                        </div>
-                        <div class="day-pill">
-                            <span class="day-name">Sun</span>
-                            <span class="day-focus">Rest</span>
-                        </div>
+                        @if (ViewBag.WeeklySchedule != null)
+                        {
+                            foreach (var day in ViewBag.WeeklySchedule)
+                            {
+                                <div class="day-pill @(day.IsToday ? "active" : "")">
+                                    <span class="day-name">@day.ShortName</span>
+                                    <span class="day-focus">@day.Focus</span>
+                                </div>
+                            }
+                        }
                     </div>
                 </div>
 
@@ -146,38 +126,35 @@
             <div id="notifications-card">
                 <div class="card-header">
                     <h2>Notifications</h2>
-                    <span id="notif-count">3</span>
+                    @if (ViewBag.NotificationCount != null && ViewBag.NotificationCount > 0)
+                    {
+                        <span id="notif-count">@ViewBag.NotificationCount</span>
+                    }
                 </div>
 
                 <ul id="notifications-list">
-
-                    <li class="notif-item notif-workout">
-                        <div class="notif-icon"></div>
-                        <div class="notif-body">
-                            <p class="notif-title">New Workout Added</p>
-                            <p class="notif-desc">Your trainer added a new HIIT routine to your plan.</p>
-                            <span class="notif-time">2 hours ago</span>
-                        </div>
-                    </li>
-
-                    <li class="notif-item notif-payment">
-                        <div class="notif-icon"></div>
-                        <div class="notif-body">
-                            <p class="notif-title">Payment Reminder</p>
-                            <p class="notif-desc">Your membership renews in 5 days. Make sure your payment method is up to date.</p>
-                            <span class="notif-time">1 day ago</span>
-                        </div>
-                    </li>
-
-                    <li class="notif-item notif-announcement">
-                        <div class="notif-icon"></div>
-                        <div class="notif-body">
-                            <p class="notif-title">Gym Announcement</p>
-                            <p class="notif-desc">The gym will be closed on December 25 for the holiday. See you on the 26th!</p>
-                            <span class="notif-time">3 days ago</span>
-                        </div>
-                    </li>
-
+                    @if (ViewBag.Notifications != null && ViewBag.Notifications.Count > 0)
+                    {
+                        foreach (var notif in ViewBag.Notifications)
+                        {
+                            <li class="notif-item notif-@notif.Type.ToLower()">
+                                <div class="notif-icon"></div>
+                                <div class="notif-body">
+                                    <p class="notif-title">@notif.Title</p>
+                                    <p class="notif-desc">@notif.Description</p>
+                                    <span class="notif-time">@notif.TimeAgo</span>
+                                </div>
+                            </li>
+                        }
+                    }
+                    else
+                    {
+                        <li class="notif-item">
+                            <div class="notif-body">
+                                <p class="notif-desc">No new notifications.</p>
+                            </div>
+                        </li>
+                    }
                 </ul>
 
                 <a href="#" id="view-all-notifs">View All Notifications →</a>

@@ -8,6 +8,13 @@ namespace FitHub_FinalProject.Controllers
     {
         public IActionResult Index()
         {
+            ViewBag.TotalMembers = 0;
+            ViewBag.TotalEquipmentTypes = 0;
+            ViewBag.DaysOpen = 0;
+            ViewBag.TotalTrainers = 0;
+
+            ViewBag.Testimonials = null;
+
             return View();
         }
 
