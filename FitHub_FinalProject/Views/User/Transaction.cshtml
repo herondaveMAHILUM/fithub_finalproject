@@ -1,0 +1,181 @@
+﻿@{
+    ViewData["Title"] = "Transactions - FitHub";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/transaction.css" asp-append-version="true" />
+}
+
+<main id="transaction-page">
+
+    <section id="transaction-hero">
+        <h1>Transaction History</h1>
+        <p>View and track all your FitHub payments and billing activity.</p>
+    </section>
+
+    <section id="transaction-summary">
+
+        <div>
+            <h3>Total Paid</h3>
+            <p>@ViewBag.TotalPaid</p>
+            <span>All Time</span>
+        </div>
+
+        <div>
+            <h3>Last Payment</h3>
+            <p>@ViewBag.LastPaymentAmount</p>
+            <span>@ViewBag.LastPaymentDate</span>
+        </div>
+
+        <div>
+            <h3>Next Billing</h3>
+            <p>@ViewBag.NextBillingAmount</p>
+            <span>@ViewBag.NextBillingDate</span>
+        </div>
+
+        <div>
+            <h3>Payment Method</h3>
+            <p>@ViewBag.PaymentMethod</p>
+            <span>On File</span>
+        </div>
+
+    </section>
+
+    <section id="transaction-filters">
+        <form asp-controller="Transaction" asp-action="Index" method="get">
+
+            <div>
+                <label for="search">Search</label>
+                <input type="text" id="search" name="search" value="@ViewBag.Search" placeholder="Search transactions..." />
+            </div>
+
+            <div>
+                <label for="status">Status</label>
+                <select id="status" name="status">
+                    <option value="">All Statuses</option>
+                    <option>Paid</option>
+                    <option>Pending</option>
+                    <option>Failed</option>
+                    <option>Refunded</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="type">Type</label>
+                <select id="type" name="type">
+                    <option value="">All Types</option>
+                    <option>Subscription</option>
+                    <option>Upgrade</option>
+                    <option>Renewal</option>
+                    <option>Refund</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="dateFrom">From</label>
+                <input type="date" id="dateFrom" name="dateFrom" value="@ViewBag.DateFrom" />
+            </div>
+
+            <div>
+                <label for="dateTo">To</label>
+                <input type="date" id="dateTo" name="dateTo" value="@ViewBag.DateTo" />
+            </div>
+
+            <div>
+                <button type="submit">Filter</button>
+                <a asp-controller="Transaction" asp-action="Index">Reset</a>
+            </div>
+
+        </form>
+    </section>
+
+    <section id="transaction-table-section">
+
+        @if (Model != null && Model.Count > 0)
+        {
+            <table id="transaction-table">
+                <thead>
+                    <tr>
+                        <th>Transaction ID</th>
+                        <th>Date</th>
+                        <th>Description</th>
+                        <th>Type</th>
+                        <th>Amount</th>
+                        <th>Payment Method</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var transaction in Model)
+                    {
+                        <tr>
+                            <td>@transaction.TransactionId</td>
+                            <td>@transaction.Date.ToString("MMM dd, yyyy")</td>
+                            <td>@transaction.Description</td>
+                            <td>@transaction.Type</td>
+                            <td>@transaction.Amount.ToString("C")</td>
+                            <td>@transaction.PaymentMethod</td>
+                            <td>
+                                <span>@transaction.Status</span>
+                            </td>
+                            <td>
+                                <a asp-controller="Transaction" asp-action="Details" asp-route-id="@transaction.TransactionId">
+                                    View
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <div id="transaction-pagination">
+                @if (ViewBag.CurrentPage > 1)
+                {
+                    <a asp-controller="Transaction" asp-action="Index"
+                           asp-route-page="@(ViewBag.CurrentPage - 1)"
+                           asp-route-search="@ViewBag.Search"
+                           asp-route-status="@ViewBag.StatusFilter"
+                           asp-route-type="@ViewBag.TypeFilter">
+                        Previous
+                    </a>
+                }
+
+                <span>Page @ViewBag.CurrentPage of @ViewBag.TotalPages</span>
+
+                @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                {
+                    <a asp-controller="Transaction" asp-action="Index"
+                           asp-route-page="@(ViewBag.CurrentPage + 1)"
+                           asp-route-search="@ViewBag.Search"
+                           asp-route-status="@ViewBag.StatusFilter"
+                           asp-route-type="@ViewBag.TypeFilter">
+                        Next
+                    </a>
+                }
+            </div>
+        }
+        else
+        {
+            <div id="no-transactions">
+                <p>No transactions found.</p>
+                <a asp-controller="Membership" asp-action="Index">Browse Membership Plans</a>
+            </div>
+        }
+
+    </section>
+
+    <section id="transaction-export">
+        <h3>Export Transactions</h3>
+        <p>Download your transaction history for your records.</p>
+        <div>
+            <a asp-controller="Transaction" asp-action="Export" asp-route-format="pdf">
+                Download as PDF
+            </a>
+            <a asp-controller="Transaction" asp-action="Export" asp-route-format="csv">
+                Download as CSV
+            </a>
+        </div>
+    </section>
+
+</main>
