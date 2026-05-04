@@ -1,0 +1,319 @@
+﻿#profile-page {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 60px 40px 80px;
+}
+
+#profile-hero {
+    margin-bottom: 40px;
+}
+
+    #profile-hero h1 {
+        margin-bottom: 10px;
+    }
+
+    #profile-hero p {
+        font-size: 1rem;
+    }
+
+#profile-layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 28px;
+    align-items: start;
+}
+
+#profile-sidebar {
+    position: sticky;
+    top: calc(var(--nav-height) + 24px);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+#profile-avatar-section {
+    background-color: var(--black-card);
+    border: 1px solid var(--black-border);
+    border-radius: var(--radius-md);
+    padding: 28px 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+    #profile-avatar-section img {
+        width: 88px;
+        height: 88px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid var(--lime);
+        margin-bottom: 8px;
+    }
+
+    #profile-avatar-section h2 {
+        font-size: 1.2rem;
+    }
+
+    #profile-avatar-section p {
+        font-size: 0.82rem;
+    }
+
+        #profile-avatar-section p:first-of-type {
+            color: var(--lime);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.06em;
+        }
+
+#profile-sidebar-links {
+    background-color: var(--black-card);
+    border: 1px solid var(--black-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+    #profile-sidebar-links ul {
+        display: flex;
+        flex-direction: column;
+    }
+
+        #profile-sidebar-links ul li a {
+            display: block;
+            padding: 14px 20px;
+            font-size: 0.88rem;
+            color: var(--white-muted);
+            border-bottom: 1px solid var(--black-border);
+            font-family: var(--font-body);
+        }
+
+        #profile-sidebar-links ul li:last-child a {
+            border-bottom: none;
+        }
+
+        #profile-sidebar-links ul li a:hover {
+            color: var(--lime);
+            background-color: rgba(200, 255, 0, 0.04);
+            padding-left: 26px;
+        }
+
+#profile-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+#personal-info,
+#membership-info,
+#change-password,
+#danger-zone {
+    background-color: var(--black-card);
+    border: 1px solid var(--black-border);
+    border-radius: var(--radius-md);
+    padding: 36px;
+    margin-bottom: 24px;
+}
+
+    #personal-info h2,
+    #membership-info h2,
+    #change-password h2,
+    #danger-zone h2 {
+        font-size: 1.3rem;
+        margin-bottom: 6px;
+    }
+
+    #personal-info > p,
+    #membership-info > p,
+    #change-password > p,
+    #danger-zone > p {
+        font-size: 0.88rem;
+        margin-bottom: 28px;
+    }
+
+#profile-content hr {
+    display: none;
+}
+
+#personal-info form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 20px;
+}
+
+    #personal-info form > div:has(input[type="file"]),
+    #personal-info form > div:has(input[placeholder="Street, City, Province"]),
+    #personal-info form > div:has(button[type="submit"]),
+    #personal-info form > div:has(span[asp-validation-summary]) {
+        grid-column: 1 / -1;
+    }
+
+    #personal-info form small {
+        display: block;
+        font-size: 0.78rem;
+        color: var(--white-muted);
+        margin-top: 6px;
+    }
+
+#membership-info table {
+    margin-bottom: 24px;
+}
+
+#membership-info tbody td:first-child {
+    color: var(--white-muted);
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    width: 38%;
+}
+
+#membership-info tbody td:last-child {
+    color: var(--white);
+    font-weight: 500;
+}
+
+#membership-info > div {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+    #membership-info > div a:first-child {
+        display: inline-block;
+        background-color: var(--lime);
+        color: var(--black);
+        font-family: var(--font-body);
+        font-weight: 700;
+        font-size: 0.88rem;
+        padding: 10px 22px;
+        border-radius: var(--radius-sm);
+    }
+
+        #membership-info > div a:first-child:hover {
+            background-color: var(--lime-dark);
+            color: var(--black);
+            box-shadow: var(--shadow-lime);
+        }
+
+    #membership-info > div a:last-child {
+        display: inline-block;
+        background-color: transparent;
+        color: var(--danger);
+        border: 1px solid var(--danger);
+        font-family: var(--font-body);
+        font-weight: 600;
+        font-size: 0.88rem;
+        padding: 10px 22px;
+        border-radius: var(--radius-sm);
+    }
+
+        #membership-info > div a:last-child:hover {
+            background-color: var(--danger);
+            color: var(--white);
+        }
+
+#danger-zone {
+    border-color: rgba(255, 68, 68, 0.3);
+}
+
+    #danger-zone h2 {
+        color: var(--danger);
+    }
+
+    #danger-zone > div {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+        #danger-zone > div > div {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+            padding: 20px;
+            background-color: rgba(255, 68, 68, 0.04);
+            border: 1px solid rgba(255, 68, 68, 0.15);
+            border-radius: var(--radius-sm);
+            flex-wrap: wrap;
+        }
+
+            #danger-zone > div > div > div h3 {
+                font-size: 0.95rem;
+                margin-bottom: 4px;
+                color: var(--white);
+            }
+
+            #danger-zone > div > div > div p {
+                font-size: 0.82rem;
+                max-width: 460px;
+            }
+
+            #danger-zone > div > div form button[type="submit"] {
+                width: auto;
+                background-color: transparent;
+                color: var(--danger);
+                border: 1px solid var(--danger);
+                padding: 10px 20px;
+                font-size: 0.85rem;
+                white-space: nowrap;
+            }
+
+                #danger-zone > div > div form button[type="submit"]:hover {
+                    background-color: var(--danger);
+                    color: var(--white);
+                    box-shadow: none;
+                }
+
+@media (max-width: 1024px) {
+    #profile-page {
+        padding: 48px 24px 60px;
+    }
+
+    #profile-layout {
+        grid-template-columns: 220px 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    #profile-page {
+        padding: 32px 16px 48px;
+    }
+
+    #profile-layout {
+        grid-template-columns: 1fr;
+    }
+
+    #profile-sidebar {
+        position: static;
+    }
+
+    #personal-info form {
+        grid-template-columns: 1fr;
+    }
+
+        #personal-info form > div:has(input[type="file"]),
+        #personal-info form > div:has(input[placeholder="Street, City, Province"]),
+        #personal-info form > div:has(button[type="submit"]),
+        #personal-info form > div:has(span[asp-validation-summary]) {
+            grid-column: 1;
+        }
+
+    #danger-zone > div > div {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+        #danger-zone > div > div form button[type="submit"] {
+            width: 100%;
+        }
+
+    #membership-info > div {
+        flex-direction: column;
+    }
+
+        #membership-info > div a {
+            text-align: center;
+        }
+}
