@@ -1,0 +1,426 @@
+﻿#membership-page {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 60px 40px 80px;
+}
+
+#membership-hero {
+    text-align: center;
+    margin-bottom: 48px;
+}
+
+    #membership-hero h1 {
+        margin-bottom: 12px;
+    }
+
+    #membership-hero p {
+        font-size: 1.05rem;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+#current-membership-banner {
+    background-color: rgba(200, 255, 0, 0.06);
+    border: 1px solid var(--lime);
+    border-radius: var(--radius-md);
+    padding: 20px 28px;
+    margin-bottom: 40px;
+}
+
+    #current-membership-banner > div {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    #current-membership-banner p {
+        font-size: 0.92rem;
+        color: var(--white-muted);
+    }
+
+        #current-membership-banner p strong {
+            color: var(--lime);
+        }
+
+    #current-membership-banner a {
+        font-size: 0.85rem;
+        color: var(--danger);
+        border: 1px solid var(--danger);
+        padding: 8px 18px;
+        border-radius: var(--radius-sm);
+        white-space: nowrap;
+        font-weight: 600;
+    }
+
+        #current-membership-banner a:hover {
+            background-color: var(--danger);
+            color: var(--white);
+        }
+
+#billing-toggle {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 48px;
+}
+
+    #billing-toggle form {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        background-color: var(--black-card);
+        border: 1px solid var(--black-border);
+        border-radius: var(--radius-sm);
+        padding: 4px;
+    }
+
+        #billing-toggle form label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--white-muted);
+            text-transform: none;
+            letter-spacing: 0;
+            margin-bottom: 0;
+        }
+
+            #billing-toggle form label:has(input:checked) {
+                background-color: var(--lime);
+                color: var(--black);
+                font-weight: 700;
+            }
+
+            #billing-toggle form label span {
+                font-size: 0.75rem;
+                font-weight: 600;
+                background-color: rgba(200, 255, 0, 0.15);
+                color: var(--lime);
+                padding: 2px 8px;
+                border-radius: 100px;
+            }
+
+            #billing-toggle form label:has(input:checked) span {
+                background-color: rgba(0, 0, 0, 0.15);
+                color: var(--black);
+            }
+
+    #billing-toggle input[type="radio"] {
+        display: none;
+    }
+
+#plans-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-bottom: 80px;
+    align-items: start;
+}
+
+#plan-basic,
+#plan-pro,
+#plan-elite {
+    background-color: var(--black-card);
+    border: 1px solid var(--black-border);
+    border-radius: var(--radius-md);
+    padding: 36px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+#plan-pro {
+    border-color: var(--lime);
+    box-shadow: var(--shadow-lime);
+    position: relative;
+}
+
+#plan-basic > div:first-child h2,
+#plan-elite > div:first-child h2 {
+    font-size: 1.6rem;
+    margin-bottom: 8px;
+}
+
+#plan-basic > div:first-child p,
+#plan-elite > div:first-child p {
+    font-size: 0.88rem;
+}
+
+#plan-pro > div:first-child {
+    display: flex;
+    justify-content: flex-start;
+}
+
+    #plan-pro > div:first-child span {
+        background-color: var(--lime);
+        color: var(--black);
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        padding: 4px 14px;
+        border-radius: 100px;
+    }
+
+#plan-pro > div:nth-child(2) h2 {
+    font-size: 1.6rem;
+    margin-bottom: 8px;
+}
+
+#plan-pro > div:nth-child(2) p {
+    font-size: 0.88rem;
+}
+
+#plan-basic > div:nth-child(2) p:first-child,
+#plan-pro > div:nth-child(3) p:first-child,
+#plan-elite > div:nth-child(2) p:first-child {
+    font-family: var(--font-heading);
+    font-size: 2.4rem;
+    font-weight: 800;
+    color: var(--white);
+    line-height: 1;
+}
+
+#plan-basic > div:nth-child(2) p:last-child,
+#plan-pro > div:nth-child(3) p:last-child,
+#plan-elite > div:nth-child(2) p:last-child {
+    font-size: 0.82rem;
+    color: var(--white-muted);
+    margin-top: 4px;
+}
+
+#plan-basic ul,
+#plan-pro ul,
+#plan-elite ul {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+}
+
+    #plan-basic ul li,
+    #plan-pro ul li,
+    #plan-elite ul li {
+        font-size: 0.9rem;
+        color: var(--white-muted);
+        padding-left: 20px;
+        position: relative;
+    }
+
+        #plan-basic ul li::before,
+        #plan-pro ul li::before,
+        #plan-elite ul li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--lime);
+            font-weight: 700;
+        }
+
+#plan-basic > div:last-child a,
+#plan-pro > div:last-child a,
+#plan-elite > div:last-child a {
+    display: block;
+    text-align: center;
+    padding: 13px;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 0.92rem;
+    background-color: transparent;
+    color: var(--white);
+    border: 1px solid var(--black-border);
+}
+
+    #plan-basic > div:last-child a:hover,
+    #plan-elite > div:last-child a:hover {
+        border-color: var(--lime);
+        color: var(--lime);
+    }
+
+#plan-pro > div:last-child a {
+    background-color: var(--lime);
+    color: var(--black);
+    border-color: var(--lime);
+}
+
+    #plan-pro > div:last-child a:hover {
+        background-color: var(--lime-dark);
+        color: var(--black);
+    }
+
+#plan-basic > div:last-child span,
+#plan-pro > div:last-child span,
+#plan-elite > div:last-child span {
+    display: block;
+    text-align: center;
+    padding: 13px;
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--white-muted);
+    border: 1px solid var(--black-border);
+    background-color: rgba(255,255,255,0.03);
+}
+
+#plan-comparison {
+    margin-bottom: 80px;
+}
+
+    #plan-comparison h2 {
+        margin-bottom: 28px;
+        text-align: center;
+    }
+
+    #plan-comparison table {
+        background-color: var(--black-card);
+        border: 1px solid var(--black-border);
+        border-radius: var(--radius-md);
+        overflow: hidden;
+    }
+
+    #plan-comparison thead th {
+        background-color: var(--black-soft);
+        text-align: center;
+        font-size: 0.82rem;
+    }
+
+        #plan-comparison thead th:first-child {
+            text-align: left;
+        }
+
+    #plan-comparison tbody td {
+        text-align: center;
+        font-size: 0.88rem;
+        color: var(--white-muted);
+    }
+
+        #plan-comparison tbody td:first-child {
+            text-align: left;
+            color: var(--white);
+        }
+
+        #plan-comparison tbody td:not(:first-child) {
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        #plan-comparison tbody td[data-value="true"],
+        #plan-comparison tbody td:contains("✓") {
+            color: var(--lime);
+        }
+
+        #plan-comparison tbody td:contains("✗") {
+            color: var(--black-border);
+        }
+
+#membership-faq {
+    margin-bottom: 80px;
+}
+
+    #membership-faq h2 {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    #membership-faq > div {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+        #membership-faq > div > div {
+            background-color: var(--black-card);
+            border: 1px solid var(--black-border);
+            border-radius: var(--radius-md);
+            padding: 28px;
+        }
+
+            #membership-faq > div > div h3 {
+                font-size: 1rem;
+                margin-bottom: 10px;
+                color: var(--white);
+            }
+
+            #membership-faq > div > div p {
+                font-size: 0.88rem;
+            }
+
+#membership-cta {
+    text-align: center;
+    background-color: var(--black-card);
+    border: 1px solid var(--black-border);
+    border-radius: var(--radius-md);
+    padding: 60px 40px;
+}
+
+    #membership-cta h2 {
+        margin-bottom: 12px;
+    }
+
+    #membership-cta p {
+        margin-bottom: 28px;
+        font-size: 1rem;
+    }
+
+    #membership-cta a {
+        display: inline-block;
+        background-color: var(--lime);
+        color: var(--black);
+        font-family: var(--font-body);
+        font-weight: 700;
+        font-size: 0.95rem;
+        padding: 14px 36px;
+        border-radius: var(--radius-sm);
+    }
+
+        #membership-cta a:hover {
+            background-color: var(--lime-dark);
+            color: var(--black);
+            box-shadow: var(--shadow-lime);
+        }
+
+@media (max-width: 1024px) {
+    #membership-page {
+        padding: 48px 24px 60px;
+    }
+
+    #plans-grid {
+        grid-template-columns: 1fr;
+        max-width: 480px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #membership-faq > div {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    #membership-page {
+        padding: 32px 16px 48px;
+    }
+
+    #billing-toggle form {
+        flex-direction: column;
+        width: 100%;
+    }
+
+        #billing-toggle form label {
+            justify-content: center;
+        }
+
+    #plan-comparison {
+        overflow-x: auto;
+    }
+
+    #membership-cta {
+        padding: 40px 20px;
+    }
+}
