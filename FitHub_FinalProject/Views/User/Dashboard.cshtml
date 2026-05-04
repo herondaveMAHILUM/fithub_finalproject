@@ -1,5 +1,250 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
+    ViewData["Title"] = "Dashboard - FitHub";
 }
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
+}
+
+<main id="dashboard-page">
+
+    <section id="member-overview">
+
+        <div id="member-identity">
+            <img src="~/images/default-avatar.png" alt="Profile photo of @ViewBag.FullName" id="member-avatar" />
+            <div id="member-info">
+                <h1>@ViewBag.FullName</h1>
+                <p>Member since @ViewBag.MemberSince</p>
+            </div>
+        </div>
+
+        <div id="member-plan-details">
+
+            <div class="plan-stat">
+                <span class="plan-label">Status</span>
+                <span class="plan-value">@ViewBag.MembershipStatus</span>
+            </div>
+
+            <div class="plan-divider"></div>
+
+            <div class="plan-stat">
+                <span class="plan-label">Plan</span>
+                <span class="plan-value">@ViewBag.MembershipPlan</span>
+            </div>
+
+            <div class="plan-divider"></div>
+
+            <div class="plan-stat">
+                <span class="plan-label">Expires</span>
+                <span class="plan-value">@ViewBag.ExpiryDate</span>
+            </div>
+
+            <div class="plan-divider"></div>
+
+            <div class="plan-stat">
+                <span class="plan-label">Next Billing</span>
+                <span class="plan-value">@ViewBag.NextBillingDate</span>
+            </div>
+
+        </div>
+
+        <div id="member-cta">
+            <a asp-controller="Membership" asp-action="Index" id="renew-btn">Renew Plan</a>
+        </div>
+
+    </section>
+
+    <section id="dashboard-grid">
+
+        <div id="dashboard-left">
+
+            <div id="workout-card">
+                <div class="card-header">
+                    <h2>Workout Plan</h2>
+                    <a href="#">View Full Routine →</a>
+                </div>
+
+                <div id="todays-workout">
+                    <div id="today-label">
+                        <span>Today</span>
+                        <span id="today-date">Monday — Chest & Triceps</span>
+                    </div>
+
+                    <div id="today-exercises">
+                        <div class="exercise-row">
+                            <span class="exercise-name">Bench Press</span>
+                            <span class="exercise-sets">4 sets × 10 reps</span>
+                        </div>
+                        <div class="exercise-row">
+                            <span class="exercise-name">Incline Dumbbell Press</span>
+                            <span class="exercise-sets">3 sets × 12 reps</span>
+                        </div>
+                        <div class="exercise-row">
+                            <span class="exercise-name">Tricep Dips</span>
+                            <span class="exercise-sets">3 sets × 15 reps</span>
+                        </div>
+                        <div class="exercise-row">
+                            <span class="exercise-name">Cable Pushdown</span>
+                            <span class="exercise-sets">3 sets × 12 reps</span>
+                        </div>
+                    </div>
+
+                    <a href="#" id="start-workout-btn">Start Workout</a>
+                </div>
+
+                <div id="weekly-schedule">
+                    <h3>This Week</h3>
+                    <div id="week-days">
+                        <div class="day-pill active">
+                            <span class="day-name">Mon</span>
+                            <span class="day-focus">Chest</span>
+                        </div>
+                        <div class="day-pill">
+                            <span class="day-name">Tue</span>
+                            <span class="day-focus">Back</span>
+                        </div>
+                        <div class="day-pill">
+                            <span class="day-name">Wed</span>
+                            <span class="day-focus">Rest</span>
+                        </div>
+                        <div class="day-pill">
+                            <span class="day-name">Thu</span>
+                            <span class="day-focus">Legs</span>
+                        </div>
+                        <div class="day-pill">
+                            <span class="day-name">Fri</span>
+                            <span class="day-focus">Shoulders</span>
+                        </div>
+                        <div class="day-pill">
+                            <span class="day-name">Sat</span>
+                            <span class="day-focus">Arms</span>
+                        </div>
+                        <div class="day-pill">
+                            <span class="day-name">Sun</span>
+                            <span class="day-focus">Rest</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="assigned-trainer">
+                    <div id="trainer-info">
+                        <img src="~/images/default-avatar.png" alt="Trainer" id="trainer-avatar" />
+                        <div>
+                            <span id="trainer-label">Assigned Trainer</span>
+                            <span id="trainer-name">@(ViewBag.TrainerName ?? "No trainer assigned")</span>
+                        </div>
+                    </div>
+                    <a href="#" id="trainer-message-btn">Message</a>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div id="dashboard-right">
+
+            <div id="notifications-card">
+                <div class="card-header">
+                    <h2>Notifications</h2>
+                    <span id="notif-count">3</span>
+                </div>
+
+                <ul id="notifications-list">
+
+                    <li class="notif-item notif-workout">
+                        <div class="notif-icon"></div>
+                        <div class="notif-body">
+                            <p class="notif-title">New Workout Added</p>
+                            <p class="notif-desc">Your trainer added a new HIIT routine to your plan.</p>
+                            <span class="notif-time">2 hours ago</span>
+                        </div>
+                    </li>
+
+                    <li class="notif-item notif-payment">
+                        <div class="notif-icon"></div>
+                        <div class="notif-body">
+                            <p class="notif-title">Payment Reminder</p>
+                            <p class="notif-desc">Your membership renews in 5 days. Make sure your payment method is up to date.</p>
+                            <span class="notif-time">1 day ago</span>
+                        </div>
+                    </li>
+
+                    <li class="notif-item notif-announcement">
+                        <div class="notif-icon"></div>
+                        <div class="notif-body">
+                            <p class="notif-title">Gym Announcement</p>
+                            <p class="notif-desc">The gym will be closed on December 25 for the holiday. See you on the 26th!</p>
+                            <span class="notif-time">3 days ago</span>
+                        </div>
+                    </li>
+
+                </ul>
+
+                <a href="#" id="view-all-notifs">View All Notifications →</a>
+            </div>
+
+            <div id="recent-transactions-card">
+                <div class="card-header">
+                    <h2>Recent Transactions</h2>
+                    <a asp-controller="Transaction" asp-action="Index">View All →</a>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (ViewBag.RecentTransactions != null && ViewBag.RecentTransactions.Count > 0)
+                        {
+                            foreach (var transaction in ViewBag.RecentTransactions)
+                            {
+                                <tr>
+                                    <td>@transaction.Date</td>
+                                    <td>@transaction.Description</td>
+                                    <td>@transaction.Amount</td>
+                                    <td>@transaction.Status</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="4">No transactions found.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+    </section>
+
+    <section id="quick-actions-bar">
+        <a asp-controller="Membership" asp-action="Index">
+            <span></span>
+            <span>Browse Plans</span>
+        </a>
+        <a asp-controller="Transaction" asp-action="Index">
+            <span></span>
+            <span>Transactions</span>
+        </a>
+        <a asp-controller="Account" asp-action="Profile">
+            <span></span>
+            <span>Edit Profile</span>
+        </a>
+        <a asp-controller="Account" asp-action="ChangePassword">
+            <span></span>
+            <span>Change Password</span>
+        </a>
+        <a asp-controller="Account" asp-action="Logout" id="quick-logout">
+            <span></span>
+            <span>Log Out</span>
+        </a>
+    </section>
+
+</main>
