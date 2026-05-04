@@ -1,0 +1,297 @@
+﻿@{
+    ViewData["Title"] = "Membership Plans - FitHub";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/membership.css" asp-append-version="true" />
+}
+
+<main id="membership-page">
+
+    <section id="membership-hero">
+        <h1>Membership Plans</h1>
+        <p>Choose the plan that fits your goals. No hidden fees. Cancel anytime.</p>
+    </section>
+
+    @if (ViewBag.HasActiveMembership == true)
+    {
+        <section id="current-membership-banner">
+            <div>
+                <p>
+                    You are currently on the <strong>@ViewBag.CurrentPlan</strong> plan.
+                    Your membership renews on <strong>@ViewBag.NextBillingDate</strong>.
+                </p>
+                <a asp-controller="Membership" asp-action="Cancel">Cancel Membership</a>
+            </div>
+        </section>
+    }
+
+    <section id="billing-toggle">
+        <form asp-controller="Membership" asp-action="Index" method="get">
+            <label>
+                <input type="radio" name="billing" value="monthly"
+                       @(ViewBag.Billing == "monthly" ? "checked" : "") />
+                Monthly
+            </label>
+            <label>
+                <input type="radio" name="billing" value="annual"
+                       @(ViewBag.Billing == "annual" ? "checked" : "") />
+                Annual <span>(Save 20%)</span>
+            </label>
+        </form>
+    </section>
+
+    <section id="plans-grid">
+
+        <div id="plan-basic">
+            <div>
+                <h2>Basic</h2>
+                <p>Perfect for beginners getting started on their fitness journey.</p>
+            </div>
+            <div>
+                @if (ViewBag.Billing == "annual")
+                {
+                    <p><strong>₱4,790</strong> / year</p>
+                    <p>₱399 / month billed annually</p>
+                }
+                else
+                {
+                    <p><strong>₱499</strong> / month</p>
+                }
+            </div>
+            <ul>
+                <li>Gym Floor Access</li>
+                <li>Locker Room Access</li>
+                <li>1 Guest Pass / Month</li>
+                <li>Access to Basic Equipment</li>
+                <li>Mobile App Access</li>
+            </ul>
+            <div>
+                @if (ViewBag.CurrentPlan == "Basic")
+                {
+                    <span>Current Plan</span>
+                }
+                else
+                {
+                    <a asp-controller="Membership" asp-action="Subscribe" asp-route-planId="1">
+                        Get Basic
+                    </a>
+                }
+            </div>
+        </div>
+
+        <div id="plan-pro">
+            <div>
+                <span>Most Popular</span>
+            </div>
+            <div>
+                <h2>Pro</h2>
+                <p>For dedicated members who want more access and support.</p>
+            </div>
+            <div>
+                @if (ViewBag.Billing == "annual")
+                {
+                    <p><strong>₱8,630</strong> / year</p>
+                    <p>₱719 / month billed annually</p>
+                }
+                else
+                {
+                    <p><strong>₱899</strong> / month</p>
+                }
+            </div>
+            <ul>
+                <li>Everything in Basic</li>
+                <li>Group Classes Access</li>
+                <li>Nutrition Consultation</li>
+                <li>3 Guest Passes / Month</li>
+                <li>Access to All Equipment</li>
+                <li>Priority Lane Access</li>
+            </ul>
+            <div>
+                @if (ViewBag.CurrentPlan == "Pro")
+                {
+                    <span>Current Plan</span>
+                }
+                else
+                {
+                    <a asp-controller="Membership" asp-action="Subscribe" asp-route-planId="2">
+                        Get Pro
+                    </a>
+                }
+            </div>
+        </div>
+
+        <div id="plan-elite">
+            <div>
+                <h2>Elite</h2>
+                <p>The full FitHub experience for serious athletes and fitness enthusiasts.</p>
+            </div>
+            <div>
+                @if (ViewBag.Billing == "annual")
+                {
+                    <p><strong>₱14,390</strong> / year</p>
+                    <p>₱1,199 / month billed annually</p>
+                }
+                else
+                {
+                    <p><strong>₱1,499</strong> / month</p>
+                }
+            </div>
+            <ul>
+                <li>Everything in Pro</li>
+                <li>Personal Trainer Sessions (4x/month)</li>
+                <li>Priority Booking</li>
+                <li>Unlimited Guest Passes</li>
+                <li>Exclusive Member Lounge</li>
+                <li>Monthly Body Assessment</li>
+                <li>Dedicated Account Manager</li>
+            </ul>
+            <div>
+                @if (ViewBag.CurrentPlan == "Elite")
+                {
+                    <span>Current Plan</span>
+                }
+                else
+                {
+                    <a asp-controller="Membership" asp-action="Subscribe" asp-route-planId="3">
+                        Get Elite
+                    </a>
+                }
+            </div>
+        </div>
+
+    </section>
+
+    <section id="plan-comparison">
+        <h2>Full Plan Comparison</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Feature</th>
+                    <th>Basic</th>
+                    <th>Pro</th>
+                    <th>Elite</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Gym Floor Access</td>
+                    <td>✓</td>
+                    <td>✓</td>
+                    <td>✓</td>
+                </tr>
+                <tr>
+                    <td>Locker Room Access</td>
+                    <td>✓</td>
+                    <td>✓</td>
+                    <td>✓</td>
+                </tr>
+                <tr>
+                    <td>Mobile App Access</td>
+                    <td>✓</td>
+                    <td>✓</td>
+                    <td>✓</td>
+                </tr>
+                <tr>
+                    <td>Guest Passes / Month</td>
+                    <td>1</td>
+                    <td>3</td>
+                    <td>Unlimited</td>
+                </tr>
+                <tr>
+                    <td>Group Classes</td>
+                    <td>✗</td>
+                    <td>✓</td>
+                    <td>✓</td>
+                </tr>
+                <tr>
+                    <td>Nutrition Consultation</td>
+                    <td>✗</td>
+                    <td>✓</td>
+                    <td>✓</td>
+                </tr>
+                <tr>
+                    <td>All Equipment Access</td>
+                    <td>✗</td>
+                    <td>✓</td>
+                    <td>✓</td>
+                </tr>
+                <tr>
+                    <td>Priority Lane Access</td>
+                    <td>✗</td>
+                    <td>✓</td>
+                    <td>✓</td>
+                </tr>
+                <tr>
+                    <td>Personal Trainer Sessions</td>
+                    <td>✗</td>
+                    <td>✗</td>
+                    <td>4x / month</td>
+                </tr>
+                <tr>
+                    <td>Priority Booking</td>
+                    <td>✗</td>
+                    <td>✗</td>
+                    <td>✓</td>
+                </tr>
+                <tr>
+                    <td>Exclusive Member Lounge</td>
+                    <td>✗</td>
+                    <td>✗</td>
+                    <td>✓</td>
+                </tr>
+                <tr>
+                    <td>Monthly Body Assessment</td>
+                    <td>✗</td>
+                    <td>✗</td>
+                    <td>✓</td>
+                </tr>
+                <tr>
+                    <td>Dedicated Account Manager</td>
+                    <td>✗</td>
+                    <td>✗</td>
+                    <td>✓</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section id="membership-faq">
+        <h2>Frequently Asked Questions</h2>
+        <div>
+
+            <div>
+                <h3>Can I cancel my membership anytime?</h3>
+                <p>Yes. You can cancel your membership at any time from your dashboard. Your access will remain active until the end of your current billing period.</p>
+            </div>
+
+            <div>
+                <h3>Can I upgrade or downgrade my plan?</h3>
+                <p>Absolutely. You can switch plans at any time. Upgrades take effect immediately, while downgrades apply at the start of your next billing cycle.</p>
+            </div>
+
+            <div>
+                <h3>Is there a joining fee?</h3>
+                <p>No. FitHub has no joining fees or hidden charges. You only pay for the plan you choose.</p>
+            </div>
+
+            <div>
+                <h3>What payment methods are accepted?</h3>
+                <p>We accept GCash, Maya, credit/debit cards, and bank transfers.</p>
+            </div>
+
+            <div>
+                <h3>Can I freeze my membership?</h3>
+                <p>Yes. Pro and Elite members can freeze their membership for up to 30 days per year. Contact our support team to request a freeze.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="membership-cta">
+        <h2>Not sure which plan is right for you?</h2>
+        <p>Talk to one of our team members and we'll help you find the perfect fit.</p>
+        <a asp-controller="Home" asp-action="Contact">Contact Us</a>
+    </section>
+
+</main>
