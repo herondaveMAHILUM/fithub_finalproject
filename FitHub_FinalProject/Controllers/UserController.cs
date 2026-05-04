@@ -18,5 +18,10 @@ namespace FitHub_FinalProject.Controllers
         {
             return View();
         }
+
+        public IActionResult Transaction()
+        {
+            return View();
+        }
     }
 }
