@@ -1,0 +1,230 @@
+﻿@{
+    ViewData["Title"] = "My Profile - FitHub";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/profile.css" asp-append-version="true" />
+}
+
+<main id="profile-page">
+
+    <section id="profile-hero">
+        <h1>My Profile</h1>
+        <p>Manage your personal information, membership, and account settings.</p>
+    </section>
+
+    <section id="profile-layout">
+
+        <aside id="profile-sidebar">
+
+            <div id="profile-avatar-section">
+                <img src="~/images/default-avatar.png" alt="Profile photo of @ViewBag.FullName" />
+                <h2>@ViewBag.FullName</h2>
+                <p>@ViewBag.MembershipPlan Member</p>
+                <p>Member since @ViewBag.MemberSince</p>
+            </div>
+
+            <div id="profile-sidebar-links">
+                <ul>
+                    <li><a href="#personal-info">Personal Information</a></li>
+                    <li><a href="#membership-info">Membership Info</a></li>
+                    <li><a href="#change-password">Change Password</a></li>
+                    <li><a href="#danger-zone">Danger Zone</a></li>
+                </ul>
+            </div>
+
+        </aside>
+
+        <div id="profile-content">
+
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div id="success-message">
+                    <p>@TempData["SuccessMessage"]</p>
+                </div>
+            }
+
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div id="error-message">
+                    <p>@TempData["ErrorMessage"]</p>
+                </div>
+            }
+
+            <div id="personal-info">
+                <h2>Personal Information</h2>
+                <p>Update your personal details below.</p>
+
+                <form asp-controller="Account" asp-action="UpdateProfile" method="post">
+
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="All"></div>
+
+                    <div>
+                        <label>Full Name</label>
+                        <input type="text" placeholder="e.g. Juan dela Cruz" />
+                        <span></span>
+                    </div>
+
+                    <div>
+                        <label>Email Address</label>
+                        <input type="email" placeholder="you@email.com" />
+                        <span></span>
+                    </div>
+
+                    <div>
+                        <label>Phone Number</label>
+                        <input type="tel" placeholder="+63 912 345 6789" />
+                        <span></span>
+                    </div>
+
+                    <div>
+                        <label>Date of Birth</label>
+                        <input type="date" />
+                        <span></span>
+                    </div>
+
+                    <div>
+                        <label>Gender</label>
+                        <select>
+                            <option value="">-- Select Gender --</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                            <option value="PreferNotToSay">Prefer not to say</option>
+                        </select>
+                        <span></span>
+                    </div>
+
+                    <div>
+                        <label>Address</label>
+                        <input type="text" placeholder="Street, City, Province" />
+                        <span></span>
+                    </div>
+
+                    <div>
+                        <label for="ProfilePhoto">Profile Photo</label>
+                        <input type="file" id="ProfilePhoto" name="ProfilePhoto" accept="image/*" />
+                        <small>Accepted formats: JPG, PNG. Max size: 2MB.</small>
+                    </div>
+
+                    <div>
+                        <button type="submit">Save Changes</button>
+                    </div>
+
+                </form>
+            </div>
+
+            <hr />
+
+            <div id="membership-info">
+                <h2>Membership Information</h2>
+                <p>Your current plan and billing details.</p>
+
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>Current Plan</td>
+                            <td>@ViewBag.MembershipPlan</td>
+                        </tr>
+                        <tr>
+                            <td>Status</td>
+                            <td>@ViewBag.MembershipStatus</td>
+                        </tr>
+                        <tr>
+                            <td>Member Since</td>
+                            <td>@ViewBag.MemberSince</td>
+                        </tr>
+                        <tr>
+                            <td>Next Billing Date</td>
+                            <td>@ViewBag.NextBillingDate</td>
+                        </tr>
+                        <tr>
+                            <td>Monthly Fee</td>
+                            <td>@ViewBag.MonthlyFee</td>
+                        </tr>
+                        <tr>
+                            <td>Payment Method</td>
+                            <td>@ViewBag.PaymentMethod</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div>
+                    <a asp-controller="Membership" asp-action="Index">Upgrade Plan</a>
+                    <a asp-controller="Membership" asp-action="Cancel">Cancel Membership</a>
+                </div>
+            </div>
+
+            <hr />
+
+            <div id="change-password">
+                <h2>Change Password</h2>
+                <p>Make sure your new password is at least 8 characters long.</p>
+
+                <form asp-controller="Account" asp-action="ChangePassword" method="post">
+
+                    @Html.AntiForgeryToken()
+
+                    <div>
+                        <label>Current Password</label>
+                        <input type="password" placeholder="Enter current password" />
+                        <span></span>
+                    </div>
+
+                    <div>
+                        <label>New Password</label>
+                        <input type="password" placeholder="Enter new password" />
+                        <span></span>
+                    </div>
+
+                    <div>
+                        <label>Confirm New Password</label>
+                        <input type="password" placeholder="Re-enter new password" />
+                        <span></span>
+                    </div>
+
+                    <div>
+                        <button type="submit">Update Password</button>
+                    </div>
+
+                </form>
+            </div>
+
+            <hr />
+
+            <div id="danger-zone">
+                <h2>Danger Zone</h2>
+                <p>Permanent actions that cannot be undone. Proceed with caution.</p>
+
+                <div>
+                    <div>
+                        <div>
+                            <h3>Deactivate Account</h3>
+                            <p>Temporarily disable your account. You can reactivate it by logging back in.</p>
+                        </div>
+                        <form asp-controller="Account" asp-action="DeactivateAccount" method="post">
+                            @Html.AntiForgeryToken()
+                            <button type="submit">Deactivate Account</button>
+                        </form>
+                    </div>
+
+                    <div>
+                        <div>
+                            <h3>Delete Account</h3>
+                            <p>Permanently delete your account and all associated data. This action cannot be undone.</p>
+                        </div>
+                        <form asp-controller="Account" asp-action="DeleteAccount" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="confirm" value="true" />
+                            <button type="submit">Delete My Account</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+</main>
+
