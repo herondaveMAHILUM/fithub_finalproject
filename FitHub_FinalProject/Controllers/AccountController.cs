@@ -52,7 +52,70 @@ namespace FitHub_FinalProject.Controllers
             return RedirectToAction("Dashboard", "User");
         }
 
-        public IActionResult Register() => View();
+        [HttpGet]
+        public IActionResult Register()
+        {
+            if (User.Identity?.IsAuthenticated == true)
+                return RedirectToAction("Dashboard", "User");
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register(
+            string fullName, string email, string phoneNumber,
+            DateOnly? dateOfBirth, string gender, string address,
+            string password, string confirmPassword)
+        {
+            if (string.IsNullOrWhiteSpace(fullName) ||
+                string.IsNullOrWhiteSpace(email) ||
+                string.IsNullOrWhiteSpace(password))
+            {
+                ModelState.AddModelError("", "Full name, email, and password are required.");
+            }
+
+            if (password != confirmPassword)
+                ModelState.AddModelError("", "Passwords do not match.");
+
+            if (!string.IsNullOrEmpty(password) && password.Length < 8)
+                ModelState.AddModelError("", "Password must be at least 8 characters.");
+
+            if (!string.IsNullOrWhiteSpace(email) && await _context.Users.AnyAsync(u => u.Email == email))
+                ModelState.AddModelError("", "An account with this email already exists.");
+
+            if (!ModelState.IsValid)
+                return View();
+
+            var user = new User
+            {
+                FullName = fullName,
+                Email = email,
+                PhoneNumber = phoneNumber,
+                DateOfBirth = dateOfBirth,
+                Gender = gender,
+                Address = address,
+                PasswordHash = HashPassword(password),
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+
+            _context.Notifications.Add(new Notification
+            {
+                UserId = user.UserId,
+                Title = "Welcome to FitHub!",
+                Description = "Your account has been created. Start by browsing our membership plans.",
+                Type = "Success",
+                IsRead = false,
+                CreatedAt = DateTime.UtcNow
+            });
+            await _context.SaveChangesAsync();
+
+            await SignInUserAsync(user, isPersistent: false);
+            return RedirectToAction("Dashboard", "User");
+        }
 
         private async Task SignInUserAsync(User user, bool isPersistent)
         {
