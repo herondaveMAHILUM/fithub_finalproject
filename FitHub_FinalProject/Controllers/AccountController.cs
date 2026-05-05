@@ -117,6 +117,13 @@ namespace FitHub_FinalProject.Controllers
             return RedirectToAction("Dashboard", "User");
         }
 
+        [Authorize]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Login");
+        }
+
         private async Task SignInUserAsync(User user, bool isPersistent)
         {
             var claims = new List<Claim>
