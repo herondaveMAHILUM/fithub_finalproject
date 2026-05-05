@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using FitHub_FinalProject.Data;
 
@@ -9,6 +10,17 @@ builder.Services.AddControllersWithViews();
 // Register EF Core with SQL Server
 builder.Services.AddDbContext<FitHubDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("FitHubDb")));
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login";
+        options.LogoutPath = "/Account/Logout";
+        options.AccessDeniedPath = "/Account/Login";
+        options.ExpireTimeSpan = TimeSpan.FromDays(7);
+        options.SlidingExpiration = true;
+    });
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -22,6 +34,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();
