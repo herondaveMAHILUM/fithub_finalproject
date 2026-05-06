@@ -186,6 +186,55 @@ namespace FitHub_FinalProject.Controllers
             return RedirectToAction("Profile");
         }
 
+        [Authorize]
+        [HttpGet]
+        public IActionResult ChangePassword()
+            => Redirect("/Account/Profile#change-password");
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword(
+            string currentPassword, string newPassword, string confirmPassword)
+        {
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+            if (user == null) return RedirectToAction("Login");
+
+            if (HashPassword(currentPassword ?? "") != user.PasswordHash)
+            {
+                TempData["ErrorMessage"] = "Current password is incorrect.";
+                return RedirectToAction("Profile");
+            }
+
+            if (string.IsNullOrWhiteSpace(newPassword) || newPassword.Length < 8)
+            {
+                TempData["ErrorMessage"] = "New password must be at least 8 characters.";
+                return RedirectToAction("Profile");
+            }
+
+            if (newPassword != confirmPassword)
+            {
+                TempData["ErrorMessage"] = "New passwords do not match.";
+                return RedirectToAction("Profile");
+            }
+
+            user.PasswordHash = HashPassword(newPassword);
+
+            _context.Notifications.Add(new Notification
+            {
+                UserId = user.UserId,
+                Title = "Password Changed",
+                Description = "Your password was changed successfully.",
+                Type = "Success",
+                CreatedAt = DateTime.UtcNow
+            });
+
+            await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Password changed successfully.";
+            return RedirectToAction("Profile");
+        }
+
         private async Task SignInUserAsync(User user, bool isPersistent)
         {
             var claims = new List<Claim>
