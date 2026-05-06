@@ -1,0 +1,219 @@
+﻿@{
+    ViewData["Title"] = "Admin Profile - FitHub";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/admin-profile.css" asp-append-version="true" />
+}
+
+<main id="admin-profile">
+
+    <section id="admin-profile-header">
+        <h1>Admin Profile</h1>
+        <p>Manage your admin account information and security settings.</p>
+    </section>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div id="success-message">
+            <p>@TempData["SuccessMessage"]</p>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div id="error-message">
+            <p>@TempData["ErrorMessage"]</p>
+        </div>
+    }
+
+    <section id="admin-profile-layout">
+
+        <aside id="admin-profile-sidebar">
+
+            <div id="admin-profile-avatar">
+                <img src="@ViewBag.ProfilePhoto" alt="Profile photo of @ViewBag.FullName" />
+                <h2>@ViewBag.FullName</h2>
+                <p>Administrator</p>
+                <p>@ViewBag.Email</p>
+            </div>
+
+            <div id="admin-profile-sidebar-stats">
+                <div>
+                    <span>Member Since</span>
+                    <strong>@ViewBag.MemberSince</strong>
+                </div>
+                <div>
+                    <span>Last Login</span>
+                    <strong>@ViewBag.LastLogin</strong>
+                </div>
+                <div>
+                    <span>Total Actions</span>
+                    <strong>@ViewBag.TotalActions</strong>
+                </div>
+            </div>
+
+            <div id="admin-profile-sidebar-links">
+                <ul>
+                    <li><a href="#admin-info">Admin Information</a></li>
+                    <li><a href="#change-password">Change Password</a></li>
+                    <li><a href="#activity-log">Activity Log</a></li>
+                    <li><a href="#danger-zone">Danger Zone</a></li>
+                </ul>
+            </div>
+
+        </aside>
+
+        <div id="admin-profile-content">
+
+            <div id="admin-info">
+                <h2>Admin Information</h2>
+                <p>Update your personal and contact details.</p>
+
+                <form asp-controller="Admin" asp-action="UpdateProfile" method="post">
+
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="All"></div>
+
+                    <div>
+                        <label>Full Name</label>
+                        <input type="text" placeholder="Your full name" />
+                        <span></span>
+                    </div>
+
+                    <div>
+                        <label>Email Address</label>
+                        <input type="email" placeholder="admin@fithub.ph" />
+                        <span></span>
+                    </div>
+
+                    <div>
+                        <label>Phone Number</label>
+                        <input type="tel" placeholder="+63 912 345 6789" />
+                        <span></span>
+                    </div>
+
+                    <div>
+                        <label for="ProfilePhoto">Profile Photo</label>
+                        <input type="file" id="ProfilePhoto" name="ProfilePhoto" accept="image/*" />
+                        <small>Accepted formats: JPG, PNG. Max size: 2MB.</small>
+                    </div>
+
+                    <div>
+                        <button type="submit">Save Changes</button>
+                    </div>
+
+                </form>
+            </div>
+
+            <hr />
+
+            <div id="change-password">
+                <h2>Change Password</h2>
+                <p>Ensure your admin account stays secure with a strong password.</p>
+
+                <form asp-controller="Admin" asp-action="ChangePassword" method="post">
+
+                    @Html.AntiForgeryToken()
+
+                    <div>
+                        <label>Current Password</label>
+                        <input type="password" placeholder="Enter current password" />
+                        <span></span>
+                    </div>
+
+                    <div>
+                        <label>New Password</label>
+                        <input type="password" placeholder="Min. 8 characters" />
+                        <span></span>
+                    </div>
+
+                    <div>
+                        <label>Confirm New Password</label>
+                        <input type="password" placeholder="Re-enter new password" />
+                        <span></span>
+                    </div>
+
+                    <div>
+                        <button type="submit">Update Password</button>
+                    </div>
+
+                </form>
+            </div>
+
+            <hr />
+
+            <div id="activity-log">
+                <h2>Activity Log</h2>
+                <p>Recent actions performed under your admin account.</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date & Time</th>
+                            <th>Action</th>
+                            <th>Target</th>
+                            <th>IP Address</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (ViewBag.ActivityLog != null && ViewBag.ActivityLog.Count > 0)
+                        {
+                            foreach (var log in ViewBag.ActivityLog)
+                            {
+                                <tr>
+                                    <td>@log.Timestamp.ToString("MMM dd, yyyy hh:mm tt")</td>
+                                    <td>@log.Action</td>
+                                    <td>@log.Target</td>
+                                    <td>@log.IpAddress</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="4">No activity recorded yet.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <hr />
+
+            <div id="danger-zone">
+                <h2>Danger Zone</h2>
+                <p>Permanent actions that cannot be undone. Proceed with extreme caution.</p>
+
+                <div>
+
+                    <div>
+                        <div>
+                            <h3>Reset System Data</h3>
+                            <p>Clear all member, transaction, and plan data from the system. This cannot be undone.</p>
+                        </div>
+                        <form asp-controller="Admin" asp-action="ResetSystemData" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="confirm" value="true" />
+                            <button type="submit" onclick="return confirm('Are you absolutely sure? This will delete ALL system data permanently.')">Reset System Data</button>
+                        </form>
+                    </div>
+
+                    <div>
+                        <div>
+                            <h3>Delete Admin Account</h3>
+                            <p>Permanently delete this admin account. You will lose all access immediately.</p>
+                        </div>
+                        <form asp-controller="Admin" asp-action="DeleteAdminAccount" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="confirm" value="true" />
+                            <button type="submit" onclick="return confirm('Delete your admin account? This cannot be undone.')">Delete Account</button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+</main>
