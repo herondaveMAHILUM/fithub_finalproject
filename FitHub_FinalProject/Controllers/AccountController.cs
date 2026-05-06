@@ -124,6 +124,68 @@ namespace FitHub_FinalProject.Controllers
             return RedirectToAction("Login");
         }
 
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Profile()
+        {
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var user = await _context.Users
+                .Include(u => u.Membership).ThenInclude(m => m!.Plan)
+                .FirstOrDefaultAsync(u => u.UserId == userId);
+
+            if (user == null)
+            {
+                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                return RedirectToAction("Login");
+            }
+
+            ViewBag.FullName = user.FullName;
+            ViewBag.Email = user.Email;
+            ViewBag.PhoneNumber = user.PhoneNumber;
+            ViewBag.DateOfBirth = user.DateOfBirth?.ToString("yyyy-MM-dd");
+            ViewBag.Gender = user.Gender;
+            ViewBag.Address = user.Address;
+
+            ViewBag.MembershipPlan = user.Membership?.Plan?.Name ?? "—";
+            ViewBag.MembershipStatus = user.Membership?.Status ?? "No membership";
+            ViewBag.MemberSince = user.CreatedAt.ToString("MMMM yyyy");
+            ViewBag.NextBillingDate = user.Membership?.NextBillingDate.ToString("MMM dd, yyyy") ?? "—";
+            ViewBag.MonthlyFee = user.Membership?.Plan != null
+                ? "₱" + user.Membership.Plan.MonthlyPrice.ToString("N2")
+                : "—";
+            ViewBag.PaymentMethod = user.Membership?.PaymentMethod ?? "—";
+
+            return View("~/Views/User/Profile.cshtml");
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateProfile(
+            string fullName, string phoneNumber,
+            DateOnly? dateOfBirth, string gender, string address)
+        {
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+            if (user == null) return RedirectToAction("Login");
+
+            if (string.IsNullOrWhiteSpace(fullName))
+            {
+                TempData["ErrorMessage"] = "Full name is required.";
+                return RedirectToAction("Profile");
+            }
+
+            user.FullName = fullName;
+            user.PhoneNumber = phoneNumber;
+            user.DateOfBirth = dateOfBirth;
+            user.Gender = gender;
+            user.Address = address;
+
+            await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Profile updated successfully.";
+            return RedirectToAction("Profile");
+        }
+
         private async Task SignInUserAsync(User user, bool isPersistent)
         {
             var claims = new List<Claim>
