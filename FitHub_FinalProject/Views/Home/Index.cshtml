@@ -15,7 +15,7 @@
         </p>
         <div>
             <a asp-controller="Account" asp-action="Register">Get Started</a>
-            <a asp-controller="Membership" asp-action="Index">View Plans</a>
+            <a href="#membership-preview">View Plans</a>
         </div>
     </div>
     <div>
@@ -115,7 +115,14 @@
         </div>
 
     </div>
-    <a asp-controller="Membership" asp-action="Index">See Full Plan Details</a>
+    @if (User.Identity != null && User.Identity.IsAuthenticated)
+    {
+        <a asp-controller="Membership" asp-action="Index">See Full Plan Details</a>
+    }
+    else
+    {
+        <a asp-controller="Account" asp-action="Register">See Full Plan Details</a>
+    }
 </section>
 
 @if (ViewBag.Testimonials != null && ViewBag.Testimonials.Count > 0)
