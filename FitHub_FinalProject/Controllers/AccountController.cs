@@ -63,16 +63,19 @@ namespace FitHub_FinalProject.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(
-            string fullName, string email, string phoneNumber,
+            string firstName, string lastName, string email, string phoneNumber,
             DateOnly? dateOfBirth, string gender, string address,
             string password, string confirmPassword)
         {
-            if (string.IsNullOrWhiteSpace(fullName) ||
+            if (string.IsNullOrWhiteSpace(firstName) ||
+                string.IsNullOrWhiteSpace(lastName) ||
                 string.IsNullOrWhiteSpace(email) ||
                 string.IsNullOrWhiteSpace(password))
             {
-                ModelState.AddModelError("", "Full name, email, and password are required.");
+                ModelState.AddModelError("", "First name, last name, email, and password are required.");
             }
+
+            var fullName = $"{firstName.Trim()} {lastName.Trim()}";
 
             if (password != confirmPassword)
                 ModelState.AddModelError("", "Passwords do not match.");
@@ -88,7 +91,7 @@ namespace FitHub_FinalProject.Controllers
 
             var user = new User
             {
-                FullName = fullName,
+                FullName = fullName.Trim(),
                 Email = email,
                 PhoneNumber = phoneNumber,
                 DateOfBirth = dateOfBirth,

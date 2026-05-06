@@ -25,12 +25,18 @@
                 <div asp-validation-summary="All"></div>
 
                 <div>
-                    <label>Full Name</label>
-                    <input type="text" name="fullName" placeholder="e.g. Juan dela Cruz" required />
+                    <label>First Name</label>
+                    <input type="text" name="firstName" placeholder="e.g. Juan" required />
                     <span></span>
                 </div>
 
                 <div>
+                    <label>Last Name</label>
+                    <input type="text" name="lastName" placeholder="e.g. dela Cruz" required />
+                    <span></span>
+                </div>
+
+                <div class="full-width">
                     <label>Email Address</label>
                     <input type="email" name="email" placeholder="you@email.com" required />
                     <span></span>
@@ -60,7 +66,7 @@
                     <span></span>
                 </div>
 
-                <div>
+                <div class="full-width">
                     <label>Address</label>
                     <input type="text" name="address" placeholder="Street, City, Province" />
                     <span></span>

@@ -35,21 +35,9 @@
     }
 
     #register-container form {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        column-gap: 20px;
+        display: flex;
+        flex-direction: column;
     }
-
-        #register-container form > div:has(select),
-        #register-container form > div:has(input[type="checkbox"]),
-        #register-container form > div:has(button[type="submit"]),
-        #register-container form > div[asp-validation-summary] {
-            grid-column: 1 / -1;
-        }
-
-        #register-container form > div:has(input[placeholder="Street, City, Province"]) {
-            grid-column: 1 / -1;
-        }
 
         #register-container form > div:has(input[type="checkbox"]) {
             display: flex;
@@ -123,14 +111,6 @@
     }
 
         #register-container form {
-            grid-template-columns: 1fr;
+            /* already flex column, nothing to override */
         }
-
-            #register-container form > div:has(select),
-            #register-container form > div:has(input[type="checkbox"]),
-            #register-container form > div:has(button[type="submit"]),
-            #register-container form > div:has(input[placeholder="Street, City, Province"]),
-            #register-container form > div[asp-validation-summary] {
-                grid-column: 1;
-            }
 }
