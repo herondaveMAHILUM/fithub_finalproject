@@ -235,6 +235,49 @@ namespace FitHub_FinalProject.Controllers
             return RedirectToAction("Profile");
         }
 
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeactivateAccount()
+        {
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+            if (user != null)
+            {
+                user.IsActive = false;
+                await _context.SaveChangesAsync();
+            }
+
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Login");
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteAccount(string confirm)
+        {
+            if (confirm != "true") return RedirectToAction("Profile");
+
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+            if (user != null)
+            {
+                _context.Users.Remove(user);
+                await _context.SaveChangesAsync();
+            }
+
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Login");
+        }
+
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            TempData["InfoMessage"] = "Password recovery is currently disabled. Please contact support@fithub.ph.";
+            return RedirectToAction("Login");
+        }
+
         private async Task SignInUserAsync(User user, bool isPersistent)
         {
             var claims = new List<Claim>
