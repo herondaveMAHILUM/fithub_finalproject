@@ -1,0 +1,304 @@
+﻿#admin-profile {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 60px 40px 80px;
+}
+
+#admin-profile-header {
+    margin-bottom: 40px;
+}
+
+    #admin-profile-header h1 {
+        margin-bottom: 10px;
+    }
+
+    #admin-profile-header p {
+        font-size: 1rem;
+    }
+
+#admin-profile-layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 28px;
+    align-items: start;
+}
+
+#admin-profile-sidebar {
+    position: sticky;
+    top: calc(var(--nav-height) + 24px);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+#admin-profile-avatar {
+    background-color: var(--black-card);
+    border: 1px solid var(--black-border);
+    border-radius: var(--radius-md);
+    padding: 28px 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+    #admin-profile-avatar img {
+        width: 88px;
+        height: 88px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid var(--lime);
+        margin-bottom: 8px;
+    }
+
+    #admin-profile-avatar h2 {
+        font-size: 1.2rem;
+        margin-bottom: 4px;
+    }
+
+    #admin-profile-avatar p:first-of-type {
+        color: var(--lime);
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.06em;
+        font-family: var(--font-body);
+    }
+
+    #admin-profile-avatar p:last-of-type {
+        font-size: 0.82rem;
+    }
+
+#admin-profile-sidebar-stats {
+    background-color: var(--black-card);
+    border: 1px solid var(--black-border);
+    border-radius: var(--radius-md);
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+    #admin-profile-sidebar-stats > div {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    #admin-profile-sidebar-stats span {
+        font-size: 0.82rem;
+        color: var(--white-muted);
+    }
+
+    #admin-profile-sidebar-stats strong {
+        font-size: 0.88rem;
+        font-weight: 700;
+        color: var(--white);
+    }
+
+#admin-profile-sidebar-links {
+    background-color: var(--black-card);
+    border: 1px solid var(--black-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+    #admin-profile-sidebar-links ul {
+        display: flex;
+        flex-direction: column;
+    }
+
+    #admin-profile-sidebar-links li a {
+        display: block;
+        padding: 14px 20px;
+        font-size: 0.88rem;
+        color: var(--white-muted);
+        border-bottom: 1px solid var(--black-border);
+        font-family: var(--font-body);
+        transition: color 0.2s, background-color 0.2s, padding-left 0.2s;
+    }
+
+    #admin-profile-sidebar-links li:last-child a {
+        border-bottom: none;
+    }
+
+    #admin-profile-sidebar-links li a:hover {
+        color: var(--lime);
+        background-color: rgba(200, 255, 0, 0.04);
+        padding-left: 26px;
+    }
+
+#admin-profile-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+#admin-info,
+#change-password,
+#activity-log,
+#danger-zone {
+    background-color: var(--black-card);
+    border: 1px solid var(--black-border);
+    border-radius: var(--radius-md);
+    padding: 36px;
+    margin-bottom: 24px;
+}
+
+    #admin-info h2,
+    #change-password h2,
+    #activity-log h2,
+    #danger-zone h2 {
+        font-size: 1.3rem;
+        margin-bottom: 6px;
+    }
+
+    #admin-info > p,
+    #change-password > p,
+    #activity-log > p,
+    #danger-zone > p {
+        font-size: 0.88rem;
+        margin-bottom: 28px;
+    }
+
+    #admin-info form,
+    #change-password form {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 20px;
+    }
+
+        #admin-info form > div:has(input[type="file"]),
+        #admin-info form > div:last-child {
+            grid-column: 1 / -1;
+        }
+
+        #change-password form > div:last-child {
+            grid-column: 1 / -1;
+        }
+
+    #admin-info small {
+        display: block;
+        font-size: 0.78rem;
+        color: var(--white-muted);
+        margin-top: 6px;
+    }
+
+    #admin-info form > div:last-child,
+    #change-password form > div:last-child {
+        padding-top: 4px;
+    }
+
+    #admin-info button[type="submit"],
+    #change-password button[type="submit"] {
+        width: auto;
+        padding: 12px 28px;
+        font-size: 0.95rem;
+    }
+
+    #activity-log > p {
+        margin-bottom: 0;
+    }
+
+#danger-zone {
+    border-color: rgba(255, 68, 68, 0.3);
+}
+
+    #danger-zone h2 {
+        color: var(--danger);
+    }
+
+    #danger-zone > div {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+        #danger-zone > div > div {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+            padding: 20px;
+            background-color: rgba(255, 68, 68, 0.04);
+            border: 1px solid rgba(255, 68, 68, 0.15);
+            border-radius: var(--radius-sm);
+            flex-wrap: wrap;
+        }
+
+            #danger-zone > div > div h3 {
+                font-size: 0.95rem;
+                margin-bottom: 4px;
+                color: var(--white);
+            }
+
+            #danger-zone > div > div p {
+                font-size: 0.82rem;
+                max-width: 460px;
+                margin-bottom: 0;
+            }
+
+    #danger-zone form {
+        flex-shrink: 0;
+    }
+
+        #danger-zone form button[type="submit"] {
+            width: auto;
+            background-color: transparent;
+            color: var(--danger);
+            border: 1px solid var(--danger);
+            padding: 10px 20px;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            box-shadow: none;
+        }
+
+            #danger-zone form button[type="submit"]:hover {
+                background-color: var(--danger);
+                color: var(--white);
+                box-shadow: none;
+            }
+
+@media (max-width: 1024px) {
+    #admin-profile {
+        padding: 48px 24px 60px;
+    }
+
+    #admin-profile-layout {
+        grid-template-columns: 220px 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    #admin-profile {
+        padding: 32px 16px 48px;
+    }
+
+    #admin-profile-layout {
+        grid-template-columns: 1fr;
+    }
+
+    #admin-profile-sidebar {
+        position: static;
+    }
+
+    #admin-info form,
+    #change-password form {
+        grid-template-columns: 1fr;
+    }
+
+        #admin-info form > div,
+        #change-password form > div {
+            grid-column: 1 / -1;
+        }
+
+    #danger-zone > div > div {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    #danger-zone form button[type="submit"] {
+        width: 100%;
+    }
+}
