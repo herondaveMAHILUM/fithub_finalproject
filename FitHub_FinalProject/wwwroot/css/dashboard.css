@@ -11,11 +11,12 @@
     background-color: var(--black-card);
     border: 1px solid var(--black-border);
     border-radius: var(--radius-md);
-    padding: 32px 36px;
+    padding: 28px 36px;
     display: flex;
     align-items: center;
-    gap: 40px;
-    flex-wrap: wrap;
+    gap: 32px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
 }
 
 #member-identity {
@@ -46,16 +47,17 @@
 #member-plan-details {
     display: flex;
     align-items: center;
-    gap: 0;
     flex: 1;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    min-width: 0;
 }
 
 .plan-stat {
     display: flex;
     flex-direction: column;
     gap: 4px;
-    padding: 0 32px;
+    padding: 0 36px;
+    white-space: nowrap;
 }
 
 .plan-label {
@@ -287,63 +289,12 @@
     color: var(--white);
 }
 
-#assigned-trainer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 16px;
-    background-color: var(--black-soft);
-    border: 1px solid var(--black-border);
-    border-radius: var(--radius-sm);
-}
-
-#trainer-info {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-#trainer-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 1px solid var(--black-border);
-}
-
-#trainer-label {
-    display: block;
-    font-size: 0.7rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--white-muted);
-    font-family: var(--font-body);
-    margin-bottom: 2px;
-}
-
-#trainer-name {
-    display: block;
-    font-size: 0.88rem;
-    color: var(--white);
-    font-weight: 600;
-    font-family: var(--font-body);
-}
-
-#trainer-message-btn {
-    font-size: 0.82rem;
-    color: var(--white-muted);
-    border: 1px solid var(--black-border);
-    padding: 7px 16px;
-    border-radius: var(--radius-sm);
-    font-family: var(--font-body);
-    font-weight: 500;
-}
-
-    #trainer-message-btn:hover {
-        border-color: var(--lime);
-        color: var(--lime);
-    }
+#assigned-trainer,
+#trainer-info,
+#trainer-avatar,
+#trainer-label,
+#trainer-name,
+#trainer-message-btn { display: none; }
 
 #notifications-card {
     background-color: var(--black-card);
@@ -448,49 +399,6 @@
     padding: 28px;
 }
 
-#quick-actions-bar {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 12px;
-}
-
-    #quick-actions-bar a {
-        background-color: var(--black-card);
-        border: 1px solid var(--black-border);
-        border-radius: var(--radius-md);
-        padding: 20px 16px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-        color: var(--white-muted);
-        font-family: var(--font-body);
-        font-size: 0.82rem;
-        font-weight: 500;
-        text-align: center;
-    }
-
-        #quick-actions-bar a:hover {
-            border-color: var(--lime);
-            color: var(--white);
-            background-color: rgba(200, 255, 0, 0.04);
-        }
-
-        #quick-actions-bar a span:first-child {
-            font-size: 1.5rem;
-            line-height: 1;
-        }
-
-        #quick-actions-bar a span:last-child {
-            color: inherit;
-        }
-
-        #quick-actions-bar a#quick-logout:hover {
-            border-color: var(--danger);
-            color: var(--danger);
-            background-color: rgba(255, 68, 68, 0.04);
-        }
-
 @media (max-width: 1024px) {
     #dashboard-page {
         padding: 32px 24px 60px;
@@ -501,48 +409,21 @@
     }
 
     #member-overview {
-        flex-wrap: wrap;
-        gap: 24px;
-    }
-
-    #member-plan-details {
-        flex-wrap: wrap;
-        gap: 16px;
-    }
-
-    .plan-divider {
-        display: none;
+        gap: 20px;
     }
 
     .plan-stat {
-        padding: 0 16px 0 0;
+        padding: 0 20px;
     }
 
     #member-cta {
-        margin-left: 0;
-        width: 100%;
-    }
-
-    #renew-btn {
-        width: 100%;
-        text-align: center;
-        display: block;
-    }
-
-    #quick-actions-bar {
-        grid-template-columns: repeat(3, 1fr);
+        flex-shrink: 0;
     }
 }
 
 @media (max-width: 768px) {
     #dashboard-page {
         padding: 20px 16px 48px;
-    }
-
-    #member-overview {
-        padding: 24px 20px;
-        flex-direction: column;
-        align-items: flex-start;
     }
 
     #week-days {
@@ -552,9 +433,5 @@
 
     .day-pill {
         padding: 8px 2px;
-    }
-
-    #quick-actions-bar {
-        grid-template-columns: repeat(2, 1fr);
     }
 }

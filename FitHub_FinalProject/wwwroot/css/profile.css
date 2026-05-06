@@ -137,17 +137,9 @@
 }
 
 #personal-info form {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    column-gap: 20px;
+    display: flex;
+    flex-direction: column;
 }
-
-    #personal-info form > div:has(input[type="file"]),
-    #personal-info form > div:has(input[placeholder="Street, City, Province"]),
-    #personal-info form > div:has(button[type="submit"]),
-    #personal-info form > div:has(span[asp-validation-summary]) {
-        grid-column: 1 / -1;
-    }
 
     #personal-info form small {
         display: block;
@@ -288,17 +280,6 @@
     #profile-sidebar {
         position: static;
     }
-
-    #personal-info form {
-        grid-template-columns: 1fr;
-    }
-
-        #personal-info form > div:has(input[type="file"]),
-        #personal-info form > div:has(input[placeholder="Street, City, Province"]),
-        #personal-info form > div:has(button[type="submit"]),
-        #personal-info form > div:has(span[asp-validation-summary]) {
-            grid-column: 1;
-        }
 
     #danger-zone > div > div {
         flex-direction: column;

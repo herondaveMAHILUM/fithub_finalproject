@@ -73,7 +73,7 @@ namespace FitHub_FinalProject.Controllers
                 .Take(5)
                 .ToListAsync();
 
-            ViewBag.Notifications = rawNotifs.Select(n => new
+            var notifList = rawNotifs.Select(n => new
             {
                 n.Type,
                 n.Title,
@@ -81,8 +81,14 @@ namespace FitHub_FinalProject.Controllers
                 TimeAgo = TimeAgo(n.CreatedAt)
             }).ToList();
 
-            ViewBag.NotificationCount = await _context.Notifications
+            ViewBag.Notifications = notifList;
+            ViewBag.NavNotifications = notifList;
+
+            var unreadCount = await _context.Notifications
                 .CountAsync(n => n.UserId == userId && !n.IsRead);
+
+            ViewBag.NotificationCount = unreadCount;
+            ViewBag.NavNotificationCount = unreadCount;
 
             ViewBag.RecentTransactions = await _context.Transactions
                 .Where(t => t.UserId == userId)

@@ -106,59 +106,11 @@
                     </div>
                 </div>
 
-                <div id="assigned-trainer">
-                    <div id="trainer-info">
-                        <img src="~/images/default-avatar.png" alt="Trainer" id="trainer-avatar" />
-                        <div>
-                            <span id="trainer-label">Assigned Trainer</span>
-                            <span id="trainer-name">@(ViewBag.TrainerName ?? "No trainer assigned")</span>
-                        </div>
-                    </div>
-                    <a href="#" id="trainer-message-btn">Message</a>
-                </div>
-
             </div>
 
         </div>
 
         <div id="dashboard-right">
-
-            <div id="notifications-card">
-                <div class="card-header">
-                    <h2>Notifications</h2>
-                    @if (ViewBag.NotificationCount != null && ViewBag.NotificationCount > 0)
-                    {
-                        <span id="notif-count">@ViewBag.NotificationCount</span>
-                    }
-                </div>
-
-                <ul id="notifications-list">
-                    @if (ViewBag.Notifications != null && ViewBag.Notifications.Count > 0)
-                    {
-                        foreach (var notif in ViewBag.Notifications)
-                        {
-                            <li class="notif-item notif-@notif.Type.ToLower()">
-                                <div class="notif-icon"></div>
-                                <div class="notif-body">
-                                    <p class="notif-title">@notif.Title</p>
-                                    <p class="notif-desc">@notif.Description</p>
-                                    <span class="notif-time">@notif.TimeAgo</span>
-                                </div>
-                            </li>
-                        }
-                    }
-                    else
-                    {
-                        <li class="notif-item">
-                            <div class="notif-body">
-                                <p class="notif-desc">No new notifications.</p>
-                            </div>
-                        </li>
-                    }
-                </ul>
-
-                <a href="#" id="view-all-notifs">View All Notifications →</a>
-            </div>
 
             <div id="recent-transactions-card">
                 <div class="card-header">
@@ -199,29 +151,6 @@
 
         </div>
 
-    </section>
-
-    <section id="quick-actions-bar">
-        <a asp-controller="Membership" asp-action="Index">
-            <span></span>
-            <span>Browse Plans</span>
-        </a>
-        <a asp-controller="Transaction" asp-action="Index">
-            <span></span>
-            <span>Transactions</span>
-        </a>
-        <a asp-controller="Account" asp-action="Profile">
-            <span></span>
-            <span>Edit Profile</span>
-        </a>
-        <a asp-controller="Account" asp-action="ChangePassword">
-            <span></span>
-            <span>Change Password</span>
-        </a>
-        <a asp-controller="Account" asp-action="Logout" id="quick-logout">
-            <span></span>
-            <span>Log Out</span>
-        </a>
     </section>
 
 </main>
