@@ -1,12 +1,10 @@
 # FitHub
 
-ASP.NET Core 10 MVC project for our final. A gym membership site with login, registration, dashboard, membership plans, transaction history, and profile management.
-
----
+----
 
 ## Quick start (first time setup)
 
-Follow these steps in order. The whole thing takes about 5 minutes.
+Follow these steps in order.
 
 ### 1. Install the tools you need
 
@@ -70,7 +68,7 @@ To stop the server, hit `Ctrl+C` in the terminal.
 
 ## How to use the app
 
-There are no pre-made accounts. **Register a new one** through the Sign Up page when you first open the site.
+There are no pre-made accounts. **Register a new account** through the Sign Up page when you first open the site.
 
 Once registered you can:
 - View your dashboard (membership status, today's workout, notifications, recent transactions)
@@ -81,20 +79,7 @@ Once registered you can:
 - Change your password
 - Deactivate or delete your account
 
----
-
-## Common problems
-
-**`SqlException: Cannot open database "FitHubDb"`**
-You skipped step 3. Run the `dotnet ef database update` command from the repo root.
-
-**`'dotnet-ef' is not recognized`**
-You skipped step 1c. Install the CLI tool with `dotnet tool install --global dotnet-ef`. You may need to restart your terminal after.
-
-**Page shows "This site can't be reached" on https://localhost:7120**
-The app probably isn't running. Make sure step 4 is still active in a terminal.
-
-**I want to wipe the database and start fresh**
+**IF you want to wipe the database and start fresh**
 ```
 dotnet ef database drop --project FitHub_FinalProject --force
 dotnet ef database update --project FitHub_FinalProject
