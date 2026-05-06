@@ -1,0 +1,259 @@
+﻿#admin-members {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 40px 40px 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+#admin-members-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+    #admin-members-header h1 {
+        margin-bottom: 6px;
+    }
+
+    #admin-members-header p {
+        font-size: 0.9rem;
+    }
+
+    #admin-members-header > div:last-child a {
+        display: inline-block;
+        background-color: var(--lime);
+        color: var(--black);
+        font-family: var(--font-body);
+        font-weight: 700;
+        font-size: 0.9rem;
+        padding: 10px 22px;
+        border-radius: var(--radius-sm);
+        transition: background-color 0.2s;
+    }
+
+        #admin-members-header > div:last-child a:hover {
+            background-color: var(--lime-dark);
+            color: var(--black);
+            box-shadow: var(--shadow-lime);
+        }
+
+#admin-members-filters {
+    background-color: var(--black-card);
+    border: 1px solid var(--black-border);
+    border-radius: var(--radius-md);
+    padding: 24px;
+}
+
+    #admin-members-filters form {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr auto;
+        gap: 14px;
+        align-items: end;
+    }
+
+    #admin-members-filters > form > div:last-child {
+        display: flex;
+        gap: 8px;
+    }
+
+    #admin-members-filters button[type="submit"] {
+        width: auto;
+        padding: 12px 20px;
+        font-size: 0.88rem;
+        white-space: nowrap;
+    }
+
+    #admin-members-filters a {
+        display: inline-block;
+        padding: 12px 16px;
+        background-color: transparent;
+        color: var(--white-muted);
+        font-family: var(--font-body);
+        font-size: 0.88rem;
+        font-weight: 500;
+        border: 1px solid var(--black-border);
+        border-radius: var(--radius-sm);
+        text-decoration: none;
+        white-space: nowrap;
+        transition: color 0.2s, border-color 0.2s;
+    }
+
+        #admin-members-filters a:hover {
+            color: var(--white);
+            border-color: #3a3a3a;
+        }
+
+#admin-members-table {
+    background-color: var(--black-card);
+    border: 1px solid var(--black-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+#admin-members-summary {
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--black-border);
+    font-size: 0.85rem;
+    color: var(--white-muted);
+}
+
+tbody td a {
+    display: inline-block;
+    padding: 5px 12px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--lime);
+    background-color: rgba(200, 255, 0, 0.08);
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    margin-right: 4px;
+    transition: background-color 0.2s;
+}
+
+    tbody td a:hover {
+        background-color: rgba(200, 255, 0, 0.16);
+        color: var(--lime);
+    }
+
+tbody td form {
+    display: inline;
+}
+
+    tbody td form button {
+        display: inline-block;
+        padding: 5px 12px;
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: var(--danger);
+        background-color: rgba(255, 68, 68, 0.08);
+        border: none;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        width: auto;
+        transition: background-color 0.2s;
+    }
+
+        tbody td form button:hover {
+            background-color: rgba(255, 68, 68, 0.18);
+            box-shadow: none;
+        }
+
+#admin-members-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 18px 24px;
+    border-top: 1px solid var(--black-border);
+}
+
+    #admin-members-pagination a {
+        padding: 8px 18px;
+        background-color: var(--black-soft);
+        border: 1px solid var(--black-border);
+        border-radius: var(--radius-sm);
+        color: var(--white);
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: border-color 0.2s, color 0.2s;
+    }
+
+        #admin-members-pagination a:hover {
+            border-color: var(--lime);
+            color: var(--lime);
+        }
+
+    #admin-members-pagination span {
+        font-size: 0.85rem;
+        color: var(--white-muted);
+    }
+
+#admin-members-empty {
+    padding: 60px 24px;
+    text-align: center;
+}
+
+    #admin-members-empty p {
+        margin-bottom: 18px;
+    }
+
+#admin-members-export {
+    background-color: var(--black-card);
+    border: 1px solid var(--black-border);
+    border-radius: var(--radius-md);
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+    #admin-members-export h3 {
+        font-size: 1rem;
+        margin-bottom: 4px;
+    }
+
+    #admin-members-export p {
+        font-size: 0.85rem;
+    }
+
+    #admin-members-export > div {
+        display: flex;
+        gap: 10px;
+        flex-shrink: 0;
+    }
+
+    #admin-members-export a {
+        padding: 9px 18px;
+        border: 1px solid var(--black-border);
+        border-radius: var(--radius-sm);
+        color: var(--white-muted);
+        font-family: var(--font-body);
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: border-color 0.2s, color 0.2s;
+    }
+
+        #admin-members-export a:hover {
+            border-color: var(--lime);
+            color: var(--lime);
+        }
+
+@media (max-width: 1100px) {
+    #admin-members-filters form {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+}
+
+@media (max-width: 1024px) {
+    #admin-members {
+        padding: 32px 24px 60px;
+    }
+}
+
+@media (max-width: 768px) {
+    #admin-members {
+        padding: 20px 16px 48px;
+    }
+
+    #admin-members-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    #admin-members-filters form {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    #admin-members-export {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
