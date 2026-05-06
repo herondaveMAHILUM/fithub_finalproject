@@ -1,0 +1,215 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard - FitHub";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/admin-dashboard.css" asp-append-version="true" />
+}
+
+<main id="admin-dashboard">
+
+    <section id="admin-dashboard-header">
+        <div>
+            <h1>Dashboard</h1>
+            <p>Welcome back, <strong>@ViewBag.AdminName</strong>. Here's what's happening at FitHub.</p>
+        </div>
+        <div>
+            <span>@DateTime.Now.ToString("MMMM dd, yyyy")</span>
+        </div>
+    </section>
+
+    <section id="admin-stats">
+
+        <div>
+            <h3>Total Members</h3>
+            <p>@ViewBag.TotalMembers</p>
+            <span>All registered members</span>
+        </div>
+
+        <div>
+            <h3>Active Memberships</h3>
+            <p>@ViewBag.ActiveMemberships</p>
+            <span>Currently active plans</span>
+        </div>
+
+        <div>
+            <h3>Total Revenue</h3>
+            <p>@ViewBag.TotalRevenue</p>
+            <span>All time</span>
+        </div>
+
+        <div>
+            <h3>Revenue This Month</h3>
+            <p>@ViewBag.MonthlyRevenue</p>
+            <span>@DateTime.Now.ToString("MMMM yyyy")</span>
+        </div>
+
+        <div>
+            <h3>New Members</h3>
+            <p>@ViewBag.NewMembersThisMonth</p>
+            <span>This month</span>
+        </div>
+
+        <div>
+            <h3>Expired Memberships</h3>
+            <p>@ViewBag.ExpiredMemberships</p>
+            <span>Needs renewal</span>
+        </div>
+
+    </section>
+
+    <section id="admin-dashboard-grid">
+
+        <div id="admin-recent-members">
+            <div>
+                <h2>Recent Members</h2>
+                <a asp-controller="Admin" asp-action="Members">View All</a>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Plan</th>
+                        <th>Date Joined</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (ViewBag.RecentMembers != null)
+                    {
+                        foreach (var member in ViewBag.RecentMembers)
+                        {
+                            <tr>
+                                <td>@member.FullName</td>
+                                <td>@member.Email</td>
+                                <td>@member.MembershipPlan</td>
+                                <td>@member.DateJoined.ToString("MMM dd, yyyy")</td>
+                                <td>@member.Status</td>
+                                <td>
+                                    <a asp-controller="Admin" asp-action="MemberDetails" asp-route-id="@member.Id">View</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6">No members found.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div id="admin-recent-transactions">
+            <div>
+                <h2>Recent Transactions</h2>
+                <a asp-controller="Admin" asp-action="Transactions">View All</a>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Member</th>
+                        <th>Amount</th>
+                        <th>Type</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (ViewBag.RecentTransactions != null)
+                    {
+                        foreach (var transaction in ViewBag.RecentTransactions)
+                        {
+                            <tr>
+                                <td>@transaction.MemberName</td>
+                                <td>@transaction.Amount.ToString("C")</td>
+                                <td>@transaction.Type</td>
+                                <td>@transaction.Date.ToString("MMM dd, yyyy")</td>
+                                <td>@transaction.Status</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5">No transactions found.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div id="admin-plan-breakdown">
+            <h2>Members per Plan</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Plan</th>
+                        <th>Members</th>
+                        <th>Revenue</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (ViewBag.PlanBreakdown != null)
+                    {
+                        foreach (var plan in ViewBag.PlanBreakdown)
+                        {
+                            <tr>
+                                <td>@plan.PlanName</td>
+                                <td>@plan.MemberCount</td>
+                                <td>@plan.Revenue.ToString("C")</td>
+                                <td>@plan.Status</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4">No plan data found.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div>
+                <a asp-controller="Admin" asp-action="Plans">Manage Plans</a>
+            </div>
+        </div>
+
+        <div id="admin-quick-actions">
+            <h2>Quick Actions</h2>
+            <ul>
+                <li>
+                    <a asp-controller="Admin" asp-action="Members">
+                        <span>Manage Members</span>
+                        <span>→</span>
+                    </a>
+                </li>
+                <li>
+                    <a asp-controller="Admin" asp-action="Plans">
+                        <span>Manage Plans</span>
+                        <span>→</span>
+                    </a>
+                </li>
+                <li>
+                    <a asp-controller="Admin" asp-action="Transactions">
+                        <span>View All Transactions</span>
+                        <span>→</span>
+                    </a>
+                </li>
+                <li>
+                    <a asp-controller="Admin" asp-action="Profile">
+                        <span>Admin Profile</span>
+                        <span>→</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+    </section>
+</main>
