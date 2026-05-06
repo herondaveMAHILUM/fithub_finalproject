@@ -1,0 +1,267 @@
+﻿#admin-plans {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 40px 40px 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+#admin-plans-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+    #admin-plans-header h1 {
+        margin-bottom: 6px;
+    }
+
+    #admin-plans-header p {
+        font-size: 0.9rem;
+    }
+
+    #admin-plans-header > div:last-child a {
+        display: inline-block;
+        background-color: var(--lime);
+        color: var(--black);
+        font-family: var(--font-body);
+        font-weight: 700;
+        font-size: 0.9rem;
+        padding: 10px 22px;
+        border-radius: var(--radius-sm);
+        transition: background-color 0.2s;
+    }
+
+        #admin-plans-header > div:last-child a:hover {
+            background-color: var(--lime-dark);
+            color: var(--black);
+            box-shadow: var(--shadow-lime);
+        }
+
+#admin-plans-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+    #admin-plans-stats > div {
+        background-color: var(--black-card);
+        border: 1px solid var(--black-border);
+        border-radius: var(--radius-md);
+        padding: 22px;
+        transition: border-color 0.2s;
+    }
+
+        #admin-plans-stats > div:hover {
+            border-color: #2e2e2e;
+        }
+
+    #admin-plans-stats h3 {
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--white-muted);
+        font-family: var(--font-body);
+    }
+
+    #admin-plans-stats p {
+        font-family: var(--font-heading);
+        font-size: 2.4rem;
+        font-weight: 800;
+        color: var(--white);
+        line-height: 1.1;
+        margin: 10px 0 6px;
+    }
+
+    #admin-plans-stats span {
+        font-size: 0.78rem;
+        color: var(--white-muted);
+    }
+
+#admin-plans-list {
+    background-color: var(--black-card);
+    border: 1px solid var(--black-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+#admin-plans-table td form:nth-of-type(1) button {
+    color: var(--warning);
+    background-color: rgba(255, 170, 0, 0.08);
+    box-shadow: none;
+}
+
+    #admin-plans-table td form:nth-of-type(1) button:hover {
+        background-color: rgba(255, 170, 0, 0.18);
+        box-shadow: none;
+    }
+
+#admin-plans-table td form:nth-of-type(2) button {
+    color: var(--danger);
+    background-color: rgba(255, 68, 68, 0.08);
+    box-shadow: none;
+}
+
+    #admin-plans-table td form:nth-of-type(2) button:hover {
+        background-color: rgba(255, 68, 68, 0.18);
+        box-shadow: none;
+    }
+
+#admin-plans-table td form button {
+    display: inline-block;
+    padding: 5px 12px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    margin-right: 4px;
+    width: auto;
+    transition: background-color 0.2s;
+}
+
+#admin-plans-table td a {
+    display: inline-block;
+    padding: 5px 12px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--lime);
+    background-color: rgba(200, 255, 0, 0.08);
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    margin-right: 4px;
+    transition: background-color 0.2s;
+}
+
+    #admin-plans-table td a:hover {
+        background-color: rgba(200, 255, 0, 0.16);
+        color: var(--lime);
+    }
+
+#admin-plans-table td form {
+    display: inline;
+}
+
+#admin-plans-empty {
+    padding: 60px 24px;
+    text-align: center;
+}
+
+    #admin-plans-empty p {
+        margin-bottom: 18px;
+    }
+
+#admin-plans-form {
+    background-color: var(--black-card);
+    border: 1px solid var(--black-border);
+    border-radius: var(--radius-md);
+    padding: 36px;
+}
+
+    #admin-plans-form h2 {
+        margin-bottom: 6px;
+    }
+
+    #admin-plans-form > p {
+        font-size: 0.88rem;
+        margin-bottom: 28px;
+    }
+
+    #admin-plans-form form {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+        #admin-plans-form form > div:nth-child(1),
+        #admin-plans-form form > div:nth-child(2),
+        #admin-plans-form form > div:nth-child(5),
+        #admin-plans-form form > div:last-child {
+            grid-column: 1 / -1;
+        }
+
+    #admin-plans-form > form > div:last-child {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        padding-top: 8px;
+    }
+
+    #admin-plans-form button[type="submit"] {
+        width: auto;
+        padding: 12px 28px;
+        font-size: 0.95rem;
+    }
+
+    #admin-plans-form > form > div:last-child a {
+        padding: 12px 22px;
+        border: 1px solid var(--black-border);
+        border-radius: var(--radius-sm);
+        color: var(--white-muted);
+        font-family: var(--font-body);
+        font-size: 0.9rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: color 0.2s, border-color 0.2s;
+    }
+
+        #admin-plans-form > form > div:last-child a:hover {
+            color: var(--white);
+            border-color: #3a3a3a;
+        }
+
+#admin-plans-breakdown {
+    background-color: var(--black-card);
+    border: 1px solid var(--black-border);
+    border-radius: var(--radius-md);
+    padding: 28px;
+    overflow-x: auto;
+}
+
+    #admin-plans-breakdown h2 {
+        margin-bottom: 6px;
+    }
+
+    #admin-plans-breakdown > p {
+        font-size: 0.88rem;
+        margin-bottom: 22px;
+    }
+
+@media (max-width: 900px) {
+    #admin-plans-stats {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    #admin-plans-form form {
+        grid-template-columns: 1fr;
+    }
+
+        #admin-plans-form form > div {
+            grid-column: 1 / -1;
+        }
+}
+
+@media (max-width: 1024px) {
+    #admin-plans {
+        padding: 32px 24px 60px;
+    }
+}
+
+@media (max-width: 768px) {
+    #admin-plans {
+        padding: 20px 16px 48px;
+    }
+
+    #admin-plans-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    #admin-plans-stats {
+        grid-template-columns: 1fr 1fr;
+    }
+}
