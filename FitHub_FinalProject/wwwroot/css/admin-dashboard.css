@@ -1,0 +1,200 @@
+﻿#admin-dashboard {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 40px 40px 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+#admin-dashboard-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+    #admin-dashboard-header h1 {
+        margin-bottom: 6px;
+    }
+
+    #admin-dashboard-header p {
+        font-size: 0.9rem;
+    }
+
+    #admin-dashboard-header > div:last-child span {
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--lime);
+        background-color: rgba(200, 255, 0, 0.08);
+        border: 1px solid rgba(200, 255, 0, 0.2);
+        padding: 5px 14px;
+        border-radius: 100px;
+    }
+
+#admin-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+    #admin-stats > div {
+        background-color: var(--black-card);
+        border: 1px solid var(--black-border);
+        border-radius: var(--radius-md);
+        padding: 24px 22px;
+        transition: border-color 0.2s;
+    }
+
+        #admin-stats > div:hover {
+            border-color: #2e2e2e;
+        }
+
+    #admin-stats h3 {
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--white-muted);
+        font-family: var(--font-body);
+    }
+
+    #admin-stats p {
+        font-family: var(--font-heading);
+        font-size: 2.4rem;
+        font-weight: 800;
+        color: var(--white);
+        line-height: 1.1;
+        margin: 10px 0 6px;
+    }
+
+    #admin-stats span {
+        font-size: 0.78rem;
+        color: var(--white-muted);
+    }
+
+#admin-dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+#admin-recent-members {
+    grid-column: 1 / 2;
+}
+
+#admin-recent-transactions {
+    grid-column: 2 / 3;
+}
+
+#admin-plan-breakdown {
+    grid-column: 1 / 2;
+}
+
+#admin-quick-actions {
+    grid-column: 2 / 3;
+}
+
+#admin-recent-members,
+#admin-recent-transactions,
+#admin-plan-breakdown,
+#admin-quick-actions {
+    background-color: var(--black-card);
+    border: 1px solid var(--black-border);
+    border-radius: var(--radius-md);
+    padding: 28px;
+}
+
+    #admin-recent-members > div:first-child,
+    #admin-recent-transactions > div:first-child,
+    #admin-plan-breakdown > div:first-child,
+    #admin-quick-actions > div:first-child {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 18px;
+        padding-bottom: 14px;
+        border-bottom: 1px solid var(--black-border);
+    }
+
+    #admin-recent-members h2,
+    #admin-recent-transactions h2,
+    #admin-plan-breakdown h2,
+    #admin-quick-actions h2 {
+        font-size: 1.05rem;
+    }
+
+    #admin-recent-members > div:first-child a,
+    #admin-recent-transactions > div:first-child a,
+    #admin-plan-breakdown > div:first-child a {
+        font-size: 0.82rem;
+        color: var(--white-muted);
+        font-family: var(--font-body);
+    }
+
+        #admin-recent-members > div:first-child a:hover,
+        #admin-recent-transactions > div:first-child a:hover,
+        #admin-plan-breakdown > div:first-child a:hover {
+            color: var(--lime);
+        }
+
+    #admin-quick-actions ul {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    #admin-quick-actions li a {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 16px;
+        background-color: var(--black-soft);
+        border: 1px solid var(--black-border);
+        border-radius: var(--radius-sm);
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: var(--white-muted);
+        transition: border-color 0.2s, color 0.2s, background-color 0.2s;
+    }
+
+        #admin-quick-actions li a:hover {
+            border-color: var(--lime);
+            color: var(--white);
+            background-color: rgba(200, 255, 0, 0.04);
+        }
+
+@media (max-width: 1024px) {
+    #admin-dashboard {
+        padding: 32px 24px 60px;
+    }
+
+    #admin-dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    #admin-recent-members,
+    #admin-recent-transactions,
+    #admin-plan-breakdown,
+    #admin-quick-actions {
+        grid-column: 1 / 2;
+    }
+}
+
+@media (max-width: 768px) {
+    #admin-dashboard {
+        padding: 20px 16px 48px;
+    }
+
+    #admin-dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    #admin-stats {
+        grid-template-columns: 1fr 1fr;
+    }
+}
