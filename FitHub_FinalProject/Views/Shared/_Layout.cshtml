@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
 
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/toast.css" asp-append-version="true" />
 
     @await RenderSectionAsync("Styles", required: false)
 </head>
@@ -135,6 +136,20 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/toast.js" asp-append-version="true"></script>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <script>document.addEventListener('DOMContentLoaded', function () { window.showToast(@Html.Raw(Json.Serialize(TempData["SuccessMessage"])), 'success'); });</script>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <script>document.addEventListener('DOMContentLoaded', function () { window.showToast(@Html.Raw(Json.Serialize(TempData["ErrorMessage"])), 'error'); });</script>
+    }
+    @if (TempData["InfoMessage"] != null)
+    {
+        <script>document.addEventListener('DOMContentLoaded', function () { window.showToast(@Html.Raw(Json.Serialize(TempData["InfoMessage"])), 'info'); });</script>
+    }
 
     <script>
         (function () {
