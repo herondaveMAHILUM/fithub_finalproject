@@ -21,6 +21,10 @@ namespace FitHub_FinalProject.Controllers
 
         public async Task<IActionResult> Dashboard()
         {
+            // Admins should not land on the user dashboard
+            if (User.IsInRole("Admin"))
+                return RedirectToAction("Dashboard", "Admin");
+
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
             var expiring = await _context.Memberships
@@ -42,13 +46,16 @@ namespace FitHub_FinalProject.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
-            ViewBag.FullName = user.FullName;
-            ViewBag.MemberSince = user.CreatedAt.ToString("MMMM yyyy");
+            ViewBag.FullName         = user.FullName;
+            ViewBag.MemberSince      = user.CreatedAt.ToString("MMMM yyyy");
             ViewBag.MembershipStatus = user.Membership?.Status ?? "No active membership";
-            ViewBag.MembershipPlan = user.Membership?.Plan?.Name ?? "—";
-            ViewBag.ExpiryDate = user.Membership?.ExpiryDate.ToString("MMM dd, yyyy") ?? "—";
-            ViewBag.NextBillingDate = user.Membership?.NextBillingDate.ToString("MMM dd, yyyy") ?? "—";
-            ViewBag.TrainerName = user.AssignedTrainer?.FullName;
+            ViewBag.MembershipPlan   = user.Membership?.Plan?.Name ?? "—";
+            ViewBag.ExpiryDate       = user.Membership?.ExpiryDate.ToString("MMM dd, yyyy") ?? "—";
+            ViewBag.NextBillingDate  = user.Membership?.NextBillingDate.ToString("MMM dd, yyyy") ?? "—";
+            ViewBag.TrainerName      = user.AssignedTrainer?.FullName;
+
+            // Fix 4: pass the actual profile photo path to the dashboard
+            ViewBag.ProfilePhoto = user.ProfilePhotoPath ?? "/images/default-avatar.png";
 
             var plan = await _context.WorkoutPlans
                 .Include(wp => wp.WorkoutDays).ThenInclude(wd => wd.Exercises)
@@ -57,23 +64,25 @@ namespace FitHub_FinalProject.Controllers
             var todayDow = (int)DateTime.UtcNow.DayOfWeek;
             var todayDay = plan?.WorkoutDays.FirstOrDefault(d => d.DayOfWeek == todayDow);
             ViewBag.TodayWorkoutLabel = DateTime.UtcNow.ToString("dddd, MMM dd");
-            ViewBag.TodayExercises = todayDay?.Exercises.ToList() ?? new List<Exercise>();
+            ViewBag.TodayExercises    = todayDay?.Exercises.ToList() ?? new List<Exercise>();
 
             string[] shortNames = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
             ViewBag.WeeklySchedule = Enumerable.Range(0, 7).Select(i => new
             {
                 ShortName = shortNames[i],
-                Focus = plan?.WorkoutDays.FirstOrDefault(d => d.DayOfWeek == i)?.Focus ?? "Rest",
-                IsToday = i == todayDow
+                Focus     = plan?.WorkoutDays.FirstOrDefault(d => d.DayOfWeek == i)?.Focus ?? "Rest",
+                IsToday   = i == todayDow
             }).ToList();
 
+            // Notifications are now injected globally by NotificationFilter,
+            // but we also keep local ViewBag.Notifications for the dashboard widget.
             var rawNotifs = await _context.Notifications
                 .Where(n => n.UserId == userId)
                 .OrderByDescending(n => n.CreatedAt)
                 .Take(5)
                 .ToListAsync();
 
-            var notifList = rawNotifs.Select(n => new
+            ViewBag.Notifications = rawNotifs.Select(n => new
             {
                 n.Type,
                 n.Title,
@@ -81,14 +90,8 @@ namespace FitHub_FinalProject.Controllers
                 TimeAgo = TimeAgo(n.CreatedAt)
             }).ToList();
 
-            ViewBag.Notifications = notifList;
-            ViewBag.NavNotifications = notifList;
-
-            var unreadCount = await _context.Notifications
+            ViewBag.NotificationCount = await _context.Notifications
                 .CountAsync(n => n.UserId == userId && !n.IsRead);
-
-            ViewBag.NotificationCount = unreadCount;
-            ViewBag.NavNotificationCount = unreadCount;
 
             ViewBag.RecentTransactions = await _context.Transactions
                 .Where(t => t.UserId == userId)
@@ -96,9 +99,9 @@ namespace FitHub_FinalProject.Controllers
                 .Take(5)
                 .Select(t => new
                 {
-                    Date = t.Date.ToString("MMM dd, yyyy"),
+                    Date        = t.Date.ToString("MMM dd, yyyy"),
                     t.Description,
-                    Amount = "₱" + t.Amount.ToString("N2"),
+                    Amount      = "₱" + t.Amount.ToString("N2"),
                     t.Status
                 })
                 .ToListAsync();
@@ -109,10 +112,10 @@ namespace FitHub_FinalProject.Controllers
         private static string TimeAgo(DateTime utc)
         {
             var span = DateTime.UtcNow - utc;
-            if (span.TotalMinutes < 1) return "just now";
+            if (span.TotalMinutes < 1)  return "just now";
             if (span.TotalMinutes < 60) return $"{(int)span.TotalMinutes} min ago";
-            if (span.TotalHours < 24) return $"{(int)span.TotalHours} hr ago";
-            if (span.TotalDays < 30) return $"{(int)span.TotalDays} days ago";
+            if (span.TotalHours   < 24) return $"{(int)span.TotalHours} hr ago";
+            if (span.TotalDays    < 30) return $"{(int)span.TotalDays} days ago";
             return utc.ToString("MMM dd, yyyy");
         }
     }

@@ -1,22 +1,29 @@
+using FitHub_FinalProject.Data;
+using FitHub_FinalProject.Filters;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
-using FitHub_FinalProject.Data;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-builder.Services.AddControllersWithViews();
 
 // Register EF Core with SQL Server
 builder.Services.AddDbContext<FitHubDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("FitHubDb")));
+
+// Register NotificationFilter for DI
+builder.Services.AddScoped<NotificationFilter>();
+
+// Add MVC with the global notification filter
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.AddService<NotificationFilter>();
+});
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
         options.LoginPath = "/Account/Login";
         options.LogoutPath = "/Account/Logout";
-        options.AccessDeniedPath = "/Account/Login";
+        options.AccessDeniedPath = "/User/Dashboard";
         options.ExpireTimeSpan = TimeSpan.FromDays(7);
         options.SlidingExpiration = true;
     });
@@ -24,7 +31,6 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");

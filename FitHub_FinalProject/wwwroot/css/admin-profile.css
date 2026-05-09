@@ -164,18 +164,18 @@
 
     #admin-info form,
     #change-password form {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        column-gap: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
     }
 
         #admin-info form > div:has(input[type="file"]),
         #admin-info form > div:last-child {
-            grid-column: 1 / -1;
+            grid-column: unset;
         }
 
         #change-password form > div:last-child {
-            grid-column: 1 / -1;
+            grid-column: unset;
         }
 
     #admin-info small {

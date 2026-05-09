@@ -78,17 +78,23 @@ namespace FitHub_FinalProject.Controllers
                 })
                 .ToListAsync();
 
-            ViewBag.PlanBreakdown = await _context.MembershipPlans
-                .Select(p => new
-                {
-                    PlanName = p.Name,
-                    MemberCount = p.Memberships.Count(m => m.Status == "Active"),
-                    Revenue = p.Memberships
-                        .Where(m => m.Status == "Active")
-                        .Sum(m => m.BillingCycle == "annual" ? p.AnnualPrice : p.MonthlyPrice),
-                    Status = p.IsActive ? "Active" : "Inactive"
-                })
+            // FIX: load plans + active memberships into memory first, then compute revenue in C#.
+            // SQL cannot aggregate a conditional (BillingCycle == "annual" ? AnnualPrice : MonthlyPrice)
+            // that references two outer columns (p.AnnualPrice and p.MonthlyPrice) simultaneously.
+            var plansRaw = await _context.MembershipPlans
+                .Include(p => p.Memberships)
+                .OrderBy(p => p.PlanId)
                 .ToListAsync();
+
+            ViewBag.PlanBreakdown = plansRaw.Select(p => new
+            {
+                PlanName = p.Name,
+                MemberCount = p.Memberships.Count(m => m.Status == "Active"),
+                Revenue = p.Memberships
+                    .Where(m => m.Status == "Active")
+                    .Sum(m => m.BillingCycle == "annual" ? p.AnnualPrice : p.MonthlyPrice),
+                Status = p.IsActive ? "Active" : "Inactive"
+            }).ToList();
 
             return View();
         }
@@ -223,24 +229,29 @@ namespace FitHub_FinalProject.Controllers
         [HttpGet]
         public async Task<IActionResult> Plans(int? edit)
         {
-            var plansList = await _context.MembershipPlans
+            // FIX: load plans + memberships into memory first, then compute revenue in C#.
+            // The conditional Sum (BillingCycle == "annual" ? AnnualPrice : MonthlyPrice) references
+            // two outer-scope columns which SQL Server cannot aggregate in a single expression.
+            var plansRaw = await _context.MembershipPlans
+                .Include(p => p.Memberships)
                 .OrderBy(p => p.PlanId)
-                .Select(p => new
-                {
-                    Id = p.PlanId,
-                    PlanName = p.Name,
-                    p.Description,
-                    p.MonthlyPrice,
-                    p.AnnualPrice,
-                    p.Features,
-                    p.MaxMembers,
-                    MemberCount = p.Memberships.Count(m => m.Status == "Active"),
-                    TotalRevenue = p.Memberships
-                        .Where(m => m.Status == "Active")
-                        .Sum(m => m.BillingCycle == "annual" ? p.AnnualPrice : p.MonthlyPrice),
-                    Status = p.IsActive ? "Active" : "Inactive"
-                })
                 .ToListAsync();
+
+            var plansList = plansRaw.Select(p => new
+            {
+                Id = p.PlanId,
+                PlanName = p.Name,
+                p.Description,
+                p.MonthlyPrice,
+                p.AnnualPrice,
+                p.Features,
+                p.MaxMembers,
+                MemberCount = p.Memberships.Count(m => m.Status == "Active"),
+                TotalRevenue = p.Memberships
+                    .Where(m => m.Status == "Active")
+                    .Sum(m => m.BillingCycle == "annual" ? p.AnnualPrice : p.MonthlyPrice),
+                Status = p.IsActive ? "Active" : "Inactive"
+            }).ToList();
 
             ViewBag.TotalPlans = plansList.Count;
             ViewBag.TotalSubscribers = plansList.Sum(p => p.MemberCount);
@@ -248,9 +259,7 @@ namespace FitHub_FinalProject.Controllers
             ViewBag.TotalPlanRevenue = "₱" + plansList.Sum(p => p.TotalRevenue).ToString("N2");
 
             if (edit.HasValue)
-            {
                 ViewBag.EditingPlan = plansList.FirstOrDefault(p => p.Id == edit.Value);
-            }
 
             ViewBag.FeatureComparison = null;
 
@@ -530,29 +539,6 @@ namespace FitHub_FinalProject.Controllers
             return File(bytes, "text/csv", fileName);
         }
 
-        private static string HashPassword(string password)
-        {
-            using var sha256 = SHA256.Create();
-            var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-            return Convert.ToBase64String(bytes);
-        }
-
-        private async Task LogActivity(string action, string? target)
-        {
-            var idClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(idClaim)) return;
-
-            _context.AdminActivities.Add(new AdminActivity
-            {
-                AdminUserId = int.Parse(idClaim),
-                Action = action,
-                Target = target,
-                IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString(),
-                Timestamp = DateTime.UtcNow
-            });
-            await _context.SaveChangesAsync();
-        }
-
         [HttpGet]
         public async Task<IActionResult> Transactions(
             string? search, string? status, string? type, string? plan, string? method,
@@ -676,6 +662,29 @@ namespace FitHub_FinalProject.Controllers
             await LogActivity("Refunded transaction", $"Transaction #{tx.TransactionId}");
             TempData["SuccessMessage"] = $"Transaction #{tx.TransactionId} refunded.";
             return RedirectToAction("Transactions");
+        }
+
+        private static string HashPassword(string password)
+        {
+            using var sha256 = SHA256.Create();
+            var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+            return Convert.ToBase64String(bytes);
+        }
+
+        private async Task LogActivity(string action, string? target)
+        {
+            var idClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(idClaim)) return;
+
+            _context.AdminActivities.Add(new AdminActivity
+            {
+                AdminUserId = int.Parse(idClaim),
+                Action = action,
+                Target = target,
+                IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString(),
+                Timestamp = DateTime.UtcNow
+            });
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -26,7 +26,11 @@ namespace FitHub_FinalProject.Controllers
         public IActionResult Login()
         {
             if (User.Identity?.IsAuthenticated == true)
+            {
+                if (User.IsInRole("Admin"))
+                    return RedirectToAction("Dashboard", "Admin");
                 return RedirectToAction("Dashboard", "User");
+            }
             return View();
         }
 
@@ -36,7 +40,7 @@ namespace FitHub_FinalProject.Controllers
         {
             if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
             {
-                ModelState.AddModelError("", "Email and password are required.");
+                TempData["ErrorMessage"] = "Email and password are required.";
                 return View();
             }
 
@@ -46,7 +50,7 @@ namespace FitHub_FinalProject.Controllers
 
             if (user == null)
             {
-                ModelState.AddModelError("", "Invalid email or password.");
+                TempData["ErrorMessage"] = "Invalid email or password. Please try again.";
                 return View();
             }
 
@@ -64,7 +68,11 @@ namespace FitHub_FinalProject.Controllers
         public IActionResult Register()
         {
             if (User.Identity?.IsAuthenticated == true)
+            {
+                if (User.IsInRole("Admin"))
+                    return RedirectToAction("Dashboard", "Admin");
                 return RedirectToAction("Dashboard", "User");
+            }
             return View();
         }
 
@@ -80,22 +88,29 @@ namespace FitHub_FinalProject.Controllers
                 string.IsNullOrWhiteSpace(email) ||
                 string.IsNullOrWhiteSpace(password))
             {
-                ModelState.AddModelError("", "First name, last name, email, and password are required.");
+                TempData["ErrorMessage"] = "First name, last name, email, and password are required.";
+                return View();
             }
 
-            var fullName = $"{firstName.Trim()} {lastName.Trim()}";
+            var fullName = $"{firstName?.Trim()} {lastName?.Trim()}";
 
             if (password != confirmPassword)
-                ModelState.AddModelError("", "Passwords do not match.");
+            {
+                TempData["ErrorMessage"] = "Passwords do not match.";
+                return View();
+            }
 
             if (!string.IsNullOrEmpty(password) && password.Length < 8)
-                ModelState.AddModelError("", "Password must be at least 8 characters.");
+            {
+                TempData["ErrorMessage"] = "Password must be at least 8 characters.";
+                return View();
+            }
 
             if (!string.IsNullOrWhiteSpace(email) && await _context.Users.AnyAsync(u => u.Email == email))
-                ModelState.AddModelError("", "An account with this email already exists.");
-
-            if (!ModelState.IsValid)
+            {
+                TempData["ErrorMessage"] = "An account with this email already exists.";
                 return View();
+            }
 
             var user = new User
             {
@@ -124,8 +139,9 @@ namespace FitHub_FinalProject.Controllers
             });
             await _context.SaveChangesAsync();
 
-            await SignInUserAsync(user, isPersistent: false);
-            return RedirectToAction("Dashboard", "User");
+            // Do NOT auto-login — redirect to Login so the user signs in manually
+            TempData["SuccessMessage"] = "Account created successfully! Please log in.";
+            return RedirectToAction("Login");
         }
 
         [Authorize]
@@ -149,6 +165,9 @@ namespace FitHub_FinalProject.Controllers
                 await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
                 return RedirectToAction("Login");
             }
+
+            if (user.IsAdmin)
+                return RedirectToAction("Profile", "Admin");
 
             ViewBag.FullName = user.FullName;
             ViewBag.Email = user.Email;

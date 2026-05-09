@@ -1,0 +1,182 @@
+@{
+    ViewData["Title"] = "Checkout - FitHub";
+    var plan    = ViewBag.Plan    as FitHub_FinalProject.Models.MembershipPlan;
+    var billing = (string)ViewBag.Billing;
+    var amount  = (decimal)ViewBag.Amount;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/checkout.css" asp-append-version="true" />
+}
+
+<main id="checkout-page">
+
+    <section id="checkout-header">
+        <a asp-controller="Membership" asp-action="Index" id="back-link">
+            &#8592; Back to Plans
+        </a>
+        <h1>Secure Checkout</h1>
+        <p>Complete your membership purchase</p>
+    </section>
+
+    <div id="checkout-layout">
+
+        @* Order Summary *@
+        <aside id="order-summary">
+            <h2>Order Summary</h2>
+
+            <div id="summary-plan">
+                <div>
+                    <p id="summary-plan-name">FitHub @plan?.Name Plan</p>
+                    <p id="summary-plan-billing">@(billing == "annual" ? "Annual Billing" : "Monthly Billing")</p>
+                </div>
+            </div>
+
+            <div id="summary-line">
+                <span>Subtotal</span>
+                <span>&#8369;@amount.ToString("N2")</span>
+            </div>
+            <div id="summary-line">
+                <span>Taxes &amp; Fees</span>
+                <span>&#8369;0.00</span>
+            </div>
+            <div id="summary-divider"></div>
+            <div id="summary-total">
+                <span>Total Due</span>
+                <span>&#8369;@amount.ToString("N2")</span>
+            </div>
+
+            @if (billing == "annual")
+            {
+                <div id="summary-savings">
+                    You save ~20% with annual billing!
+                </div>
+            }
+
+            <div id="summary-secure">
+                Payments are 100% secure and encrypted
+            </div>
+        </aside>
+
+        @* Payment Form *@
+        <section id="payment-form-section">
+            <h2>Payment Method</h2>
+
+            @* Method Selector *@
+            <div id="method-tabs">
+                <button type="button" class="method-tab active" data-method="GCash">
+                    <span>GCash</span>
+                </button>
+                <button type="button" class="method-tab" data-method="Maya">
+                    <span>Maya</span>
+                </button>
+                <button type="button" class="method-tab" data-method="Card">
+                    <span>Credit / Debit Card</span>
+                </button>
+            </div>
+
+            @* GCash Panel *@
+            <div class="method-panel active" id="panel-GCash">
+                <div class="method-logo gcash-logo">
+                    <span>G</span><strong>Cash</strong>
+                </div>
+                <p class="method-desc">Enter your registered GCash mobile number to proceed.</p>
+                <div class="form-group">
+                    <label for="gcash-number">GCash Mobile Number</label>
+                    <div class="input-with-prefix">
+                        <span>+63</span>
+                        <input type="text" id="gcash-number" placeholder="9XX XXX XXXX" maxlength="10" />
+                    </div>
+                </div>
+                <div class="method-note">
+                    A payment request will be sent to your GCash app. Open the app and approve the transaction.
+                </div>
+            </div>
+
+            @* Maya Panel *@
+            <div class="method-panel" id="panel-Maya">
+                <div class="method-logo maya-logo">
+                    <span>maya</span>
+                </div>
+                <p class="method-desc">Enter your registered Maya mobile number to proceed.</p>
+                <div class="form-group">
+                    <label for="maya-number">Maya Mobile Number</label>
+                    <div class="input-with-prefix">
+                        <span>+63</span>
+                        <input type="text" id="maya-number" placeholder="9XX XXX XXXX" maxlength="10" />
+                    </div>
+                </div>
+                <div class="method-note">
+                    A payment request will be sent to your Maya app. Open the app and approve the transaction.
+                </div>
+            </div>
+
+            @* Card Panel *@
+            <div class="method-panel" id="panel-Card">
+                <div class="form-row">
+                    <div class="form-group full-width">
+                        <label for="card-name">Cardholder Name</label>
+                        <input type="text" id="card-name" placeholder="Juan Dela Cruz" autocomplete="cc-name" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group full-width">
+                        <label for="card-number">Card Number</label>
+                        <input type="text" id="card-number" placeholder="0000 0000 0000 0000" maxlength="19" autocomplete="cc-number" />
+                    </div>
+                </div>
+                <div class="form-row half">
+                    <div class="form-group">
+                        <label for="card-expiry">Expiry Date</label>
+                        <input type="text" id="card-expiry" placeholder="MM / YY" maxlength="7" autocomplete="cc-exp" />
+                    </div>
+                    <div class="form-group">
+                        <label for="card-cvv">CVV</label>
+                        <input type="password" id="card-cvv" placeholder="&bull;&bull;&bull;" maxlength="4" autocomplete="cc-csc" />
+                    </div>
+                </div>
+                <div class="method-note">
+                    Your card details are encrypted and never stored on our servers.
+                </div>
+            </div>
+
+            @* Hidden POST form *@
+            <form id="payment-submit-form" asp-controller="Membership" asp-action="ProcessPayment" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="planId"        value="@plan?.PlanId" />
+                <input type="hidden" name="billing"       value="@billing" />
+                <input type="hidden" name="paymentMethod" id="hidden-method" value="GCash" />
+
+                <button type="button" id="pay-btn">
+                    <span id="pay-btn-text">Pay &#8369;@amount.ToString("N2") Now</span>
+                    <span id="pay-btn-loading" style="display:none;">
+                        <span class="spinner"></span> Processing...
+                    </span>
+                </button>
+            </form>
+
+            <p id="checkout-disclaimer">
+                By completing this purchase you agree to FitHub's Terms of Service.<br />
+                <strong>Demo Notice:</strong> This is a simulated payment &mdash; no real money is charged.
+            </p>
+        </section>
+
+    </div>
+
+</main>
+
+@* Payment Loading Overlay *@
+<div id="payment-overlay" style="display:none;">
+    <div id="overlay-card">
+        <div class="overlay-spinner"></div>
+        <p id="overlay-message">Connecting to payment gateway...</p>
+        <p id="overlay-sub">Please do not close this window</p>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/payment.js" asp-append-version="true"></script>
+    <script>
+        initPaymentPage('@amount.ToString("N2")');
+    </script>
+}

@@ -26,6 +26,25 @@
 
         @if (User.Identity != null && User.Identity.IsAuthenticated)
         {
+            @if (User.IsInRole("Admin"))
+            {
+                <ul>
+                    <li><a asp-controller="Admin" asp-action="Dashboard">Dashboard</a></li>
+                    <li><a asp-controller="Admin" asp-action="Members">Members</a></li>
+                    <li><a asp-controller="Admin" asp-action="Plans">Plans</a></li>
+                    <li><a asp-controller="Admin" asp-action="Transaction">Transactions</a></li>
+                    <li><a asp-controller="Admin" asp-action="Profile">Profile</a></li>
+
+                    <li class="notif-logout-sep">
+                        <form asp-controller="Account" asp-action="Logout" method="post" style="display:inline">
+                            @Html.AntiForgeryToken()
+                            <button type="submit">Log Out</button>
+                        </form>
+                    </li>
+                </ul>
+            }
+            else
+            {
             <ul>
                 <li><a asp-controller="User" asp-action="Dashboard">Dashboard</a></li>
                 <li><a asp-controller="Membership" asp-action="Index">Membership</a></li>
@@ -79,6 +98,7 @@
                     </form>
                 </li>
             </ul>
+            }
         }
         else
         {

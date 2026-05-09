@@ -36,18 +36,46 @@ namespace FitHub_FinalProject.Controllers
             return View("~/Views/User/Membership.cshtml");
         }
 
+        // ─── NEW: Show checkout / payment form ────────────────────────────────
         [HttpGet]
-        public async Task<IActionResult> Subscribe(int planId, string billing = "monthly")
+        public async Task<IActionResult> Checkout(int planId, string billing = "monthly")
+        {
+            if (billing != "monthly" && billing != "annual") billing = "monthly";
+
+            var plan = await _context.MembershipPlans
+                .FirstOrDefaultAsync(p => p.PlanId == planId && p.IsActive);
+
+            if (plan == null) return RedirectToAction("Index");
+
+            var amount = billing == "annual" ? plan.AnnualPrice : plan.MonthlyPrice;
+
+            ViewBag.Plan    = plan;
+            ViewBag.Billing = billing;
+            ViewBag.Amount  = amount;
+
+            return View("~/Views/User/Checkout.cshtml");
+        }
+
+        // ─── NEW: Process simulated payment (POST) ────────────────────────────
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ProcessPayment(int planId, string billing, string paymentMethod)
         {
             if (billing != "monthly" && billing != "annual") billing = "monthly";
 
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
             var plan = await _context.MembershipPlans
                 .FirstOrDefaultAsync(p => p.PlanId == planId && p.IsActive);
+
             if (plan == null) return RedirectToAction("Index");
 
-            var amount = billing == "annual" ? plan.AnnualPrice : plan.MonthlyPrice;
-            var startDate = DateTime.UtcNow;
+            // Validate payment method
+            var validMethods = new[] { "GCash", "Maya", "Card" };
+            if (!validMethods.Contains(paymentMethod)) paymentMethod = "GCash";
+
+            var amount     = billing == "annual" ? plan.AnnualPrice : plan.MonthlyPrice;
+            var startDate  = DateTime.UtcNow;
             var expiryDate = billing == "annual" ? startDate.AddYears(1) : startDate.AddMonths(1);
 
             var existing = await _context.Memberships.FirstOrDefaultAsync(m => m.UserId == userId);
@@ -57,51 +85,79 @@ namespace FitHub_FinalProject.Controllers
             {
                 _context.Memberships.Add(new Membership
                 {
-                    UserId = userId,
-                    PlanId = planId,
-                    BillingCycle = billing,
-                    PaymentMethod = "GCash",
-                    Status = "Active",
-                    StartDate = startDate,
-                    ExpiryDate = expiryDate,
+                    UserId          = userId,
+                    PlanId          = planId,
+                    BillingCycle    = billing,
+                    PaymentMethod   = paymentMethod,
+                    Status          = "Active",
+                    StartDate       = startDate,
+                    ExpiryDate      = expiryDate,
                     NextBillingDate = expiryDate,
-                    CreatedAt = DateTime.UtcNow
+                    CreatedAt       = DateTime.UtcNow
                 });
                 txType = "Subscription";
             }
             else
             {
-                existing.PlanId = planId;
-                existing.BillingCycle = billing;
-                existing.Status = "Active";
-                existing.StartDate = startDate;
-                existing.ExpiryDate = expiryDate;
+                existing.PlanId          = planId;
+                existing.BillingCycle    = billing;
+                existing.PaymentMethod   = paymentMethod;
+                existing.Status          = "Active";
+                existing.StartDate       = startDate;
+                existing.ExpiryDate      = expiryDate;
                 existing.NextBillingDate = expiryDate;
-                txType = "Upgrade";
+                txType = existing.PlanId == planId ? "Renewal" : "Upgrade";
             }
 
-            _context.Transactions.Add(new Transaction
+            // Generate a realistic-looking reference number
+            var refNumber = "FH" + DateTime.UtcNow.ToString("yyyyMMdd") + Random.Shared.Next(100000, 999999).ToString();
+
+            var transaction = new Transaction
             {
-                UserId = userId,
-                Type = txType,
-                Amount = amount,
-                Status = "Paid",
-                Date = DateTime.UtcNow,
-                Description = $"FitHub {plan.Name} Plan - {billing}",
-                PaymentMethod = "GCash"
-            });
+                UserId        = userId,
+                Type          = txType,
+                Amount        = amount,
+                Status        = "Paid",
+                Date          = DateTime.UtcNow,
+                Description   = $"FitHub {plan.Name} Plan - {char.ToUpper(billing[0]) + billing[1..]}",
+                PaymentMethod = paymentMethod
+            };
+
+            _context.Transactions.Add(transaction);
 
             _context.Notifications.Add(new Notification
             {
-                UserId = userId,
-                Title = $"{txType} Successful",
-                Description = $"You are now subscribed to the {plan.Name} plan ({billing}).",
-                Type = "Success",
-                CreatedAt = DateTime.UtcNow
+                UserId      = userId,
+                Title       = $"{txType} Successful",
+                Description = $"You are now subscribed to the {plan.Name} plan ({billing}) via {paymentMethod}.",
+                Type        = "Success",
+                CreatedAt   = DateTime.UtcNow
             });
 
             await _context.SaveChangesAsync();
-            return RedirectToAction("Dashboard", "User");
+
+            // Pass receipt data via TempData so the success page can display it
+            TempData["Receipt_TransactionId"] = transaction.TransactionId.ToString();
+            TempData["Receipt_RefNumber"]     = refNumber;
+            TempData["Receipt_PlanName"]      = plan.Name;
+            TempData["Receipt_Billing"]       = billing;
+            TempData["Receipt_Amount"]        = amount.ToString("N2");
+            TempData["Receipt_Method"]        = paymentMethod;
+            TempData["Receipt_Type"]          = txType;
+            TempData["Receipt_Date"]          = DateTime.UtcNow.ToString("MMM dd, yyyy hh:mm tt");
+            TempData["Receipt_Expiry"]        = expiryDate.ToString("MMM dd, yyyy");
+
+            return RedirectToAction("PaymentSuccess");
+        }
+
+        // ─── NEW: Payment success / receipt page ─────────────────────────────
+        [HttpGet]
+        public IActionResult PaymentSuccess()
+        {
+            if (TempData["Receipt_TransactionId"] == null)
+                return RedirectToAction("Index");
+
+            return View("~/Views/User/PaymentSuccess.cshtml");
         }
 
         [HttpGet]
@@ -116,11 +172,11 @@ namespace FitHub_FinalProject.Controllers
                 membership.Status = "Cancelled";
                 _context.Notifications.Add(new Notification
                 {
-                    UserId = userId,
-                    Title = "Membership Cancelled",
+                    UserId      = userId,
+                    Title       = "Membership Cancelled",
                     Description = $"Your {membership.Plan?.Name ?? ""} membership has been cancelled.",
-                    Type = "Warning",
-                    CreatedAt = DateTime.UtcNow
+                    Type        = "Warning",
+                    CreatedAt   = DateTime.UtcNow
                 });
                 await _context.SaveChangesAsync();
             }

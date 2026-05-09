@@ -18,7 +18,7 @@
 
             <h2>Sign Up</h2>
 
-            <form asp-controller="Account" asp-action="Register" method="post">
+            <form asp-controller="Account" asp-action="Register" method="post" novalidate>
 
                 @Html.AntiForgeryToken()
 
@@ -26,19 +26,19 @@
 
                 <div>
                     <label>First Name</label>
-                    <input type="text" name="firstName" placeholder="e.g. Juan" required />
+                    <input type="text" name="firstName" placeholder="e.g. Juan" />
                     <span></span>
                 </div>
 
                 <div>
                     <label>Last Name</label>
-                    <input type="text" name="lastName" placeholder="e.g. dela Cruz" required />
+                    <input type="text" name="lastName" placeholder="e.g. dela Cruz" />
                     <span></span>
                 </div>
 
                 <div class="full-width">
                     <label>Email Address</label>
-                    <input type="email" name="email" placeholder="you@email.com" required />
+                    <input type="email" name="email" placeholder="you@email.com" />
                     <span></span>
                 </div>
 
@@ -74,18 +74,18 @@
 
                 <div>
                     <label>Password</label>
-                    <input type="password" name="password" placeholder="Min. 8 characters" required />
+                    <input type="password" name="password" placeholder="Min. 8 characters" />
                     <span></span>
                 </div>
 
                 <div>
                     <label>Confirm Password</label>
-                    <input type="password" name="confirmPassword" placeholder="Re-enter your password" required />
+                    <input type="password" name="confirmPassword" placeholder="Re-enter your password" />
                     <span></span>
                 </div>
 
                 <div>
-                    <input type="checkbox" id="agreeTerms" name="agreeTerms" required />
+                    <input type="checkbox" id="agreeTerms" name="agreeTerms" />
                     <label for="agreeTerms">
                         I agree to the <a asp-controller="Home" asp-action="Terms">Terms and Conditions</a>
                         and <a asp-controller="Home" asp-action="Privacy">Privacy Policy</a>.
@@ -116,11 +116,24 @@
             const emailRegex = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
             const phoneRegex = /^[\d\s+\-()]{7,20}$/;
 
+            function field(name) {
+                return form.querySelector('[name="' + name + '"]');
+            }
             function val(name) {
-                const el = form.querySelector('[name="' + name + '"]');
+                const el = field(name);
                 return el ? el.value.trim() : '';
             }
-
+            function highlight(name) {
+                const el = field(name);
+                if (el) {
+                    el.style.borderColor = '#dc2626';
+                    el.focus();
+                    el.addEventListener('input', function clear() {
+                        el.style.borderColor = '';
+                        el.removeEventListener('input', clear);
+                    }, { once: true });
+                }
+            }
             function ageFromDob(dobStr) {
                 if (!dobStr) return null;
                 const dob = new Date(dobStr);
@@ -133,73 +146,103 @@
             }
 
             form.addEventListener('submit', function (e) {
-                let valid = true;
-
                 const firstName = val('firstName');
-                const lastName = val('lastName');
-                const email = val('email');
-                const phone = val('phoneNumber');
-                const dob = val('dateOfBirth');
-                const gender = val('gender');
-                const address = val('address');
-                const password = form.querySelector('[name="password"]').value;
-                const confirm = form.querySelector('[name="confirmPassword"]').value;
-                const agreeTerms = form.querySelector('[name="agreeTerms"]');
+                const lastName  = val('lastName');
+                const email     = val('email');
+                const phone     = val('phoneNumber');
+                const dob       = val('dateOfBirth');
+                const gender    = val('gender');
+                const address   = val('address');
+                const password  = field('password').value;
+                const confirm   = field('confirmPassword').value;
+                const terms     = field('agreeTerms');
 
-                if (!firstName || firstName.length < 2) {
-                    window.showToast('First name must be at least 2 characters.', 'error');
-                    valid = false;
+                function fail(msg, name) {
+                    window.showToast(msg, 'error');
+                    if (name) highlight(name);
+                    e.preventDefault();
                 }
-                if (!lastName || lastName.length < 2) {
-                    window.showToast('Last name must be at least 2 characters.', 'error');
-                    valid = false;
+
+                // First Name
+                if (!firstName) {
+                    return fail('First name is required.', 'firstName');
                 }
+                if (firstName.length < 2) {
+                    return fail('First name must be at least 2 characters.', 'firstName');
+                }
+
+                // Last Name
+                if (!lastName) {
+                    return fail('Last name is required.', 'lastName');
+                }
+                if (lastName.length < 2) {
+                    return fail('Last name must be at least 2 characters.', 'lastName');
+                }
+
+                // Email
                 if (!email) {
-                    window.showToast('Email is required.', 'error');
-                    valid = false;
-                } else if (!emailRegex.test(email)) {
-                    window.showToast('Please enter a valid email address.', 'error');
-                    valid = false;
+                    return fail('Email address is required.', 'email');
                 }
+                if (!emailRegex.test(email)) {
+                    return fail('Please enter a valid email address (e.g. you@@email.com).', 'email');
+                }
+
+                // Phone (optional but must be valid format if filled)
                 if (phone && !phoneRegex.test(phone)) {
-                    window.showToast('Phone number format is invalid.', 'error');
-                    valid = false;
+                    return fail('Phone number format is invalid. Use digits, spaces, +, -, or parentheses.', 'phoneNumber');
                 }
+
+                // Date of Birth
                 if (!dob) {
-                    window.showToast('Date of birth is required.', 'error');
-                    valid = false;
-                } else {
-                    const age = ageFromDob(dob);
-                    if (age === null || age < 13) {
-                        window.showToast('You must be at least 13 years old to register.', 'error');
-                        valid = false;
-                    }
+                    return fail('Date of birth is required.', 'dateOfBirth');
                 }
+                const age = ageFromDob(dob);
+                if (age === null) {
+                    return fail('Please enter a valid date of birth.', 'dateOfBirth');
+                }
+                if (age < 13) {
+                    return fail('You must be at least 13 years old to register.', 'dateOfBirth');
+                }
+                if (age > 120) {
+                    return fail('Please enter a realistic date of birth.', 'dateOfBirth');
+                }
+
+                // Gender
                 if (!gender) {
-                    window.showToast('Please select a gender option.', 'error');
-                    valid = false;
+                    return fail('Please select a gender option.', 'gender');
                 }
+
+                // Address
                 if (!address) {
-                    window.showToast('Address is required.', 'error');
-                    valid = false;
+                    return fail('Address is required.', 'address');
                 }
-                if (!password || password.length < 8) {
-                    window.showToast('Password must be at least 8 characters.', 'error');
-                    valid = false;
-                } else if (!/[A-Za-z]/.test(password) || !/\d/.test(password)) {
-                    window.showToast('Password must include both letters and numbers.', 'error');
-                    valid = false;
+                if (address.length < 5) {
+                    return fail('Please enter your full address (at least 5 characters).', 'address');
+                }
+
+                // Password
+                if (!password) {
+                    return fail('Password is required.', 'password');
+                }
+                if (password.length < 8) {
+                    return fail('Password must be at least 8 characters long.', 'password');
+                }
+                if (!/[A-Za-z]/.test(password) || !/\d/.test(password)) {
+                    return fail('Password must include both letters and numbers.', 'password');
+                }
+
+                // Confirm Password
+                if (!confirm) {
+                    return fail('Please confirm your password.', 'confirmPassword');
                 }
                 if (password !== confirm) {
-                    window.showToast('Passwords do not match.', 'error');
-                    valid = false;
-                }
-                if (agreeTerms && !agreeTerms.checked) {
-                    window.showToast('You must agree to the Terms and Conditions.', 'error');
-                    valid = false;
+                    return fail('Passwords do not match. Please re-enter.', 'confirmPassword');
                 }
 
-                if (!valid) e.preventDefault();
+                // Terms
+                if (terms && !terms.checked) {
+                    return fail('You must agree to the Terms and Conditions to continue.', null);
+                }
             });
         })();
     </script>

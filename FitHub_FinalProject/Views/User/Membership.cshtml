@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewData["Title"] = "Membership Plans - FitHub";
 }
 
@@ -51,12 +51,12 @@
             <div>
                 @if (ViewBag.Billing == "annual")
                 {
-                    <p><strong>₱4,790</strong> / year</p>
-                    <p>₱399 / month billed annually</p>
+                    <p><strong>&#8369;4,790</strong> / year</p>
+                    <p>&#8369;399 / month billed annually</p>
                 }
                 else
                 {
-                    <p><strong>₱499</strong> / month</p>
+                    <p><strong>&#8369;499</strong> / month</p>
                 }
             </div>
             <ul>
@@ -73,7 +73,7 @@
                 }
                 else
                 {
-                    <a asp-controller="Membership" asp-action="Subscribe" asp-route-planId="1" asp-route-billing="@ViewBag.Billing">
+                    <a asp-controller="Membership" asp-action="Checkout" asp-route-planId="1" asp-route-billing="@ViewBag.Billing">
                         Get Basic
                     </a>
                 }
@@ -91,12 +91,12 @@
             <div>
                 @if (ViewBag.Billing == "annual")
                 {
-                    <p><strong>₱8,630</strong> / year</p>
-                    <p>₱719 / month billed annually</p>
+                    <p><strong>&#8369;8,630</strong> / year</p>
+                    <p>&#8369;719 / month billed annually</p>
                 }
                 else
                 {
-                    <p><strong>₱899</strong> / month</p>
+                    <p><strong>&#8369;899</strong> / month</p>
                 }
             </div>
             <ul>
@@ -114,7 +114,7 @@
                 }
                 else
                 {
-                    <a asp-controller="Membership" asp-action="Subscribe" asp-route-planId="2" asp-route-billing="@ViewBag.Billing">
+                    <a asp-controller="Membership" asp-action="Checkout" asp-route-planId="2" asp-route-billing="@ViewBag.Billing">
                         Get Pro
                     </a>
                 }
@@ -129,12 +129,12 @@
             <div>
                 @if (ViewBag.Billing == "annual")
                 {
-                    <p><strong>₱14,390</strong> / year</p>
-                    <p>₱1,199 / month billed annually</p>
+                    <p><strong>&#8369;14,390</strong> / year</p>
+                    <p>&#8369;1,199 / month billed annually</p>
                 }
                 else
                 {
-                    <p><strong>₱1,499</strong> / month</p>
+                    <p><strong>&#8369;1,499</strong> / month</p>
                 }
             </div>
             <ul>
@@ -153,7 +153,7 @@
                 }
                 else
                 {
-                    <a asp-controller="Membership" asp-action="Subscribe" asp-route-planId="3" asp-route-billing="@ViewBag.Billing">
+                    <a asp-controller="Membership" asp-action="Checkout" asp-route-planId="3" asp-route-billing="@ViewBag.Billing">
                         Get Elite
                     </a>
                 }
@@ -174,84 +174,19 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>Gym Floor Access</td>
-                    <td>✓</td>
-                    <td>✓</td>
-                    <td>✓</td>
-                </tr>
-                <tr>
-                    <td>Locker Room Access</td>
-                    <td>✓</td>
-                    <td>✓</td>
-                    <td>✓</td>
-                </tr>
-                <tr>
-                    <td>Mobile App Access</td>
-                    <td>✓</td>
-                    <td>✓</td>
-                    <td>✓</td>
-                </tr>
-                <tr>
-                    <td>Guest Passes / Month</td>
-                    <td>1</td>
-                    <td>3</td>
-                    <td>Unlimited</td>
-                </tr>
-                <tr>
-                    <td>Group Classes</td>
-                    <td>✗</td>
-                    <td>✓</td>
-                    <td>✓</td>
-                </tr>
-                <tr>
-                    <td>Nutrition Consultation</td>
-                    <td>✗</td>
-                    <td>✓</td>
-                    <td>✓</td>
-                </tr>
-                <tr>
-                    <td>All Equipment Access</td>
-                    <td>✗</td>
-                    <td>✓</td>
-                    <td>✓</td>
-                </tr>
-                <tr>
-                    <td>Priority Lane Access</td>
-                    <td>✗</td>
-                    <td>✓</td>
-                    <td>✓</td>
-                </tr>
-                <tr>
-                    <td>Personal Trainer Sessions</td>
-                    <td>✗</td>
-                    <td>✗</td>
-                    <td>4x / month</td>
-                </tr>
-                <tr>
-                    <td>Priority Booking</td>
-                    <td>✗</td>
-                    <td>✗</td>
-                    <td>✓</td>
-                </tr>
-                <tr>
-                    <td>Exclusive Member Lounge</td>
-                    <td>✗</td>
-                    <td>✗</td>
-                    <td>✓</td>
-                </tr>
-                <tr>
-                    <td>Monthly Body Assessment</td>
-                    <td>✗</td>
-                    <td>✗</td>
-                    <td>✓</td>
-                </tr>
-                <tr>
-                    <td>Dedicated Account Manager</td>
-                    <td>✗</td>
-                    <td>✗</td>
-                    <td>✓</td>
-                </tr>
+                <tr><td>Gym Floor Access</td><td>&#x2713;</td><td>&#x2713;</td><td>&#x2713;</td></tr>
+                <tr><td>Locker Room Access</td><td>&#x2713;</td><td>&#x2713;</td><td>&#x2713;</td></tr>
+                <tr><td>Mobile App Access</td><td>&#x2713;</td><td>&#x2713;</td><td>&#x2713;</td></tr>
+                <tr><td>Guest Passes / Month</td><td>1</td><td>3</td><td>Unlimited</td></tr>
+                <tr><td>Group Classes</td><td>&#x2717;</td><td>&#x2713;</td><td>&#x2713;</td></tr>
+                <tr><td>Nutrition Consultation</td><td>&#x2717;</td><td>&#x2713;</td><td>&#x2713;</td></tr>
+                <tr><td>All Equipment Access</td><td>&#x2717;</td><td>&#x2713;</td><td>&#x2713;</td></tr>
+                <tr><td>Priority Lane Access</td><td>&#x2717;</td><td>&#x2713;</td><td>&#x2713;</td></tr>
+                <tr><td>Personal Trainer Sessions</td><td>&#x2717;</td><td>&#x2717;</td><td>4x / month</td></tr>
+                <tr><td>Priority Booking</td><td>&#x2717;</td><td>&#x2717;</td><td>&#x2713;</td></tr>
+                <tr><td>Exclusive Member Lounge</td><td>&#x2717;</td><td>&#x2717;</td><td>&#x2713;</td></tr>
+                <tr><td>Monthly Body Assessment</td><td>&#x2717;</td><td>&#x2717;</td><td>&#x2713;</td></tr>
+                <tr><td>Dedicated Account Manager</td><td>&#x2717;</td><td>&#x2717;</td><td>&#x2713;</td></tr>
             </tbody>
         </table>
     </section>

@@ -1,9 +1,10 @@
-﻿@{
+@{
     ViewData["Title"] = "My Profile - FitHub";
 }
 
 @section Styles {
     <link rel="stylesheet" href="~/css/profile.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/profile-buttons.css" asp-append-version="true" />
 }
 
 <main id="profile-page">
@@ -36,21 +37,6 @@
         </aside>
 
         <div id="profile-content">
-
-            @if (TempData["SuccessMessage"] != null)
-            {
-                <div id="success-message">
-                    <p>@TempData["SuccessMessage"]</p>
-                </div>
-            }
-
-            @if (TempData["ErrorMessage"] != null)
-            {
-                <div id="error-message">
-                    <p>@TempData["ErrorMessage"]</p>
-                </div>
-            }
-
             <div id="personal-info">
                 <h2>Personal Information</h2>
                 <p>Update your personal details below.</p>
@@ -162,25 +148,25 @@
                 <h2>Change Password</h2>
                 <p>Make sure your new password is at least 8 characters long.</p>
 
-                <form asp-controller="Account" asp-action="ChangePassword" method="post">
+                <form asp-controller="Account" asp-action="ChangePassword" method="post" novalidate>
 
                     @Html.AntiForgeryToken()
 
                     <div>
                         <label>Current Password</label>
-                        <input type="password" name="currentPassword" placeholder="Enter current password" required />
+                        <input type="password" name="currentPassword" placeholder="Enter current password" />
                         <span></span>
                     </div>
 
                     <div>
                         <label>New Password</label>
-                        <input type="password" name="newPassword" placeholder="Enter new password" required />
+                        <input type="password" name="newPassword" placeholder="Enter new password" />
                         <span></span>
                     </div>
 
                     <div>
                         <label>Confirm New Password</label>
-                        <input type="password" name="confirmPassword" placeholder="Re-enter new password" required />
+                        <input type="password" name="confirmPassword" placeholder="Re-enter new password" />
                         <span></span>
                     </div>
 
@@ -231,40 +217,87 @@
 @section Scripts {
     <script src="~/js/profile-edit.js" asp-append-version="true"></script>
     <script>
+        // ── Update Profile form validation ──────────────────────────────────────
+        (function () {
+            const profileForm = document.querySelector('#personal-info form');
+            if (!profileForm) return;
+
+            const phoneRegex = /^[\d\s+\-()]{7,20}$/;
+
+            profileForm.addEventListener('submit', function (e) {
+                const fullName  = profileForm.querySelector('[name="fullName"]').value.trim();
+                const phone     = profileForm.querySelector('[name="phoneNumber"]');
+                const photoInput = profileForm.querySelector('[name="ProfilePhoto"]');
+
+                function fail(msg, el) {
+                    window.showToast(msg, 'error');
+                    if (el) { el.style.borderColor = '#dc2626'; el.focus(); }
+                    e.preventDefault();
+                }
+
+                if (!fullName) {
+                    return fail('Full name is required.', profileForm.querySelector('[name="fullName"]'));
+                }
+                if (fullName.length < 2) {
+                    return fail('Full name must be at least 2 characters.', profileForm.querySelector('[name="fullName"]'));
+                }
+
+                if (phone && phone.value.trim() && !phoneRegex.test(phone.value.trim())) {
+                    return fail('Phone number format is invalid.', phone);
+                }
+
+                if (photoInput && photoInput.files && photoInput.files[0]) {
+                    const file = photoInput.files[0];
+                    const ext  = file.name.split('.').pop().toLowerCase();
+                    if (!['jpg','jpeg','png'].includes(ext)) {
+                        return fail('Profile photo must be a JPG or PNG file.', photoInput);
+                    }
+                    if (file.size > 2 * 1024 * 1024) {
+                        return fail('Profile photo must be 2MB or smaller.', photoInput);
+                    }
+                }
+            });
+        })();
+
+        // ── Change Password form validation ──────────────────────────────────────
         (function () {
             const form = document.querySelector('#change-password form');
             if (!form) return;
 
             form.addEventListener('submit', function (e) {
                 const current = form.querySelector('[name="currentPassword"]').value;
-                const next = form.querySelector('[name="newPassword"]').value;
+                const next    = form.querySelector('[name="newPassword"]').value;
                 const confirm = form.querySelector('[name="confirmPassword"]').value;
-                let valid = true;
+
+                function fail(msg, name) {
+                    window.showToast(msg, 'error');
+                    const el = form.querySelector('[name="' + name + '"]');
+                    if (el) { el.style.borderColor = '#dc2626'; el.focus(); }
+                    e.preventDefault();
+                }
 
                 if (!current) {
-                    window.showToast('Current password is required.', 'error');
-                    valid = false;
+                    return fail('Current password is required.', 'currentPassword');
                 }
-                if (!next || next.length < 8) {
-                    window.showToast('New password must be at least 8 characters.', 'error');
-                    valid = false;
-                } else if (!/[A-Za-z]/.test(next) || !/\d/.test(next)) {
-                    window.showToast('New password must include both letters and numbers.', 'error');
-                    valid = false;
+                if (!next) {
+                    return fail('New password is required.', 'newPassword');
                 }
-                if (next === current && current) {
-                    window.showToast('New password must be different from current password.', 'error');
-                    valid = false;
+                if (next.length < 8) {
+                    return fail('New password must be at least 8 characters.', 'newPassword');
+                }
+                if (!/[A-Za-z]/.test(next) || !/\d/.test(next)) {
+                    return fail('New password must include both letters and numbers.', 'newPassword');
+                }
+                if (next === current) {
+                    return fail('New password must be different from your current password.', 'newPassword');
                 }
                 if (next !== confirm) {
-                    window.showToast('Passwords do not match.', 'error');
-                    valid = false;
+                    return fail('Passwords do not match. Please re-enter.', 'confirmPassword');
                 }
-
-                if (!valid) e.preventDefault();
             });
         })();
 
+        // ── Danger Zone confirmations ────────────────────────────────────────────
         (function () {
             const deactivate = document.getElementById('deactivate-form');
             if (deactivate) {

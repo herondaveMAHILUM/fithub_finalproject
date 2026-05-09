@@ -1,0 +1,77 @@
+/* ─────────────────────────────────────────────
+   Profile Edit / Cancel / Save button styles
+   ───────────────────────────────────────────── */
+
+#personal-info form > div:last-child {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+}
+
+/* "Edit" button — looks like Save Changes (lime, filled) */
+#profile-edit-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 11px 28px;
+    background-color: var(--lime);
+    color: var(--black);
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body);
+    font-size: 0.92rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s, box-shadow 0.2s;
+}
+
+#profile-edit-btn:hover {
+    background-color: var(--lime-dark);
+    box-shadow: var(--shadow-lime);
+}
+
+/* "Save Changes" submit button — lime, filled (same as Edit) */
+#personal-info form button[type="submit"] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 11px 28px;
+    background-color: var(--lime);
+    color: var(--black);
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body);
+    font-size: 0.92rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s, box-shadow 0.2s;
+    width: auto;
+}
+
+#personal-info form button[type="submit"]:hover {
+    background-color: var(--lime-dark);
+    box-shadow: var(--shadow-lime);
+}
+
+/* "Cancel" button — ghost / outlined */
+#profile-cancel-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 11px 24px;
+    background-color: transparent;
+    color: var(--white-muted);
+    border: 1px solid var(--black-border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body);
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+}
+
+#profile-cancel-btn:hover {
+    border-color: var(--white-muted);
+    color: var(--white);
+}

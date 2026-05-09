@@ -18,7 +18,7 @@
 
             <h2>Log In</h2>
 
-            <form asp-controller="Account" asp-action="Login" method="post">
+            <form asp-controller="Account" asp-action="Login" method="post" novalidate>
 
                 @Html.AntiForgeryToken()
 
@@ -26,13 +26,13 @@
 
                 <div>
                     <label>Email Address</label>
-                    <input type="email" name="email" placeholder="you@email.com" required />
+                    <input type="email" name="email" placeholder="you@email.com" />
                     <span></span>
                 </div>
 
                 <div>
                     <label>Password</label>
-                    <input type="password" name="password" placeholder="Enter your password" required />
+                    <input type="password" name="password" placeholder="Enter your password" />
                     <span></span>
                 </div>
 
@@ -66,27 +66,48 @@
             const form = document.querySelector('#login-container form');
             if (!form) return;
 
-            const emailRegex = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
+            const emailInput    = form.querySelector('input[name="email"]');
+            const passwordInput = form.querySelector('input[name="password"]');
+            const emailRegex    = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
+
+            // Real-time: clear error state on typing
+            emailInput.addEventListener('input', function () {
+                this.style.borderColor = '';
+            });
+            passwordInput.addEventListener('input', function () {
+                this.style.borderColor = '';
+            });
+
+            function highlight(input) {
+                input.style.borderColor = '#dc2626';
+                input.focus();
+            }
 
             form.addEventListener('submit', function (e) {
-                const email = form.querySelector('input[name="email"]').value.trim();
-                const password = form.querySelector('input[name="password"]').value;
-                let valid = true;
+                const email    = emailInput.value.trim();
+                const password = passwordInput.value;
 
+                // Check email first
                 if (!email) {
-                    window.showToast('Email is required.', 'error');
-                    valid = false;
-                } else if (!emailRegex.test(email)) {
-                    window.showToast('Please enter a valid email address.', 'error');
-                    valid = false;
+                    window.showToast('Email address is required.', 'error');
+                    highlight(emailInput);
+                    e.preventDefault();
+                    return;
+                }
+                if (!emailRegex.test(email)) {
+                    window.showToast('Please enter a valid email address (e.g. you@@email.com).', 'error');
+                    highlight(emailInput);
+                    e.preventDefault();
+                    return;
                 }
 
+                // Then password
                 if (!password) {
                     window.showToast('Password is required.', 'error');
-                    valid = false;
+                    highlight(passwordInput);
+                    e.preventDefault();
+                    return;
                 }
-
-                if (!valid) e.preventDefault();
             });
         })();
     </script>

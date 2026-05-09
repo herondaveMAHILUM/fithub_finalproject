@@ -1,0 +1,112 @@
+@{
+    ViewData["Title"] = "Payment Successful - FitHub";
+
+    var txId      = TempData["Receipt_TransactionId"]?.ToString() ?? "—";
+    var refNum    = TempData["Receipt_RefNumber"]?.ToString()     ?? "—";
+    var planName  = TempData["Receipt_PlanName"]?.ToString()      ?? "—";
+    var billing   = TempData["Receipt_Billing"]?.ToString()       ?? "—";
+    var amount    = TempData["Receipt_Amount"]?.ToString()        ?? "—";
+    var method    = TempData["Receipt_Method"]?.ToString()        ?? "—";
+    var txType    = TempData["Receipt_Type"]?.ToString()          ?? "—";
+    var txDate    = TempData["Receipt_Date"]?.ToString()          ?? "—";
+    var expiry    = TempData["Receipt_Expiry"]?.ToString()        ?? "—";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/checkout.css" asp-append-version="true" />
+}
+
+<main id="success-page">
+
+    <div id="success-card">
+
+        <div id="success-icon">
+            <svg viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg">
+                <circle class="check-circle" cx="26" cy="26" r="25" fill="none" />
+                <path class="check-mark" fill="none" d="M14 27 l9 9 l16-18" />
+            </svg>
+        </div>
+
+        <h1 id="success-title">Payment Successful!</h1>
+        <p id="success-subtitle">Your FitHub membership is now active. Welcome aboard!</p>
+
+        <div id="receipt-card">
+            <div id="receipt-header">
+                <h2>Payment Receipt</h2>
+                <span id="receipt-status">PAID</span>
+            </div>
+
+            <div class="receipt-divider dashed"></div>
+
+            <div class="receipt-row">
+                <span class="receipt-label">Transaction ID</span>
+                <span class="receipt-value">#@txId</span>
+            </div>
+            <div class="receipt-row">
+                <span class="receipt-label">Reference No.</span>
+                <span class="receipt-value mono">@refNum</span>
+            </div>
+            <div class="receipt-row">
+                <span class="receipt-label">Date &amp; Time</span>
+                <span class="receipt-value">@txDate</span>
+            </div>
+
+            <div class="receipt-divider"></div>
+
+            <div class="receipt-row">
+                <span class="receipt-label">Membership Plan</span>
+                <span class="receipt-value">FitHub @planName Plan</span>
+            </div>
+            <div class="receipt-row">
+                <span class="receipt-label">Billing Cycle</span>
+                <span class="receipt-value">@(billing == "annual" ? "Annual" : "Monthly")</span>
+            </div>
+            <div class="receipt-row">
+                <span class="receipt-label">Transaction Type</span>
+                <span class="receipt-value">@txType</span>
+            </div>
+            <div class="receipt-row">
+                <span class="receipt-label">Valid Until</span>
+                <span class="receipt-value">@expiry</span>
+            </div>
+
+            <div class="receipt-divider"></div>
+
+            <div class="receipt-row">
+                <span class="receipt-label">Payment Method</span>
+                <span class="receipt-value">@method</span>
+            </div>
+            <div class="receipt-row receipt-total">
+                <span class="receipt-label">Total Paid</span>
+                <span class="receipt-value">&#8369;@amount</span>
+            </div>
+
+            <div class="receipt-divider dashed"></div>
+
+            <p id="receipt-footer">
+                Thank you for choosing FitHub! This receipt has been saved to your account.<br />
+                You can view all transactions in your <a asp-controller="Transaction" asp-action="Index">Transaction History</a>.
+            </p>
+        </div>
+
+        <div id="success-actions">
+            <a asp-controller="User" asp-action="Dashboard" class="btn-primary">
+                Go to Dashboard
+            </a>
+            <a asp-controller="Transaction" asp-action="Index" class="btn-secondary">
+                View Transactions
+            </a>
+        </div>
+
+    </div>
+
+</main>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const card = document.getElementById('success-card');
+            if (card) card.classList.add('animate-in');
+        });
+    </script>
+}
