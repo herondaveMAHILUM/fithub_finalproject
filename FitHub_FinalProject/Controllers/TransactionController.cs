@@ -24,6 +24,8 @@ namespace FitHub_FinalProject.Controllers
             string? search, string? status, string? type,
             DateTime? dateFrom, DateTime? dateTo, int page = 1)
         {
+            if (User.IsInRole("Admin")) return RedirectToAction("Dashboard", "Admin");
+
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
             var query = _context.Transactions.Where(t => t.UserId == userId);
 

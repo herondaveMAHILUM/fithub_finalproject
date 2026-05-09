@@ -20,6 +20,8 @@ namespace FitHub_FinalProject.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(string billing = "monthly")
         {
+            if (User.IsInRole("Admin")) return RedirectToAction("Dashboard", "Admin");
+
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
             if (billing != "monthly" && billing != "annual") billing = "monthly";

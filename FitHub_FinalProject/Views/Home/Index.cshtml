@@ -83,7 +83,14 @@
                 <li>Locker Room Access</li>
                 <li>1 Guest Pass / Month</li>
             </ul>
-            <a asp-controller="Account" asp-action="Login">Get Basic</a>
+            @if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                <a asp-controller="Membership" asp-action="Checkout" asp-route-planId="1">Get Basic</a>
+            }
+            else
+            {
+                <a asp-controller="Account" asp-action="Login">Get Basic</a>
+            }
         </div>
 
         <div>
@@ -95,7 +102,14 @@
                 <li>Nutrition Consultation</li>
                 <li>3 Guest Passes / Month</li>
             </ul>
-            <a asp-controller="Account" asp-action="Login">Get Pro</a>
+            @if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                <a asp-controller="Membership" asp-action="Checkout" asp-route-planId="2">Get Pro</a>
+            }
+            else
+            {
+                <a asp-controller="Account" asp-action="Login">Get Pro</a>
+            }
         </div>
 
         <div>
@@ -107,7 +121,14 @@
                 <li>Priority Booking</li>
                 <li>Unlimited Guest Passes</li>
             </ul>
-            <a asp-controller="Account" asp-action="Login">Get Elite</a>
+            @if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                <a asp-controller="Membership" asp-action="Checkout" asp-route-planId="3">Get Elite</a>
+            }
+            else
+            {
+                <a asp-controller="Account" asp-action="Login">Get Elite</a>
+            }
         </div>
 
     </div>
