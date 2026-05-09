@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using FitHub_FinalProject.Data;
 using FitHub_FinalProject.Models;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -158,6 +159,7 @@ namespace FitHub_FinalProject.Controllers
 
             _context.Users.Remove(member);
             await _context.SaveChangesAsync();
+            await LogActivity("Deleted member", $"#{member.UserId} {member.FullName}");
             TempData["SuccessMessage"] = $"Deleted member: {member.FullName}";
             return RedirectToAction("Members");
         }
@@ -273,6 +275,7 @@ namespace FitHub_FinalProject.Controllers
             });
 
             await _context.SaveChangesAsync();
+            await LogActivity("Created plan", planName);
             TempData["SuccessMessage"] = $"Plan '{planName}' created.";
             return RedirectToAction("Plans");
         }
@@ -297,6 +300,7 @@ namespace FitHub_FinalProject.Controllers
             plan.IsActive = status != "Inactive";
 
             await _context.SaveChangesAsync();
+            await LogActivity("Updated plan", planName);
             TempData["SuccessMessage"] = $"Plan '{planName}' updated.";
             return RedirectToAction("Plans");
         }
@@ -314,6 +318,7 @@ namespace FitHub_FinalProject.Controllers
 
             plan.IsActive = false;
             await _context.SaveChangesAsync();
+            await LogActivity("Deactivated plan", plan.Name);
             TempData["SuccessMessage"] = $"Plan '{plan.Name}' deactivated.";
             return RedirectToAction("Plans");
         }
@@ -331,6 +336,7 @@ namespace FitHub_FinalProject.Controllers
 
             plan.IsActive = !plan.IsActive;
             await _context.SaveChangesAsync();
+            await LogActivity(plan.IsActive ? "Activated plan" : "Deactivated plan", plan.Name);
             TempData["SuccessMessage"] = $"Plan '{plan.Name}' is now {(plan.IsActive ? "active" : "inactive")}.";
             return RedirectToAction("Plans");
         }
@@ -341,7 +347,92 @@ namespace FitHub_FinalProject.Controllers
         [HttpGet]
         public IActionResult EditPlan(int id) => RedirectToAction("Plans", new { edit = id });
 
-        public IActionResult Profile() => View();
+        [HttpGet]
+        public async Task<IActionResult> Profile()
+        {
+            var adminId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var admin = await _context.Users.FirstOrDefaultAsync(u => u.UserId == adminId);
+            if (admin == null) return RedirectToAction("Login", "Account");
+
+            ViewBag.AdminName = admin.FullName;
+            ViewBag.FullName = admin.FullName;
+            ViewBag.Email = admin.Email;
+            ViewBag.PhoneNumber = admin.PhoneNumber;
+            ViewBag.ProfilePhoto = admin.ProfilePhotoPath ?? "/images/default-avatar.png";
+            ViewBag.MemberSince = admin.CreatedAt.ToString("MMMM yyyy");
+            ViewBag.LastLogin = admin.LastLoginAt?.ToString("MMM dd, yyyy hh:mm tt") ?? "—";
+
+            ViewBag.TotalActions = await _context.AdminActivities.CountAsync(a => a.AdminUserId == adminId);
+
+            ViewBag.ActivityLog = await _context.AdminActivities
+                .Where(a => a.AdminUserId == adminId)
+                .OrderByDescending(a => a.Timestamp)
+                .Take(20)
+                .Select(a => new
+                {
+                    a.Timestamp,
+                    a.Action,
+                    Target = a.Target ?? "—",
+                    IpAddress = a.IpAddress ?? "—"
+                })
+                .ToListAsync();
+
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetSystemData(string confirm)
+        {
+            if (confirm != "true") return RedirectToAction("Profile");
+
+            var adminId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+            _context.Transactions.RemoveRange(_context.Transactions);
+            _context.Notifications.RemoveRange(_context.Notifications);
+            _context.Memberships.RemoveRange(_context.Memberships);
+            _context.Users.RemoveRange(_context.Users.Where(u => !u.IsAdmin));
+            await _context.SaveChangesAsync();
+
+            await LogActivity("Reset system data", "All members, memberships, transactions, notifications cleared");
+
+            TempData["SuccessMessage"] = "System data has been reset.";
+            return RedirectToAction("Profile");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteAdminAccount(string confirm)
+        {
+            if (confirm != "true") return RedirectToAction("Profile");
+
+            var adminId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var admin = await _context.Users.FirstOrDefaultAsync(u => u.UserId == adminId && u.IsAdmin);
+            if (admin != null)
+            {
+                _context.Users.Remove(admin);
+                await _context.SaveChangesAsync();
+            }
+
+            await HttpContext.SignOutAsync(Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Login", "Account");
+        }
+
+        private async Task LogActivity(string action, string? target)
+        {
+            var idClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(idClaim)) return;
+
+            _context.AdminActivities.Add(new AdminActivity
+            {
+                AdminUserId = int.Parse(idClaim),
+                Action = action,
+                Target = target,
+                IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString(),
+                Timestamp = DateTime.UtcNow
+            });
+            await _context.SaveChangesAsync();
+        }
 
         [HttpGet]
         public async Task<IActionResult> Transactions(
@@ -443,6 +534,7 @@ namespace FitHub_FinalProject.Controllers
             }
             tx.Status = "Paid";
             await _context.SaveChangesAsync();
+            await LogActivity("Marked transaction as Paid", $"Transaction #{tx.TransactionId}");
             TempData["SuccessMessage"] = $"Transaction #{tx.TransactionId} marked as Paid.";
             return RedirectToAction("Transactions");
         }
@@ -459,6 +551,7 @@ namespace FitHub_FinalProject.Controllers
             }
             tx.Status = "Refunded";
             await _context.SaveChangesAsync();
+            await LogActivity("Refunded transaction", $"Transaction #{tx.TransactionId}");
             TempData["SuccessMessage"] = $"Transaction #{tx.TransactionId} refunded.";
             return RedirectToAction("Transactions");
         }

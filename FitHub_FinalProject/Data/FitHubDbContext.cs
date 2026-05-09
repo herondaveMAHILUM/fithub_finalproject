@@ -16,6 +16,7 @@ namespace FitHub_FinalProject.Data
         public DbSet<Exercise> Exercises { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<AdminActivity> AdminActivities { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -90,6 +91,12 @@ namespace FitHub_FinalProject.Data
                 .WithMany(p => p.Memberships)
                 .HasForeignKey(m => m.PlanId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<AdminActivity>()
+                .HasOne(a => a.Admin)
+                .WithMany()
+                .HasForeignKey(a => a.AdminUserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Seed default admin account (email: admin@fithub.ph, password: admin123)
             modelBuilder.Entity<User>().HasData(
