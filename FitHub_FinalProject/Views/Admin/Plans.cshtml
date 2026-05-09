@@ -166,8 +166,8 @@
             <div>
                 <label for="status">Status</label>
                 <select id="status" name="status">
-                    <option value="Active">Active</option>
-                    <option value="Inactive">Inactive</option>
+                    <option value="Active" @(ViewBag.EditingPlan == null || ViewBag.EditingPlan.Status == "Active" ? "selected" : "")>Active</option>
+                    <option value="Inactive" @(ViewBag.EditingPlan != null && ViewBag.EditingPlan.Status == "Inactive" ? "selected" : "")>Inactive</option>
                 </select>
             </div>
 
