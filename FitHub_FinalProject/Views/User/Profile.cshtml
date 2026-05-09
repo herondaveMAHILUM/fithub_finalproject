@@ -230,4 +230,39 @@
 
 @section Scripts {
     <script src="~/js/profile-edit.js" asp-append-version="true"></script>
+    <script>
+        (function () {
+            const form = document.querySelector('#change-password form');
+            if (!form) return;
+
+            form.addEventListener('submit', function (e) {
+                const current = form.querySelector('[name="currentPassword"]').value;
+                const next = form.querySelector('[name="newPassword"]').value;
+                const confirm = form.querySelector('[name="confirmPassword"]').value;
+                let valid = true;
+
+                if (!current) {
+                    window.showToast('Current password is required.', 'error');
+                    valid = false;
+                }
+                if (!next || next.length < 8) {
+                    window.showToast('New password must be at least 8 characters.', 'error');
+                    valid = false;
+                } else if (!/[A-Za-z]/.test(next) || !/\d/.test(next)) {
+                    window.showToast('New password must include both letters and numbers.', 'error');
+                    valid = false;
+                }
+                if (next === current && current) {
+                    window.showToast('New password must be different from current password.', 'error');
+                    valid = false;
+                }
+                if (next !== confirm) {
+                    window.showToast('Passwords do not match.', 'error');
+                    valid = false;
+                }
+
+                if (!valid) e.preventDefault();
+            });
+        })();
+    </script>
 }
