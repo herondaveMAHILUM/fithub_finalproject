@@ -1081,4 +1081,258 @@ These are accepted trade-offs for an academic-scope project — not bugs:
 
 ---
 
-**End of plan.** Following commits 1–12 in order yields a fully working backend, with each commit a coherent unit your professor can step through.
+**End of Phase 1.** Following commits 1–12 in order yields a fully working backend, with each commit a coherent unit your professor can step through.
+
+---
+
+# Phase 2 — Validation, UX Polish, and Admin Backend
+
+After Phase 1 the app works end-to-end, but a smoke test surfaced several real issues:
+
+- **Login & Register** have no client-side validation; users can submit empty/invalid forms and only see errors after a round trip.
+- **Profile (Personal Information)** has no working photo upload; inputs are always editable (no edit/save toggle).
+- **Profile (Change Password)** accepts weak input client-side; only the server rejects it after submit.
+- **Profile (Danger Zone)** lacks confirmation prompts, and the destructive forms post without warning.
+- **Admin pages exist** (`Views/Admin/*.cshtml`) but the controller is a stub — none of the admin flows do anything.
+
+Phase 2 fixes these and ships a real admin backend.
+
+## Strategy
+
+- A tiny **vanilla-JS toast system** (`wwwroot/js/toast.js` + `wwwroot/css/toast.css`) — no external libraries.
+- Per-input client validation on Login, Register, Change Password — toast on each failure.
+- Profile: edit/save toggle in JS, real photo upload backend, danger-zone `confirm()` prompts.
+- Admin: add `IsAdmin` flag to `User` via a new migration, seed an admin account, gate `AdminController` by role, then implement each admin page.
+
+## New constraints introduced
+
+- **Three new migrations** required across Phase 2: `AddAdminFlag`, `ExtendMembershipPlan`, `AddAdminActivity`. Teammates run `dotnet ef database update` once at any point and all pending migrations apply.
+- **Admin seed account:** `admin@fithub.ph` / password `admin123` — README updated to mention it.
+- **Photo storage:** files saved to `wwwroot/uploads/profile/{userId}{ext}`; path stored in `User.ProfilePhotoPath`. The `uploads` folder is git-ignored.
+- **Toast system:** custom vanilla JS in `wwwroot/js/toast.js`, no external dependency.
+- **Plans model gets extended** with `Features` (string?) and `MaxMembers` (int?) fields to match the admin form.
+- **AdminActivity table** logs every admin action (Action, Target, Timestamp, AdminUserId).
+
+---
+
+## Commit 13 — Add toast notification system
+
+**New files:**
+- `wwwroot/js/toast.js` — global `showToast(message, type)` function with `info`/`success`/`error`/`warning` variants. Auto-dismiss after 4s.
+- `wwwroot/css/toast.css` — fixed-position container, slide-in animation.
+
+**View edit:** `_Layout.cshtml` — include the CSS in `<head>` and the JS at end of `<body>`.
+
+**Commit message:** `Added toast notification system`
+
+---
+
+## Commit 14 — Add client-side validation to Login
+
+**View edit:** `Views/Account/Login.cshtml` — `@section Scripts` with vanilla JS:
+- On submit: check email is non-empty + matches simple regex; password non-empty.
+- Show toast per failed field. Block submit if invalid.
+
+**Commit message:** `Added validation to login page`
+
+---
+
+## Commit 15 — Add client-side validation to Register
+
+**View edit:** `Views/Account/Register.cshtml` — vanilla JS validation:
+- Full name required, ≥ 2 chars.
+- Email required + regex.
+- Phone optional; if present, basic digits/+/space/dash regex.
+- DOB required; user must be ≥ 13 years old.
+- Gender required.
+- Address required.
+- Password ≥ 8 chars + at least one letter and one digit.
+- Confirm password must match.
+- "Agree to terms" must be checked.
+- Toast for each failed field on submit.
+
+**Commit message:** `Added validation to register page`
+
+---
+
+## Commit 16 — Profile: edit toggle + photo upload backend
+
+**View edit:** `Views/User/Profile.cshtml`
+- Add `disabled` to all personal-info inputs by default.
+- Add an "Edit" button that toggles inputs to enabled, swaps to "Save Changes" / "Cancel".
+- Update `<form>` to `enctype="multipart/form-data"` so the file uploads.
+- Set `<img src="@ViewBag.ProfilePhoto ?? "/images/default-avatar.png"">`.
+
+**Controller edit:** `AccountController.UpdateProfile`
+- Accept `IFormFile? ProfilePhoto`.
+- If provided and valid (≤ 2 MB, `.jpg/.jpeg/.png`), save to `wwwroot/uploads/profile/{userId}{ext}`, set `user.ProfilePhotoPath = "/uploads/profile/{userId}{ext}"`.
+- Update Profile GET to populate `ViewBag.ProfilePhoto = user.ProfilePhotoPath ?? "/images/default-avatar.png"`.
+
+**Other:**
+- Add `wwwroot/uploads/` to `.gitignore`.
+- Create `wwwroot/js/profile-edit.js` for the toggle.
+
+**Commit message:** `Added profile edit toggle and photo upload`
+
+---
+
+## Commit 17 — Profile: change password validation
+
+**View edit:** `Views/User/Profile.cshtml` (change-password form)
+- JS validation: current/new/confirm all required, new ≥ 8 chars + letter + digit, confirm matches new, new must differ from current.
+- Toast on each failure; block submit.
+
+**Commit message:** `Added validation to change password`
+
+---
+
+## Commit 18 — Profile: danger zone confirmations
+
+**View edit:** `Views/User/Profile.cshtml` (deactivate + delete forms)
+- Wrap each submit button in JS `onsubmit="return confirm('...')"` with explicit warning text ("This will permanently delete your account..." / "Your account will be deactivated...").
+- For delete, double-confirm.
+
+**Verify:** the actions work (manual test in browser).
+
+**Commit message:** `Added danger zone confirmations`
+
+---
+
+## Commit 19 — Add IsAdmin flag and seed admin (migration)
+
+**Schema change:** add `IsAdmin` (`bool`, default `false`) to `User`.
+
+```csharp
+public bool IsAdmin { get; set; } = false;
+public DateTime? LastLoginAt { get; set; }
+```
+
+**Migration:** `dotnet ef migrations add AddAdminFlag --project FitHub_FinalProject`
+
+**Seed:** in `FitHubDbContext.OnModelCreating`, add a single seed user with `IsAdmin = true`, email `admin@fithub.ph`, SHA-256 hash of `admin123`.
+
+**README update:** mention the seeded admin account.
+
+**Commit message:** `Added admin flag and seeded admin account`
+
+---
+
+## Commit 20 — Wire admin auth and post-login routing
+
+**Controller edits:**
+- `AccountController.Login (POST)` — after sign-in, if `user.IsAdmin == true` redirect to `Admin/Dashboard`; also add a `Role: Admin` claim. Update `LastLoginAt = DateTime.UtcNow`.
+- `AccountController.SignInUserAsync` — add a "Role" claim with value "Admin" if user is admin.
+- `AdminController` — add `[Authorize(Roles = "Admin")]` to the entire controller.
+
+**Commit message:** `Wired admin authentication`
+
+---
+
+## Commit 21 — Admin Dashboard
+
+**Controller:** `AdminController.Dashboard` — populate the ViewBag keys the view needs:
+- `AdminName`, `TotalMembers`, `ActiveMemberships`, `TotalRevenue`, `MonthlyRevenue`, `NewMembersThisMonth`, `ExpiredMemberships`
+- `RecentMembers` (last 5 by CreatedAt)
+- `RecentTransactions` (last 5 by Date)
+- `PlanBreakdown` — count of memberships per plan
+
+**Commit message:** `Added admin dashboard`
+
+---
+
+## Commit 22 — Admin Members list
+
+**Controller:** `AdminController.Members` — paginated list with search + plan + status filter.
+- `Model = List<User>` (with `.Include(u => u.Membership).ThenInclude(m => m.Plan)`)
+- ViewBag: `Search`, `PlanFilter`, `StatusFilter`, `DateFrom`, `DateTo`, `CurrentPage`, `TotalPages`, `TotalMembers`
+
+**Optional admin actions** (linked from view):
+- `DeactivateMember(int id)` — sets `IsActive = false`
+- `ReactivateMember(int id)` — sets `IsActive = true`
+
+**Commit message:** `Added admin members list`
+
+---
+
+## Commit 23 — Extend MembershipPlan + Admin Plans CRUD
+
+**Schema change:** add `Features` (`string?`) and `MaxMembers` (`int?`) to `MembershipPlan`.
+
+**Migration:** `dotnet ef migrations add ExtendMembershipPlan --project FitHub_FinalProject`
+
+**Controller:** `AdminController`:
+- `Plans` (GET) — list all plans + stats (`TotalPlans`, `TotalSubscribers`, `MostPopularPlan`, `TotalPlanRevenue`, `FeatureComparison`).
+- `AddPlan` (POST) — create new plan including features/maxMembers.
+- `UpdatePlan` (POST) — edit existing plan.
+- `DeletePlan` (POST) — soft delete by setting `IsActive = false`.
+
+Each action logs an entry to `AdminActivity` (added in Commit 25's migration; until then the log call is commented out and re-enabled in 25).
+
+**Commit message:** `Added admin plans CRUD`
+
+---
+
+## Commit 24 — Admin Transactions list
+
+**Controller:** `AdminController.Transaction` — paginated list across all users.
+- `Model = List<Transaction>` (with `.Include(t => t.User).ThenInclude(u => u.Membership).ThenInclude(m => m.Plan)`)
+- ViewBag: `TotalTransactions`, `TotalRevenue`, `MonthlyRevenue`, `PendingCount`, `FailedCount`, `RefundedCount`, `Search`, `StatusFilter`, `TypeFilter`, `PlanFilter`, `DateFrom`, `DateTo`, `CurrentPage`, `TotalPages`.
+
+**Commit message:** `Added admin transactions list`
+
+---
+
+## Commit 25 — AdminActivity table + Admin Profile
+
+**Schema change:** new `AdminActivity` entity:
+```csharp
+public class AdminActivity
+{
+    public int AdminActivityId { get; set; }
+    public int AdminUserId { get; set; }
+    public string Action { get; set; } = "";  // e.g. "Deactivated member", "Created plan"
+    public string? Target { get; set; }        // e.g. "User #5", "Plan: Pro"
+    public DateTime Timestamp { get; set; } = DateTime.UtcNow;
+    public User Admin { get; set; } = null!;
+}
+```
+
+**Migration:** `dotnet ef migrations add AddAdminActivity --project FitHub_FinalProject`
+
+**Activity logging:** add a private `LogActivity(string action, string? target)` helper to `AdminController` and call it from every state-changing admin action (DeactivateMember, ReactivateMember, AddPlan, UpdatePlan, DeletePlan, etc.).
+
+**Controller:** `AdminController.Profile` populates:
+- `AdminName`, `FullName`, `Email`, `ProfilePhoto`, `MemberSince`, `LastLogin`, `TotalActions` (count from AdminActivity), `ActivityLog` (last 20 entries by Timestamp desc).
+
+**Form posts** for updating admin profile / changing admin password — reuse logic from `AccountController.UpdateProfile` / `ChangePassword` (or call the same actions).
+
+**Commit message:** `Added admin profile and activity log`
+
+---
+
+# Phase 2 Commit History Summary
+
+| #  | Commit | Status |
+|----|--------|--------|
+| 13 | Add toast notification system | ⬜ |
+| 14 | Add client-side validation to Login | ⬜ |
+| 15 | Add client-side validation to Register | ⬜ |
+| 16 | Profile: edit toggle + photo upload | ⬜ |
+| 17 | Profile: change password validation | ⬜ |
+| 18 | Profile: danger zone confirmations | ⬜ |
+| 19 | Add IsAdmin flag and seed admin (migration) | ⬜ |
+| 20 | Wire admin auth and post-login routing | ⬜ |
+| 21 | Admin Dashboard | ⬜ |
+| 22 | Admin Members list | ⬜ |
+| 23 | Extend MembershipPlan + Admin Plans CRUD | ⬜ |
+| 24 | Admin Transactions list | ⬜ |
+| 25 | AdminActivity table + Admin Profile | ⬜ |
+
+---
+
+## Decisions resolved
+
+1. ✅ Admin seed credentials: `admin@fithub.ph` / `admin123`
+2. ✅ Plans model gets extended with `Features` and `MaxMembers` (Commit 23)
+3. ✅ Real `AdminActivity` table built (Commit 25); logging added to admin actions
+4. ✅ Toast system: custom vanilla JS, no external library
