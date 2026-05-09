@@ -31,6 +31,10 @@ namespace FitHub_FinalProject.Models
 
         public bool IsActive { get; set; } = true;
 
+        public bool IsAdmin { get; set; } = false;
+
+        public DateTime? LastLoginAt { get; set; }
+
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         // Navigation

@@ -91,6 +91,20 @@ namespace FitHub_FinalProject.Data
                 .HasForeignKey(m => m.PlanId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // Seed default admin account (email: admin@fithub.ph, password: admin123)
+            modelBuilder.Entity<User>().HasData(
+                new User
+                {
+                    UserId = 1,
+                    FullName = "FitHub Admin",
+                    Email = "admin@fithub.ph",
+                    PasswordHash = "JAvlGPq9JyTdtvBO6x2llnRI1+gxwIyPqCKAn3THIKk=",
+                    IsActive = true,
+                    IsAdmin = true,
+                    CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+                }
+            );
+
             // Seed default membership plans
             modelBuilder.Entity<MembershipPlan>().HasData(
                 new MembershipPlan

@@ -68,7 +68,11 @@ To stop the server, hit `Ctrl+C` in the terminal.
 
 ## How to use the app
 
-There are no pre-made accounts. **Register a new account** through the Sign Up page when you first open the site.
+**Pre-seeded admin account** (lets you straight into `/Admin`):
+- Email: `admin@fithub.ph`
+- Password: `admin123`
+
+For a regular member account, **register a new one** through the Sign Up page.
 
 Once registered you can:
 - View your dashboard (membership status, today's workout, notifications, recent transactions)
