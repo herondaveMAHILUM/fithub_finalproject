@@ -203,7 +203,7 @@
                             <h3>Deactivate Account</h3>
                             <p>Temporarily disable your account. You can reactivate it by logging back in.</p>
                         </div>
-                        <form asp-controller="Account" asp-action="DeactivateAccount" method="post">
+                        <form asp-controller="Account" asp-action="DeactivateAccount" method="post" id="deactivate-form">
                             @Html.AntiForgeryToken()
                             <button type="submit">Deactivate Account</button>
                         </form>
@@ -214,7 +214,7 @@
                             <h3>Delete Account</h3>
                             <p>Permanently delete your account and all associated data. This action cannot be undone.</p>
                         </div>
-                        <form asp-controller="Account" asp-action="DeleteAccount" method="post">
+                        <form asp-controller="Account" asp-action="DeleteAccount" method="post" id="delete-form">
                             @Html.AntiForgeryToken()
                             <input type="hidden" name="confirm" value="true" />
                             <button type="submit">Delete My Account</button>
@@ -263,6 +263,27 @@
 
                 if (!valid) e.preventDefault();
             });
+        })();
+
+        (function () {
+            const deactivate = document.getElementById('deactivate-form');
+            if (deactivate) {
+                deactivate.addEventListener('submit', function (e) {
+                    if (!confirm('Are you sure you want to deactivate your account? You will be signed out and can reactivate by logging back in.')) {
+                        e.preventDefault();
+                    }
+                });
+            }
+
+            const del = document.getElementById('delete-form');
+            if (del) {
+                del.addEventListener('submit', function (e) {
+                    const first = confirm('Permanently delete your account? This cannot be undone.');
+                    if (!first) { e.preventDefault(); return; }
+                    const second = confirm('Last chance — really delete? All your data will be removed.');
+                    if (!second) e.preventDefault();
+                });
+            }
         })();
     </script>
 }
