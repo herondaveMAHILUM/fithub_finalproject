@@ -14,10 +14,12 @@ namespace FitHub_FinalProject.Controllers
     public class AccountController : Controller
     {
         private readonly FitHubDbContext _context;
+        private readonly IWebHostEnvironment _env;
 
-        public AccountController(FitHubDbContext context)
+        public AccountController(FitHubDbContext context, IWebHostEnvironment env)
         {
             _context = context;
+            _env = env;
         }
 
         [HttpGet]
@@ -148,6 +150,7 @@ namespace FitHub_FinalProject.Controllers
             ViewBag.DateOfBirth = user.DateOfBirth?.ToString("yyyy-MM-dd");
             ViewBag.Gender = user.Gender;
             ViewBag.Address = user.Address;
+            ViewBag.ProfilePhoto = user.ProfilePhotoPath ?? "/images/default-avatar.png";
 
             ViewBag.MembershipPlan = user.Membership?.Plan?.Name ?? "—";
             ViewBag.MembershipStatus = user.Membership?.Status ?? "No membership";
@@ -166,7 +169,8 @@ namespace FitHub_FinalProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateProfile(
             string fullName, string phoneNumber,
-            DateOnly? dateOfBirth, string gender, string address)
+            DateOnly? dateOfBirth, string gender, string address,
+            IFormFile? ProfilePhoto)
         {
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
             var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
@@ -183,6 +187,35 @@ namespace FitHub_FinalProject.Controllers
             user.DateOfBirth = dateOfBirth;
             user.Gender = gender;
             user.Address = address;
+
+            if (ProfilePhoto != null && ProfilePhoto.Length > 0)
+            {
+                if (ProfilePhoto.Length > 2 * 1024 * 1024)
+                {
+                    TempData["ErrorMessage"] = "Profile photo must be 2MB or smaller.";
+                    return RedirectToAction("Profile");
+                }
+
+                var ext = Path.GetExtension(ProfilePhoto.FileName).ToLowerInvariant();
+                if (ext != ".jpg" && ext != ".jpeg" && ext != ".png")
+                {
+                    TempData["ErrorMessage"] = "Profile photo must be a JPG or PNG file.";
+                    return RedirectToAction("Profile");
+                }
+
+                var uploadsDir = Path.Combine(_env.WebRootPath, "uploads", "profile");
+                Directory.CreateDirectory(uploadsDir);
+
+                var fileName = $"{user.UserId}{ext}";
+                var filePath = Path.Combine(uploadsDir, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await ProfilePhoto.CopyToAsync(stream);
+                }
+
+                user.ProfilePhotoPath = $"/uploads/profile/{fileName}";
+            }
 
             await _context.SaveChangesAsync();
             TempData["SuccessMessage"] = "Profile updated successfully.";

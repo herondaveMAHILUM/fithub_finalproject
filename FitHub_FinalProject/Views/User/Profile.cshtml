@@ -18,7 +18,7 @@
         <aside id="profile-sidebar">
 
             <div id="profile-avatar-section">
-                <img src="~/images/default-avatar.png" alt="Profile photo of @ViewBag.FullName" />
+                <img src="@(ViewBag.ProfilePhoto ?? "/images/default-avatar.png")" alt="Profile photo of @ViewBag.FullName" />
                 <h2>@ViewBag.FullName</h2>
                 <p>@ViewBag.MembershipPlan Member</p>
                 <p>Member since @ViewBag.MemberSince</p>
@@ -55,7 +55,7 @@
                 <h2>Personal Information</h2>
                 <p>Update your personal details below.</p>
 
-                <form asp-controller="Account" asp-action="UpdateProfile" method="post">
+                <form asp-controller="Account" asp-action="UpdateProfile" method="post" enctype="multipart/form-data">
 
                     @Html.AntiForgeryToken()
                     <div asp-validation-summary="All"></div>
@@ -228,3 +228,6 @@
 
 </main>
 
+@section Scripts {
+    <script src="~/js/profile-edit.js" asp-append-version="true"></script>
+}
