@@ -70,26 +70,26 @@
                 <h2>Admin Information</h2>
                 <p>Update your personal and contact details.</p>
 
-                <form asp-controller="Admin" asp-action="UpdateProfile" method="post">
+                <form asp-controller="Admin" asp-action="UpdateProfile" method="post" enctype="multipart/form-data">
 
                     @Html.AntiForgeryToken()
                     <div asp-validation-summary="All"></div>
 
                     <div>
                         <label>Full Name</label>
-                        <input type="text" placeholder="Your full name" />
+                        <input type="text" name="fullName" value="@ViewBag.FullName" placeholder="Your full name" />
                         <span></span>
                     </div>
 
                     <div>
                         <label>Email Address</label>
-                        <input type="email" placeholder="admin@fithub.ph" />
+                        <input type="email" name="email" value="@ViewBag.Email" placeholder="admin@fithub.ph" />
                         <span></span>
                     </div>
 
                     <div>
                         <label>Phone Number</label>
-                        <input type="tel" placeholder="+63 912 345 6789" />
+                        <input type="tel" name="phoneNumber" value="@ViewBag.PhoneNumber" placeholder="+63 912 345 6789" />
                         <span></span>
                     </div>
 
@@ -118,19 +118,19 @@
 
                     <div>
                         <label>Current Password</label>
-                        <input type="password" placeholder="Enter current password" />
+                        <input type="password" name="currentPassword" placeholder="Enter current password" />
                         <span></span>
                     </div>
 
                     <div>
                         <label>New Password</label>
-                        <input type="password" placeholder="Min. 8 characters" />
+                        <input type="password" name="newPassword" placeholder="Min. 8 characters" />
                         <span></span>
                     </div>
 
                     <div>
                         <label>Confirm New Password</label>
-                        <input type="password" placeholder="Re-enter new password" />
+                        <input type="password" name="confirmPassword" placeholder="Re-enter new password" />
                         <span></span>
                     </div>
 
