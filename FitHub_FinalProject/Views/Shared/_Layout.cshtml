@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -26,15 +26,14 @@
 
         @if (User.Identity != null && User.Identity.IsAuthenticated)
         {
-            @if (User.IsInRole("Admin"))
+            if (User.IsInRole("Admin"))
             {
                 <ul>
                     <li><a asp-controller="Admin" asp-action="Dashboard">Dashboard</a></li>
                     <li><a asp-controller="Admin" asp-action="Members">Members</a></li>
                     <li><a asp-controller="Admin" asp-action="Plans">Plans</a></li>
-                    <li><a asp-controller="Admin" asp-action="Transaction">Transactions</a></li>
+                    <li><a asp-controller="Admin" asp-action="Transactions">Transactions</a></li>
                     <li><a asp-controller="Admin" asp-action="Profile">Profile</a></li>
-
                     <li class="notif-logout-sep">
                         <form asp-controller="Account" asp-action="Logout" method="post" style="display:inline">
                             @Html.AntiForgeryToken()
@@ -45,59 +44,19 @@
             }
             else
             {
-            <ul>
-                <li><a asp-controller="User" asp-action="Dashboard">Dashboard</a></li>
-                <li><a asp-controller="Membership" asp-action="Index">Membership</a></li>
-                <li><a asp-controller="Transaction" asp-action="Index">Transactions</a></li>
-                <li><a asp-controller="Account" asp-action="Profile">Profile</a></li>
-
-                <li class="notif-nav-item" id="notif-nav-item">
-                    <button class="notif-bell-btn" id="notif-bell-btn" type="button" aria-label="Notifications">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-                            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-                        </svg>
-                        @if (ViewBag.NavNotificationCount != null && ViewBag.NavNotificationCount > 0)
-                        {
-                            <span class="notif-badge">@ViewBag.NavNotificationCount</span>
-                        }
-                    </button>
-
-                    <div class="notif-dropdown" id="notif-dropdown">
-                        <div class="notif-dropdown-header">
-                            <span>Notifications</span>
-                            @if (ViewBag.NavNotificationCount != null && ViewBag.NavNotificationCount > 0)
-                            {
-                                <span class="notif-dropdown-count">@ViewBag.NavNotificationCount unread</span>
-                            }
-                        </div>
-                        <ul class="notif-dropdown-list">
-                            @if (ViewBag.NavNotifications != null)
-                            {
-                                foreach (var notif in ViewBag.NavNotifications)
-                                {
-                                    <li class="notif-dropdown-item notif-@notif.Type.ToLower()">
-                                        <p class="notif-dropdown-title">@notif.Title</p>
-                                        <p class="notif-dropdown-desc">@notif.Description</p>
-                                        <span class="notif-dropdown-time">@notif.TimeAgo</span>
-                                    </li>
-                                }
-                            }
-                            else
-                            {
-                                <li class="notif-dropdown-empty">No new notifications.</li>
-                            }
-                        </ul>
-                    </div>
-                </li>
-
-                <li class="notif-logout-sep">
-                    <form asp-controller="Account" asp-action="Logout" method="post" style="display:inline">
-                        @Html.AntiForgeryToken()
-                        <button type="submit">Log Out</button>
-                    </form>
-                </li>
-            </ul>
+                <ul>
+                    <li><a asp-controller="User" asp-action="Dashboard">Dashboard</a></li>
+                    <li><a asp-controller="Membership" asp-action="Index">Membership</a></li>
+                    <li><a asp-controller="Transaction" asp-action="Index">Transactions</a></li>
+                    <li><a asp-controller="Account" asp-action="Profile">Profile</a></li>
+                    @await Component.InvokeAsync("NotificationBell")
+                    <li class="notif-logout-sep">
+                        <form asp-controller="Account" asp-action="Logout" method="post" style="display:inline">
+                            @Html.AntiForgeryToken()
+                            <button type="submit">Log Out</button>
+                        </form>
+                    </li>
+                </ul>
             }
         }
         else
@@ -127,10 +86,20 @@
                 <ul>
                     @if (User.Identity != null && User.Identity.IsAuthenticated)
                     {
-                        <li><a asp-controller="User" asp-action="Dashboard">Dashboard</a></li>
-                        <li><a asp-controller="Membership" asp-action="Index">Membership</a></li>
-                        <li><a asp-controller="Transaction" asp-action="Index">Transactions</a></li>
-                        <li><a asp-controller="Account" asp-action="Profile">Profile</a></li>
+                        if (User.IsInRole("Admin"))
+                        {
+                            <li><a asp-controller="Admin" asp-action="Dashboard">Dashboard</a></li>
+                            <li><a asp-controller="Admin" asp-action="Members">Members</a></li>
+                            <li><a asp-controller="Admin" asp-action="Plans">Plans</a></li>
+                            <li><a asp-controller="Admin" asp-action="Transactions">Transactions</a></li>
+                        }
+                        else
+                        {
+                            <li><a asp-controller="User" asp-action="Dashboard">Dashboard</a></li>
+                            <li><a asp-controller="Membership" asp-action="Index">Membership</a></li>
+                            <li><a asp-controller="Transaction" asp-action="Index">Transactions</a></li>
+                            <li><a asp-controller="Account" asp-action="Profile">Profile</a></li>
+                        }
                     }
                     else
                     {
