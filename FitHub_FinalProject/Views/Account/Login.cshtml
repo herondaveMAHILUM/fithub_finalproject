@@ -59,3 +59,35 @@
     </section>
 
 </main>
+
+@section Scripts {
+    <script>
+        (function () {
+            const form = document.querySelector('#login-container form');
+            if (!form) return;
+
+            const emailRegex = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
+
+            form.addEventListener('submit', function (e) {
+                const email = form.querySelector('input[name="email"]').value.trim();
+                const password = form.querySelector('input[name="password"]').value;
+                let valid = true;
+
+                if (!email) {
+                    window.showToast('Email is required.', 'error');
+                    valid = false;
+                } else if (!emailRegex.test(email)) {
+                    window.showToast('Please enter a valid email address.', 'error');
+                    valid = false;
+                }
+
+                if (!password) {
+                    window.showToast('Password is required.', 'error');
+                    valid = false;
+                }
+
+                if (!valid) e.preventDefault();
+            });
+        })();
+    </script>
+}
