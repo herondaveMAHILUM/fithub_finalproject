@@ -53,10 +53,10 @@
                 <label for="status">Status</label>
                 <select id="status" name="status">
                     <option value="">All Statuses</option>
-                    <option>Paid</option>
-                    <option>Pending</option>
-                    <option>Failed</option>
-                    <option>Refunded</option>
+                    <option value="Paid" @(ViewBag.StatusFilter == "Paid" ? "selected" : "")>Paid</option>
+                    <option value="Pending" @(ViewBag.StatusFilter == "Pending" ? "selected" : "")>Pending</option>
+                    <option value="Failed" @(ViewBag.StatusFilter == "Failed" ? "selected" : "")>Failed</option>
+                    <option value="Refunded" @(ViewBag.StatusFilter == "Refunded" ? "selected" : "")>Refunded</option>
                 </select>
             </div>
 
@@ -64,10 +64,10 @@
                 <label for="type">Type</label>
                 <select id="type" name="type">
                     <option value="">All Types</option>
-                    <option>Subscription</option>
-                    <option>Upgrade</option>
-                    <option>Renewal</option>
-                    <option>Refund</option>
+                    <option value="Subscription" @(ViewBag.TypeFilter == "Subscription" ? "selected" : "")>Subscription</option>
+                    <option value="Upgrade" @(ViewBag.TypeFilter == "Upgrade" ? "selected" : "")>Upgrade</option>
+                    <option value="Renewal" @(ViewBag.TypeFilter == "Renewal" ? "selected" : "")>Renewal</option>
+                    <option value="Refund" @(ViewBag.TypeFilter == "Refund" ? "selected" : "")>Refund</option>
                 </select>
             </div>
 

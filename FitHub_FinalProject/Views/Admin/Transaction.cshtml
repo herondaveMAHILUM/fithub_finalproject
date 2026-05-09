@@ -81,10 +81,10 @@
                 <label for="status">Status</label>
                 <select id="status" name="status">
                     <option value="">All Statuses</option>
-                    <option value="Paid">Paid</option>
-                    <option value="Pending">Pending</option>
-                    <option value="Failed">Failed</option>
-                    <option value="Refunded">Refunded</option>
+                    <option value="Paid" @(ViewBag.StatusFilter == "Paid" ? "selected" : "")>Paid</option>
+                    <option value="Pending" @(ViewBag.StatusFilter == "Pending" ? "selected" : "")>Pending</option>
+                    <option value="Failed" @(ViewBag.StatusFilter == "Failed" ? "selected" : "")>Failed</option>
+                    <option value="Refunded" @(ViewBag.StatusFilter == "Refunded" ? "selected" : "")>Refunded</option>
                 </select>
             </div>
 
@@ -92,10 +92,10 @@
                 <label for="type">Type</label>
                 <select id="type" name="type">
                     <option value="">All Types</option>
-                    <option value="Subscription">Subscription</option>
-                    <option value="Renewal">Renewal</option>
-                    <option value="Upgrade">Upgrade</option>
-                    <option value="Refund">Refund</option>
+                    <option value="Subscription" @(ViewBag.TypeFilter == "Subscription" ? "selected" : "")>Subscription</option>
+                    <option value="Renewal" @(ViewBag.TypeFilter == "Renewal" ? "selected" : "")>Renewal</option>
+                    <option value="Upgrade" @(ViewBag.TypeFilter == "Upgrade" ? "selected" : "")>Upgrade</option>
+                    <option value="Refund" @(ViewBag.TypeFilter == "Refund" ? "selected" : "")>Refund</option>
                 </select>
             </div>
 
@@ -103,9 +103,9 @@
                 <label for="plan">Plan</label>
                 <select id="plan" name="plan">
                     <option value="">All Plans</option>
-                    <option value="Basic">Basic</option>
-                    <option value="Pro">Pro</option>
-                    <option value="Elite">Elite</option>
+                    <option value="Basic" @(ViewBag.PlanFilter == "Basic" ? "selected" : "")>Basic</option>
+                    <option value="Pro" @(ViewBag.PlanFilter == "Pro" ? "selected" : "")>Pro</option>
+                    <option value="Elite" @(ViewBag.PlanFilter == "Elite" ? "selected" : "")>Elite</option>
                 </select>
             </div>
 

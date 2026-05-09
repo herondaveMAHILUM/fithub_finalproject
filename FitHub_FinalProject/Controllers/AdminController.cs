@@ -150,6 +150,7 @@ namespace FitHub_FinalProject.Controllers
             ViewBag.Search = search;
             ViewBag.PlanFilter = plan;
             ViewBag.StatusFilter = status;
+            ViewBag.GenderFilter = gender;
             ViewBag.DateFrom = dateFrom?.ToString("yyyy-MM-dd");
             ViewBag.DateTo = dateTo?.ToString("yyyy-MM-dd");
 
