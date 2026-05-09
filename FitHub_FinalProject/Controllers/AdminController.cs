@@ -343,6 +343,124 @@ namespace FitHub_FinalProject.Controllers
 
         public IActionResult Profile() => View();
 
-        public IActionResult Transactions() => View("Transaction");
+        [HttpGet]
+        public async Task<IActionResult> Transactions(
+            string? search, string? status, string? type, string? plan,
+            DateTime? dateFrom, DateTime? dateTo, int page = 1)
+        {
+            var query = _context.Transactions
+                .Include(t => t.User).ThenInclude(u => u.Membership).ThenInclude(m => m!.Plan)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(search))
+                query = query.Where(t => t.User.FullName.Contains(search) || t.TransactionId.ToString().Contains(search));
+            if (!string.IsNullOrWhiteSpace(status))
+                query = query.Where(t => t.Status == status);
+            if (!string.IsNullOrWhiteSpace(type))
+                query = query.Where(t => t.Type == type);
+            if (!string.IsNullOrWhiteSpace(plan))
+                query = query.Where(t => t.User.Membership != null && t.User.Membership.Plan != null && t.User.Membership.Plan.Name == plan);
+            if (dateFrom.HasValue)
+                query = query.Where(t => t.Date >= dateFrom.Value);
+            if (dateTo.HasValue)
+                query = query.Where(t => t.Date <= dateTo.Value.AddDays(1));
+
+            var totalCount = await query.CountAsync();
+            var totalPages = Math.Max(1, (int)Math.Ceiling(totalCount / (double)PageSize));
+            if (page < 1) page = 1;
+            if (page > totalPages) page = totalPages;
+
+            var transactions = await query
+                .OrderByDescending(t => t.Date)
+                .Skip((page - 1) * PageSize)
+                .Take(PageSize)
+                .Select(t => new
+                {
+                    t.TransactionId,
+                    MemberId = t.UserId,
+                    MemberName = t.User.FullName,
+                    Plan = t.User.Membership != null && t.User.Membership.Plan != null ? t.User.Membership.Plan.Name : "—",
+                    t.Type,
+                    t.Amount,
+                    t.PaymentMethod,
+                    t.Date,
+                    t.Status
+                })
+                .ToListAsync();
+
+            ViewBag.TotalTransactions = totalCount;
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.Search = search;
+            ViewBag.StatusFilter = status;
+            ViewBag.TypeFilter = type;
+            ViewBag.PlanFilter = plan;
+            ViewBag.DateFrom = dateFrom?.ToString("yyyy-MM-dd");
+            ViewBag.DateTo = dateTo?.ToString("yyyy-MM-dd");
+
+            var totalRevenue = await _context.Transactions
+                .Where(t => t.Status == "Paid")
+                .SumAsync(t => (decimal?)t.Amount) ?? 0m;
+            ViewBag.TotalRevenue = "₱" + totalRevenue.ToString("N2");
+
+            var monthStart = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1, 0, 0, 0, DateTimeKind.Utc);
+            var monthlyRevenue = await _context.Transactions
+                .Where(t => t.Status == "Paid" && t.Date >= monthStart)
+                .SumAsync(t => (decimal?)t.Amount) ?? 0m;
+            ViewBag.MonthlyRevenue = "₱" + monthlyRevenue.ToString("N2");
+
+            ViewBag.PendingCount = await _context.Transactions.CountAsync(t => t.Status == "Pending");
+            ViewBag.FailedCount = await _context.Transactions.CountAsync(t => t.Status == "Failed");
+            ViewBag.RefundedCount = await _context.Transactions.CountAsync(t => t.Status == "Refunded");
+
+            return View("Transaction", transactions);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> TransactionDetails(int id)
+        {
+            var tx = await _context.Transactions
+                .Include(t => t.User)
+                .FirstOrDefaultAsync(t => t.TransactionId == id);
+            if (tx == null)
+            {
+                TempData["ErrorMessage"] = "Transaction not found.";
+                return RedirectToAction("Transactions");
+            }
+            TempData["InfoMessage"] = $"#{tx.TransactionId} • {tx.User.FullName} • {tx.Type} • ₱{tx.Amount:N2} • {tx.Status} • {tx.Date:MMM dd, yyyy}";
+            return RedirectToAction("Transactions");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MarkAsPaid(int id)
+        {
+            var tx = await _context.Transactions.FirstOrDefaultAsync(t => t.TransactionId == id);
+            if (tx == null)
+            {
+                TempData["ErrorMessage"] = "Transaction not found.";
+                return RedirectToAction("Transactions");
+            }
+            tx.Status = "Paid";
+            await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = $"Transaction #{tx.TransactionId} marked as Paid.";
+            return RedirectToAction("Transactions");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RefundTransaction(int id)
+        {
+            var tx = await _context.Transactions.FirstOrDefaultAsync(t => t.TransactionId == id);
+            if (tx == null)
+            {
+                TempData["ErrorMessage"] = "Transaction not found.";
+                return RedirectToAction("Transactions");
+            }
+            tx.Status = "Refunded";
+            await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = $"Transaction #{tx.TransactionId} refunded.";
+            return RedirectToAction("Transactions");
+        }
     }
 }
