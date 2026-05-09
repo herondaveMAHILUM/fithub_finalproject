@@ -436,7 +436,7 @@ namespace FitHub_FinalProject.Controllers
 
         [HttpGet]
         public async Task<IActionResult> Transactions(
-            string? search, string? status, string? type, string? plan,
+            string? search, string? status, string? type, string? plan, string? method,
             DateTime? dateFrom, DateTime? dateTo, int page = 1)
         {
             var query = _context.Transactions
@@ -451,6 +451,8 @@ namespace FitHub_FinalProject.Controllers
                 query = query.Where(t => t.Type == type);
             if (!string.IsNullOrWhiteSpace(plan))
                 query = query.Where(t => t.User.Membership != null && t.User.Membership.Plan != null && t.User.Membership.Plan.Name == plan);
+            if (!string.IsNullOrWhiteSpace(method))
+                query = query.Where(t => t.PaymentMethod == method);
             if (dateFrom.HasValue)
                 query = query.Where(t => t.Date >= dateFrom.Value);
             if (dateTo.HasValue)
@@ -486,6 +488,7 @@ namespace FitHub_FinalProject.Controllers
             ViewBag.StatusFilter = status;
             ViewBag.TypeFilter = type;
             ViewBag.PlanFilter = plan;
+            ViewBag.MethodFilter = method;
             ViewBag.DateFrom = dateFrom?.ToString("yyyy-MM-dd");
             ViewBag.DateTo = dateTo?.ToString("yyyy-MM-dd");
 

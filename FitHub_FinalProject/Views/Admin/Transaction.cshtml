@@ -113,10 +113,10 @@
                 <label for="method">Payment Method</label>
                 <select id="method" name="method">
                     <option value="">All Methods</option>
-                    <option value="GCash">GCash</option>
-                    <option value="Maya">Maya</option>
-                    <option value="CreditCard">Credit Card</option>
-                    <option value="BankTransfer">Bank Transfer</option>
+                    <option value="GCash" @(ViewBag.MethodFilter == "GCash" ? "selected" : "")>GCash</option>
+                    <option value="Maya" @(ViewBag.MethodFilter == "Maya" ? "selected" : "")>Maya</option>
+                    <option value="CreditCard" @(ViewBag.MethodFilter == "CreditCard" ? "selected" : "")>Credit Card</option>
+                    <option value="BankTransfer" @(ViewBag.MethodFilter == "BankTransfer" ? "selected" : "")>Bank Transfer</option>
                 </select>
             </div>
 
