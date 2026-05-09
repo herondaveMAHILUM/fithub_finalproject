@@ -50,7 +50,13 @@ namespace FitHub_FinalProject.Controllers
                 return View();
             }
 
+            user.LastLoginAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+
             await SignInUserAsync(user, rememberMe);
+
+            if (user.IsAdmin)
+                return RedirectToAction("Dashboard", "Admin");
             return RedirectToAction("Dashboard", "User");
         }
 
@@ -322,6 +328,9 @@ namespace FitHub_FinalProject.Controllers
                 new(ClaimTypes.Name, user.FullName),
                 new(ClaimTypes.Email, user.Email)
             };
+            if (user.IsAdmin)
+                claims.Add(new Claim(ClaimTypes.Role, "Admin"));
+
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
