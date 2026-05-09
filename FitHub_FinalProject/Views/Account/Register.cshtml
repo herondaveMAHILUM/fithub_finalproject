@@ -107,3 +107,101 @@
 
 </main>
 
+@section Scripts {
+    <script>
+        (function () {
+            const form = document.querySelector('#register-container form');
+            if (!form) return;
+
+            const emailRegex = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
+            const phoneRegex = /^[\d\s+\-()]{7,20}$/;
+
+            function val(name) {
+                const el = form.querySelector('[name="' + name + '"]');
+                return el ? el.value.trim() : '';
+            }
+
+            function ageFromDob(dobStr) {
+                if (!dobStr) return null;
+                const dob = new Date(dobStr);
+                if (isNaN(dob.getTime())) return null;
+                const now = new Date();
+                let age = now.getFullYear() - dob.getFullYear();
+                const m = now.getMonth() - dob.getMonth();
+                if (m < 0 || (m === 0 && now.getDate() < dob.getDate())) age--;
+                return age;
+            }
+
+            form.addEventListener('submit', function (e) {
+                let valid = true;
+
+                const firstName = val('firstName');
+                const lastName = val('lastName');
+                const email = val('email');
+                const phone = val('phoneNumber');
+                const dob = val('dateOfBirth');
+                const gender = val('gender');
+                const address = val('address');
+                const password = form.querySelector('[name="password"]').value;
+                const confirm = form.querySelector('[name="confirmPassword"]').value;
+                const agreeTerms = form.querySelector('[name="agreeTerms"]');
+
+                if (!firstName || firstName.length < 2) {
+                    window.showToast('First name must be at least 2 characters.', 'error');
+                    valid = false;
+                }
+                if (!lastName || lastName.length < 2) {
+                    window.showToast('Last name must be at least 2 characters.', 'error');
+                    valid = false;
+                }
+                if (!email) {
+                    window.showToast('Email is required.', 'error');
+                    valid = false;
+                } else if (!emailRegex.test(email)) {
+                    window.showToast('Please enter a valid email address.', 'error');
+                    valid = false;
+                }
+                if (phone && !phoneRegex.test(phone)) {
+                    window.showToast('Phone number format is invalid.', 'error');
+                    valid = false;
+                }
+                if (!dob) {
+                    window.showToast('Date of birth is required.', 'error');
+                    valid = false;
+                } else {
+                    const age = ageFromDob(dob);
+                    if (age === null || age < 13) {
+                        window.showToast('You must be at least 13 years old to register.', 'error');
+                        valid = false;
+                    }
+                }
+                if (!gender) {
+                    window.showToast('Please select a gender option.', 'error');
+                    valid = false;
+                }
+                if (!address) {
+                    window.showToast('Address is required.', 'error');
+                    valid = false;
+                }
+                if (!password || password.length < 8) {
+                    window.showToast('Password must be at least 8 characters.', 'error');
+                    valid = false;
+                } else if (!/[A-Za-z]/.test(password) || !/\d/.test(password)) {
+                    window.showToast('Password must include both letters and numbers.', 'error');
+                    valid = false;
+                }
+                if (password !== confirm) {
+                    window.showToast('Passwords do not match.', 'error');
+                    valid = false;
+                }
+                if (agreeTerms && !agreeTerms.checked) {
+                    window.showToast('You must agree to the Terms and Conditions.', 'error');
+                    valid = false;
+                }
+
+                if (!valid) e.preventDefault();
+            });
+        })();
+    </script>
+}
+
