@@ -20,6 +20,10 @@ namespace FitHub_FinalProject.Models
         [Column(TypeName = "decimal(10,2)")]
         public decimal AnnualPrice { get; set; }
 
+        public string? Features { get; set; }
+
+        public int? MaxMembers { get; set; }
+
         public bool IsActive { get; set; } = true;
 
         // Navigation

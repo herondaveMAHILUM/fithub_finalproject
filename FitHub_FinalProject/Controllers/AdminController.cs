@@ -214,7 +214,132 @@ namespace FitHub_FinalProject.Controllers
             return File(bytes, "text/csv", fileName);
         }
 
-        public IActionResult Plans() => View();
+        [HttpGet]
+        public async Task<IActionResult> Plans(int? edit)
+        {
+            var plansList = await _context.MembershipPlans
+                .OrderBy(p => p.PlanId)
+                .Select(p => new
+                {
+                    Id = p.PlanId,
+                    PlanName = p.Name,
+                    p.Description,
+                    p.MonthlyPrice,
+                    p.AnnualPrice,
+                    p.Features,
+                    p.MaxMembers,
+                    MemberCount = p.Memberships.Count(m => m.Status == "Active"),
+                    TotalRevenue = p.Memberships
+                        .Where(m => m.Status == "Active")
+                        .Sum(m => m.BillingCycle == "annual" ? p.AnnualPrice : p.MonthlyPrice),
+                    Status = p.IsActive ? "Active" : "Inactive"
+                })
+                .ToListAsync();
+
+            ViewBag.TotalPlans = plansList.Count;
+            ViewBag.TotalSubscribers = plansList.Sum(p => p.MemberCount);
+            ViewBag.MostPopularPlan = plansList.OrderByDescending(p => p.MemberCount).Select(p => p.PlanName).FirstOrDefault() ?? "—";
+            ViewBag.TotalPlanRevenue = "₱" + plansList.Sum(p => p.TotalRevenue).ToString("N2");
+
+            if (edit.HasValue)
+            {
+                ViewBag.EditingPlan = plansList.FirstOrDefault(p => p.Id == edit.Value);
+            }
+
+            ViewBag.FeatureComparison = null;
+
+            return View(plansList);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddPlan(string planName, string description, decimal monthlyPrice, decimal annualPrice, string features, int? maxMembers, string status)
+        {
+            if (string.IsNullOrWhiteSpace(planName))
+            {
+                TempData["ErrorMessage"] = "Plan name is required.";
+                return RedirectToAction("Plans");
+            }
+
+            _context.MembershipPlans.Add(new MembershipPlan
+            {
+                Name = planName,
+                Description = description,
+                MonthlyPrice = monthlyPrice,
+                AnnualPrice = annualPrice,
+                Features = features,
+                MaxMembers = maxMembers,
+                IsActive = status != "Inactive"
+            });
+
+            await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = $"Plan '{planName}' created.";
+            return RedirectToAction("Plans");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdatePlan(int planId, string planName, string description, decimal monthlyPrice, decimal annualPrice, string features, int? maxMembers, string status)
+        {
+            var plan = await _context.MembershipPlans.FirstOrDefaultAsync(p => p.PlanId == planId);
+            if (plan == null)
+            {
+                TempData["ErrorMessage"] = "Plan not found.";
+                return RedirectToAction("Plans");
+            }
+
+            plan.Name = planName;
+            plan.Description = description;
+            plan.MonthlyPrice = monthlyPrice;
+            plan.AnnualPrice = annualPrice;
+            plan.Features = features;
+            plan.MaxMembers = maxMembers;
+            plan.IsActive = status != "Inactive";
+
+            await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = $"Plan '{planName}' updated.";
+            return RedirectToAction("Plans");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeletePlan(int id)
+        {
+            var plan = await _context.MembershipPlans.FirstOrDefaultAsync(p => p.PlanId == id);
+            if (plan == null)
+            {
+                TempData["ErrorMessage"] = "Plan not found.";
+                return RedirectToAction("Plans");
+            }
+
+            plan.IsActive = false;
+            await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = $"Plan '{plan.Name}' deactivated.";
+            return RedirectToAction("Plans");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> TogglePlanStatus(int id)
+        {
+            var plan = await _context.MembershipPlans.FirstOrDefaultAsync(p => p.PlanId == id);
+            if (plan == null)
+            {
+                TempData["ErrorMessage"] = "Plan not found.";
+                return RedirectToAction("Plans");
+            }
+
+            plan.IsActive = !plan.IsActive;
+            await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = $"Plan '{plan.Name}' is now {(plan.IsActive ? "active" : "inactive")}.";
+            return RedirectToAction("Plans");
+        }
+
+        [HttpGet]
+        public IActionResult AddPlan() => RedirectToAction("Plans");
+
+        [HttpGet]
+        public IActionResult EditPlan(int id) => RedirectToAction("Plans", new { edit = id });
 
         public IActionResult Profile() => View();
 
