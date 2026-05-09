@@ -295,3 +295,13 @@
     </section>
 
 </main>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('#billing-toggle input[name="billing"]').forEach(function (radio) {
+            radio.addEventListener('change', function () {
+                this.closest('form').submit();
+            });
+        });
+    </script>
+}
