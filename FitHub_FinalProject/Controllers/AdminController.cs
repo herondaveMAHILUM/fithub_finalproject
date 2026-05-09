@@ -1,4 +1,6 @@
 using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 using FitHub_FinalProject.Data;
 using FitHub_FinalProject.Models;
 using Microsoft.AspNetCore.Authentication;
@@ -13,10 +15,12 @@ namespace FitHub_FinalProject.Controllers
     {
         private const int PageSize = 10;
         private readonly FitHubDbContext _context;
+        private readonly IWebHostEnvironment _env;
 
-        public AdminController(FitHubDbContext context)
+        public AdminController(FitHubDbContext context, IWebHostEnvironment env)
         {
             _context = context;
+            _env = env;
         }
 
         public async Task<IActionResult> Dashboard()
@@ -416,6 +420,121 @@ namespace FitHub_FinalProject.Controllers
 
             await HttpContext.SignOutAsync(Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Login", "Account");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateProfile(string fullName, string email, string phoneNumber, IFormFile? ProfilePhoto)
+        {
+            var adminId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var admin = await _context.Users.FirstOrDefaultAsync(u => u.UserId == adminId);
+            if (admin == null) return RedirectToAction("Login", "Account");
+
+            if (string.IsNullOrWhiteSpace(fullName) || string.IsNullOrWhiteSpace(email))
+            {
+                TempData["ErrorMessage"] = "Full name and email are required.";
+                return RedirectToAction("Profile");
+            }
+
+            if (await _context.Users.AnyAsync(u => u.Email == email && u.UserId != adminId))
+            {
+                TempData["ErrorMessage"] = "That email is already in use.";
+                return RedirectToAction("Profile");
+            }
+
+            admin.FullName = fullName.Trim();
+            admin.Email = email.Trim();
+            admin.PhoneNumber = string.IsNullOrWhiteSpace(phoneNumber) ? null : phoneNumber.Trim();
+
+            if (ProfilePhoto != null && ProfilePhoto.Length > 0)
+            {
+                var ext = Path.GetExtension(ProfilePhoto.FileName).ToLowerInvariant();
+                if (ext != ".jpg" && ext != ".jpeg" && ext != ".png")
+                {
+                    TempData["ErrorMessage"] = "Profile photo must be a JPG or PNG file.";
+                    return RedirectToAction("Profile");
+                }
+                if (ProfilePhoto.Length > 2 * 1024 * 1024)
+                {
+                    TempData["ErrorMessage"] = "Profile photo must be 2MB or smaller.";
+                    return RedirectToAction("Profile");
+                }
+
+                var uploadsDir = Path.Combine(_env.WebRootPath, "uploads", "profile");
+                Directory.CreateDirectory(uploadsDir);
+                var fileName = $"{adminId}{ext}";
+                var filePath = Path.Combine(uploadsDir, fileName);
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                    await ProfilePhoto.CopyToAsync(stream);
+                admin.ProfilePhotoPath = $"/uploads/profile/{fileName}";
+            }
+
+            await _context.SaveChangesAsync();
+            await LogActivity("Updated profile", admin.FullName);
+            TempData["SuccessMessage"] = "Profile updated successfully.";
+            return RedirectToAction("Profile");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword(string currentPassword, string newPassword, string confirmPassword)
+        {
+            var adminId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var admin = await _context.Users.FirstOrDefaultAsync(u => u.UserId == adminId);
+            if (admin == null) return RedirectToAction("Login", "Account");
+
+            if (HashPassword(currentPassword ?? "") != admin.PasswordHash)
+            {
+                TempData["ErrorMessage"] = "Current password is incorrect.";
+                return RedirectToAction("Profile");
+            }
+
+            if (string.IsNullOrWhiteSpace(newPassword) || newPassword.Length < 8)
+            {
+                TempData["ErrorMessage"] = "New password must be at least 8 characters.";
+                return RedirectToAction("Profile");
+            }
+
+            if (newPassword != confirmPassword)
+            {
+                TempData["ErrorMessage"] = "New passwords do not match.";
+                return RedirectToAction("Profile");
+            }
+
+            admin.PasswordHash = HashPassword(newPassword);
+            await _context.SaveChangesAsync();
+            await LogActivity("Changed password", null);
+            TempData["SuccessMessage"] = "Password changed successfully.";
+            return RedirectToAction("Profile");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ExportTransactions(string format = "csv")
+        {
+            var rows = await _context.Transactions
+                .Include(t => t.User).ThenInclude(u => u.Membership).ThenInclude(m => m!.Plan)
+                .OrderByDescending(t => t.Date)
+                .ToListAsync();
+
+            var sb = new System.Text.StringBuilder();
+            sb.AppendLine("TransactionId,Member,Plan,Type,Amount,PaymentMethod,Date,Status");
+            foreach (var t in rows)
+            {
+                var planName = t.User?.Membership?.Plan?.Name ?? "—";
+                sb.AppendLine($"{t.TransactionId},\"{t.User?.FullName}\",{planName},{t.Type},{t.Amount:F2},{t.PaymentMethod},{t.Date:yyyy-MM-dd},{t.Status}");
+            }
+
+            var bytes = System.Text.Encoding.UTF8.GetBytes(sb.ToString());
+            var fileName = format == "pdf" ? "transactions.pdf" : "transactions.csv";
+            await LogActivity("Exported transactions", format.ToUpper());
+            return File(bytes, "text/csv", fileName);
+        }
+
+        private static string HashPassword(string password)
+        {
+            using var sha256 = SHA256.Create();
+            var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+            return Convert.ToBase64String(bytes);
         }
 
         private async Task LogActivity(string action, string? target)
