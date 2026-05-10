@@ -30,9 +30,9 @@
                 <label for="plan">Plan</label>
                 <select id="plan" name="plan">
                     <option value="">All Plans</option>
-                    <option value="Basic" @(ViewBag.PlanFilter == "Basic" ? "selected" : "")>Basic</option>
-                    <option value="Pro" @(ViewBag.PlanFilter == "Pro" ? "selected" : "")>Pro</option>
-                    <option value="Elite" @(ViewBag.PlanFilter == "Elite" ? "selected" : "")>Elite</option>
+                    <option value="Basic" selected="@(ViewBag.PlanFilter == "Basic")">Basic</option>
+                    <option value="Pro" selected="@(ViewBag.PlanFilter == "Pro")">Pro</option>
+                    <option value="Elite" selected="@(ViewBag.PlanFilter == "Elite")">Elite</option>
                 </select>
             </div>
 
@@ -40,10 +40,10 @@
                 <label for="status">Status</label>
                 <select id="status" name="status">
                     <option value="">All Statuses</option>
-                    <option value="Active" @(ViewBag.StatusFilter == "Active" ? "selected" : "")>Active</option>
-                    <option value="Expired" @(ViewBag.StatusFilter == "Expired" ? "selected" : "")>Expired</option>
-                    <option value="Cancelled" @(ViewBag.StatusFilter == "Cancelled" ? "selected" : "")>Cancelled</option>
-                    <option value="Frozen" @(ViewBag.StatusFilter == "Frozen" ? "selected" : "")>Frozen</option>
+                    <option value="Active" selected="@(ViewBag.StatusFilter == "Active")">Active</option>
+                    <option value="Expired" selected="@(ViewBag.StatusFilter == "Expired")">Expired</option>
+                    <option value="Cancelled" selected="@(ViewBag.StatusFilter == "Cancelled")">Cancelled</option>
+                    <option value="Frozen" selected="@(ViewBag.StatusFilter == "Frozen")">Frozen</option>
                 </select>
             </div>
 
@@ -51,9 +51,9 @@
                 <label for="gender">Gender</label>
                 <select id="gender" name="gender">
                     <option value="">All</option>
-                    <option value="Male" @(ViewBag.GenderFilter == "Male" ? "selected" : "")>Male</option>
-                    <option value="Female" @(ViewBag.GenderFilter == "Female" ? "selected" : "")>Female</option>
-                    <option value="Other" @(ViewBag.GenderFilter == "Other" ? "selected" : "")>Other</option>
+                    <option value="Male" selected="@(ViewBag.GenderFilter == "Male")">Male</option>
+                    <option value="Female" selected="@(ViewBag.GenderFilter == "Female")">Female</option>
+                    <option value="Other" selected="@(ViewBag.GenderFilter == "Other")">Other</option>
                 </select>
             </div>
 
