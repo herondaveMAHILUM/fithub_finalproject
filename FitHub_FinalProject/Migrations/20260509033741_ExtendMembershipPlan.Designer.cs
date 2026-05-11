@@ -240,7 +240,7 @@ namespace FitHub_FinalProject.Migrations
                     b.ToTable("Trainers");
                 });
 
-            modelBuilder.Entity("FitHub_FinalProject.Models.Transaction", b =>
+            modelBuilder.Entity("FitHub_FinalProject.Models.Transactions", b =>
                 {
                     b.Property<int>("TransactionId")
                         .ValueGeneratedOnAdd()
@@ -462,7 +462,7 @@ namespace FitHub_FinalProject.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("FitHub_FinalProject.Models.Transaction", b =>
+            modelBuilder.Entity("FitHub_FinalProject.Models.Transactions", b =>
                 {
                     b.HasOne("FitHub_FinalProject.Models.User", "User")
                         .WithMany("Transactions")

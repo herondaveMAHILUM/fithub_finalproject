@@ -70,7 +70,7 @@ namespace FitHub_FinalProject.Controllers
                 .Take(5)
                 .Select(t => new
                 {
-                    MemberName = t.User.FullName,
+                    MemberName = t.User != null ? t.User.FullName : "Unknown",
                     t.Amount,
                     t.Type,
                     t.Date,
@@ -78,9 +78,6 @@ namespace FitHub_FinalProject.Controllers
                 })
                 .ToListAsync();
 
-            // FIX: load plans + active memberships into memory first, then compute revenue in C#.
-            // SQL cannot aggregate a conditional (BillingCycle == "annual" ? AnnualPrice : MonthlyPrice)
-            // that references two outer columns (p.AnnualPrice and p.MonthlyPrice) simultaneously.
             var plansRaw = await _context.MembershipPlans
                 .Include(p => p.Memberships)
                 .OrderBy(p => p.PlanId)
@@ -230,9 +227,6 @@ namespace FitHub_FinalProject.Controllers
         [HttpGet]
         public async Task<IActionResult> Plans(int? edit)
         {
-            // FIX: load plans + memberships into memory first, then compute revenue in C#.
-            // The conditional Sum (BillingCycle == "annual" ? AnnualPrice : MonthlyPrice) references
-            // two outer-scope columns which SQL Server cannot aggregate in a single expression.
             var plansRaw = await _context.MembershipPlans
                 .Include(p => p.Memberships)
                 .OrderBy(p => p.PlanId)
@@ -400,15 +394,13 @@ namespace FitHub_FinalProject.Controllers
         {
             if (confirm != "true") return RedirectToAction("Profile");
 
-            var adminId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-
             _context.Transactions.RemoveRange(_context.Transactions);
             _context.Notifications.RemoveRange(_context.Notifications);
             _context.Memberships.RemoveRange(_context.Memberships);
             _context.Users.RemoveRange(_context.Users.Where(u => !u.IsAdmin));
             await _context.SaveChangesAsync();
 
-            await LogActivity("Reset system data", "All members, memberships, transactions, notifications cleared");
+            await LogActivity("Reset system data", "All members, memberships, Transactionss, notifications cleared");
 
             TempData["SuccessMessage"] = "System data has been reset.";
             return RedirectToAction("Profile");
@@ -535,8 +527,8 @@ namespace FitHub_FinalProject.Controllers
             }
 
             var bytes = System.Text.Encoding.UTF8.GetBytes(sb.ToString());
-            var fileName = format == "pdf" ? "transactions.pdf" : "transactions.csv";
-            await LogActivity("Exported transactions", format.ToUpper());
+            var fileName = format == "pdf" ? "Transactionss.pdf" : "Transactionss.csv";
+            await LogActivity("Exported Transactionss", format.ToUpper());
             return File(bytes, "text/csv", fileName);
         }
 
@@ -545,9 +537,7 @@ namespace FitHub_FinalProject.Controllers
             string? search, string? status, string? type, string? plan, string? method,
             DateTime? dateFrom, DateTime? dateTo, int page = 1)
         {
-            var query = _context.Transactions
-                .Include(t => t.User).ThenInclude(u => u.Membership).ThenInclude(m => m!.Plan)
-                .AsQueryable();
+            var query = _context.Transactions.AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(search))
                 query = query.Where(t => t.User.FullName.Contains(search) || t.TransactionId.ToString().Contains(search));
@@ -569,21 +559,23 @@ namespace FitHub_FinalProject.Controllers
             if (page < 1) page = 1;
             if (page > totalPages) page = totalPages;
 
-            var transactions = await query
+            var txList = await query
                 .OrderByDescending(t => t.Date)
                 .Skip((page - 1) * PageSize)
                 .Take(PageSize)
-                .Select(t => new
+                .Select(t => new TransactionsViewModel
                 {
-                    t.TransactionId,
+                    TransactionId = t.TransactionId,
                     MemberId = t.UserId,
-                    MemberName = t.User.FullName,
-                    Plan = t.User.Membership != null && t.User.Membership.Plan != null ? t.User.Membership.Plan.Name : "—",
-                    t.Type,
-                    t.Amount,
-                    t.PaymentMethod,
-                    t.Date,
-                    t.Status
+                    MemberName = t.User != null ? t.User.FullName : "Unknown",
+                    Plan = t.User != null && t.User.Membership != null && t.User.Membership.Plan != null
+                        ? t.User.Membership.Plan.Name
+                        : "—",
+                    Type = t.Type,
+                    Amount = t.Amount,
+                    PaymentMethod = t.PaymentMethod,
+                    Date = t.Date,
+                    Status = t.Status
                 })
                 .ToListAsync();
 
@@ -613,21 +605,21 @@ namespace FitHub_FinalProject.Controllers
             ViewBag.FailedCount = await _context.Transactions.CountAsync(t => t.Status == "Failed");
             ViewBag.RefundedCount = await _context.Transactions.CountAsync(t => t.Status == "Refunded");
 
-            return View("Transaction", transactions);
+            return View("Transactions", txList);
         }
 
         [HttpGet]
-        public async Task<IActionResult> TransactionDetails(int id)
+        public async Task<IActionResult> TransactionsDetails(int id)
         {
             var tx = await _context.Transactions
                 .Include(t => t.User)
                 .FirstOrDefaultAsync(t => t.TransactionId == id);
             if (tx == null)
             {
-                TempData["ErrorMessage"] = "Transaction not found.";
+                TempData["ErrorMessage"] = "Transactions not found.";
                 return RedirectToAction("Transactions");
             }
-            TempData["InfoMessage"] = $"#{tx.TransactionId} • {tx.User.FullName} • {tx.Type} • ₱{tx.Amount:N2} • {tx.Status} • {tx.Date:MMM dd, yyyy}";
+            TempData["InfoMessage"] = $"#{tx.TransactionId} • {tx.User?.FullName ?? "Unknown"} • {tx.Type} • ₱{tx.Amount:N2} • {tx.Status} • {tx.Date:MMM dd, yyyy}";
             return RedirectToAction("Transactions");
         }
 
@@ -638,30 +630,30 @@ namespace FitHub_FinalProject.Controllers
             var tx = await _context.Transactions.FirstOrDefaultAsync(t => t.TransactionId == id);
             if (tx == null)
             {
-                TempData["ErrorMessage"] = "Transaction not found.";
+                TempData["ErrorMessage"] = "Transactions not found.";
                 return RedirectToAction("Transactions");
             }
             tx.Status = "Paid";
             await _context.SaveChangesAsync();
-            await LogActivity("Marked transaction as Paid", $"Transaction #{tx.TransactionId}");
-            TempData["SuccessMessage"] = $"Transaction #{tx.TransactionId} marked as Paid.";
+            await LogActivity("Marked Transactions as Paid", $"Transactions #{tx.TransactionId}");
+            TempData["SuccessMessage"] = $"Transactions #{tx.TransactionId} marked as Paid.";
             return RedirectToAction("Transactions");
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RefundTransaction(int id)
+        public async Task<IActionResult> RefundTransactions(int id)
         {
             var tx = await _context.Transactions.FirstOrDefaultAsync(t => t.TransactionId == id);
             if (tx == null)
             {
-                TempData["ErrorMessage"] = "Transaction not found.";
+                TempData["ErrorMessage"] = "Transactions not found.";
                 return RedirectToAction("Transactions");
             }
             tx.Status = "Refunded";
             await _context.SaveChangesAsync();
-            await LogActivity("Refunded transaction", $"Transaction #{tx.TransactionId}");
-            TempData["SuccessMessage"] = $"Transaction #{tx.TransactionId} refunded.";
+            await LogActivity("Refunded Transactions", $"Transactions #{tx.TransactionId}");
+            TempData["SuccessMessage"] = $"Transactions #{tx.TransactionId} refunded.";
             return RedirectToAction("Transactions");
         }
 

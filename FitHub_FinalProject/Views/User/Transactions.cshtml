@@ -6,14 +6,14 @@
     <link rel="stylesheet" href="~/css/transaction.css" asp-append-version="true" />
 }
 
-<main id="transaction-page">
+<main id="Transactions-page">
 
-    <section id="transaction-hero">
-        <h1>Transaction History</h1>
+    <section id="Transactions-hero">
+        <h1>Transactions History</h1>
         <p>View and track all your FitHub payments and billing activity.</p>
     </section>
 
-    <section id="transaction-summary">
+    <section id="Transactions-summary">
 
         <div>
             <h3>Total Paid</h3>
@@ -41,22 +41,22 @@
 
     </section>
 
-    <section id="transaction-filters">
-        <form asp-controller="Transaction" asp-action="Index" method="get">
+    <section id="Transactions-filters">
+        <form asp-controller="Transactions" asp-action="Index" method="get">
 
             <div>
                 <label for="search">Search</label>
-                <input type="text" id="search" name="search" value="@ViewBag.Search" placeholder="Search transactions..." />
+                <input type="text" id="search" name="search" value="@ViewBag.Search" placeholder="Search Transactions..." />
             </div>
 
             <div>
                 <label for="status">Status</label>
                 <select id="status" name="status">
                     <option value="">All Statuses</option>
-                    <option value="Paid" @(ViewBag.StatusFilter == "Paid" ? "selected" : "")>Paid</option>
-                    <option value="Pending" @(ViewBag.StatusFilter == "Pending" ? "selected" : "")>Pending</option>
-                    <option value="Failed" @(ViewBag.StatusFilter == "Failed" ? "selected" : "")>Failed</option>
-                    <option value="Refunded" @(ViewBag.StatusFilter == "Refunded" ? "selected" : "")>Refunded</option>
+                    <option value="Paid" selected="@(ViewBag.StatusFilter == "Paid")">Paid</option>
+                    <option value="Pending" selected="@(ViewBag.StatusFilter == "Pending")">Pending</option>
+                    <option value="Failed" selected="@(ViewBag.StatusFilter == "Failed")">Failed</option>
+                    <option value="Refunded" selected="@(ViewBag.StatusFilter == "Refunded")">Refunded</option>
                 </select>
             </div>
 
@@ -64,10 +64,10 @@
                 <label for="type">Type</label>
                 <select id="type" name="type">
                     <option value="">All Types</option>
-                    <option value="Subscription" @(ViewBag.TypeFilter == "Subscription" ? "selected" : "")>Subscription</option>
-                    <option value="Upgrade" @(ViewBag.TypeFilter == "Upgrade" ? "selected" : "")>Upgrade</option>
-                    <option value="Renewal" @(ViewBag.TypeFilter == "Renewal" ? "selected" : "")>Renewal</option>
-                    <option value="Refund" @(ViewBag.TypeFilter == "Refund" ? "selected" : "")>Refund</option>
+                    <option value="Subscription" selected="@(ViewBag.TypeFilter == "Subscription")">Subscription</option>
+                    <option value="Upgrade" selected="@(ViewBag.TypeFilter == "Upgrade")">Upgrade</option>
+                    <option value="Renewal" selected="@(ViewBag.TypeFilter == "Renewal")">Renewal</option>
+                    <option value="Refund" selected="@(ViewBag.TypeFilter == "Refund")">Refund</option>
                 </select>
             </div>
 
@@ -83,20 +83,20 @@
 
             <div>
                 <button type="submit">Filter</button>
-                <a asp-controller="Transaction" asp-action="Index">Reset</a>
+                <a asp-controller="Transactions" asp-action="Index">Reset</a>
             </div>
 
         </form>
     </section>
 
-    <section id="transaction-table-section">
+    <section id="Transactions-table-section">
 
         @if (Model != null && Model.Count > 0)
         {
-            <table id="transaction-table">
+            <table id="Transactions-table">
                 <thead>
                     <tr>
-                        <th>Transaction ID</th>
+                        <th>Transactions ID</th>
                         <th>Date</th>
                         <th>Description</th>
                         <th>Type</th>
@@ -107,20 +107,20 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var transaction in Model)
+                    @foreach (var Transactions in Model)
                     {
                         <tr>
-                            <td>@transaction.TransactionId</td>
-                            <td>@transaction.Date.ToString("MMM dd, yyyy")</td>
-                            <td>@transaction.Description</td>
-                            <td>@transaction.Type</td>
-                            <td>@transaction.Amount.ToString("C")</td>
-                            <td>@transaction.PaymentMethod</td>
+                            <td>@Transactions.TransactionId</td>
+                            <td>@Transactions.Date.ToString("MMM dd, yyyy")</td>
+                            <td>@Transactions.Description</td>
+                            <td>@Transactions.Type</td>
+                            <td>@Transactions.Amount.ToString("C")</td>
+                            <td>@Transactions.PaymentMethod</td>
                             <td>
-                                <span>@transaction.Status</span>
+                                <span>@Transactions.Status</span>
                             </td>
                             <td>
-                                <a asp-controller="Transaction" asp-action="Details" asp-route-id="@transaction.TransactionId">
+                                <a asp-controller="Transactions" asp-action="Details" asp-route-id="@Transactions.TransactionId">
                                     View
                                 </a>
                             </td>
@@ -129,10 +129,10 @@
                 </tbody>
             </table>
 
-            <div id="transaction-pagination">
+            <div id="Transactions-pagination">
                 @if (ViewBag.CurrentPage > 1)
                 {
-                    <a asp-controller="Transaction" asp-action="Index"
+                    <a asp-controller="Transactions" asp-action="Index"
                            asp-route-page="@(ViewBag.CurrentPage - 1)"
                            asp-route-search="@ViewBag.Search"
                            asp-route-status="@ViewBag.StatusFilter"
@@ -145,7 +145,7 @@
 
                 @if (ViewBag.CurrentPage < ViewBag.TotalPages)
                 {
-                    <a asp-controller="Transaction" asp-action="Index"
+                    <a asp-controller="Transactions" asp-action="Index"
                            asp-route-page="@(ViewBag.CurrentPage + 1)"
                            asp-route-search="@ViewBag.Search"
                            asp-route-status="@ViewBag.StatusFilter"
@@ -157,8 +157,8 @@
         }
         else
         {
-            <div id="no-transactions">
-                <p>No transactions found.</p>
+            <div id="no-Transactions">
+                <p>No Transactions found.</p>
                 <a asp-controller="Membership" asp-action="Index">Browse Membership Plans</a>
             </div>
         }

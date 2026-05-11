@@ -114,10 +114,10 @@
 
         <div id="dashboard-right">
 
-            <div id="recent-transactions-card">
+            <div id="recent-Transactions-card">
                 <div class="card-header">
                     <h2>Recent Transactions</h2>
-                    <a asp-controller="Transaction" asp-action="Index">View All &rarr;</a>
+                    <a asp-controller="Transactions" asp-action="Index">View All &rarr;</a>
                 </div>
                 <table>
                     <thead>
@@ -131,20 +131,20 @@
                     <tbody>
                         @if (ViewBag.RecentTransactions != null && ViewBag.RecentTransactions.Count > 0)
                         {
-                            foreach (var transaction in ViewBag.RecentTransactions)
+                            foreach (var Transactions in ViewBag.RecentTransactions)
                             {
                                 <tr>
-                                    <td>@transaction.Date</td>
-                                    <td>@transaction.Description</td>
-                                    <td>@transaction.Amount</td>
-                                    <td>@transaction.Status</td>
+                                    <td>@Transactions.Date</td>
+                                    <td>@Transactions.Description</td>
+                                    <td>@Transactions.Amount</td>
+                                    <td>@Transactions.Status</td>
                                 </tr>
                             }
                         }
                         else
                         {
                             <tr>
-                                <td colspan="4">No transactions found.</td>
+                                <td colspan="4">No Transactions found.</td>
                             </tr>
                         }
                     </tbody>

@@ -392,7 +392,7 @@
         color: var(--lime);
     }
 
-#recent-transactions-card {
+#recent-Transactions-card {
     background-color: var(--black-card);
     border: 1px solid var(--black-border);
     border-radius: var(--radius-md);

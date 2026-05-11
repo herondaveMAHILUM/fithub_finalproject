@@ -21,7 +21,6 @@
 
     <div id="checkout-layout">
 
-        @* Order Summary *@
         <aside id="order-summary">
             <h2>Order Summary</h2>
 
@@ -58,11 +57,9 @@
             </div>
         </aside>
 
-        @* Payment Form *@
         <section id="payment-form-section">
             <h2>Payment Method</h2>
 
-            @* Method Selector *@
             <div id="method-tabs">
                 <button type="button" class="method-tab active" data-method="GCash">
                     <span>GCash</span>
@@ -75,7 +72,6 @@
                 </button>
             </div>
 
-            @* GCash Panel *@
             <div class="method-panel active" id="panel-GCash">
                 <div class="method-logo gcash-logo">
                     <span>G</span><strong>Cash</strong>
@@ -89,11 +85,10 @@
                     </div>
                 </div>
                 <div class="method-note">
-                    A payment request will be sent to your GCash app. Open the app and approve the transaction.
+                    A payment request will be sent to your GCash app. Open the app and approve the Transactions.
                 </div>
             </div>
 
-            @* Maya Panel *@
             <div class="method-panel" id="panel-Maya">
                 <div class="method-logo maya-logo">
                     <span>maya</span>
@@ -107,11 +102,10 @@
                     </div>
                 </div>
                 <div class="method-note">
-                    A payment request will be sent to your Maya app. Open the app and approve the transaction.
+                    A payment request will be sent to your Maya app. Open the app and approve the Transactions.
                 </div>
             </div>
 
-            @* Card Panel *@
             <div class="method-panel" id="panel-Card">
                 <div class="form-row">
                     <div class="form-group full-width">
@@ -140,7 +134,6 @@
                 </div>
             </div>
 
-            @* Hidden POST form *@
             <form id="payment-submit-form" asp-controller="Membership" asp-action="ProcessPayment" method="post">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="planId"        value="@plan?.PlanId" />
@@ -165,7 +158,6 @@
 
 </main>
 
-@* Payment Loading Overlay *@
 <div id="payment-overlay" style="display:none;">
     <div id="overlay-card">
         <div class="overlay-spinner"></div>

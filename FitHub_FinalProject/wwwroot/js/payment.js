@@ -125,7 +125,7 @@ function initPaymentPage(amountStr) {
                 'Authenticating your account...',
                 'Sending payment request to app...',
                 'Waiting for app confirmation...',
-                'Transaction confirmed by GCash...',
+                'Transactions confirmed by GCash...',
                 'Verifying payment reference...',
             ];
         } else if (method === 'Maya') {
@@ -134,7 +134,7 @@ function initPaymentPage(amountStr) {
                 'Authenticating your account...',
                 'Sending payment request to app...',
                 'Waiting for app confirmation...',
-                'Transaction confirmed by Maya...',
+                'Transactions confirmed by Maya...',
                 'Verifying payment reference...',
             ];
         } else {
@@ -143,7 +143,7 @@ function initPaymentPage(amountStr) {
                 'Contacting card issuer...',
                 'Performing 3D Secure check...',
                 'Authorization in progress...',
-                'Transaction approved by bank...',
+                'Transactions approved by bank...',
                 'Verifying payment reference...',
             ];
         }

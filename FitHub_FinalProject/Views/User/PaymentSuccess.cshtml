@@ -39,7 +39,7 @@
             <div class="receipt-divider dashed"></div>
 
             <div class="receipt-row">
-                <span class="receipt-label">Transaction ID</span>
+                <span class="receipt-label">Transactions ID</span>
                 <span class="receipt-value">#@txId</span>
             </div>
             <div class="receipt-row">
@@ -62,7 +62,7 @@
                 <span class="receipt-value">@(billing == "annual" ? "Annual" : "Monthly")</span>
             </div>
             <div class="receipt-row">
-                <span class="receipt-label">Transaction Type</span>
+                <span class="receipt-label">Transactions Type</span>
                 <span class="receipt-value">@txType</span>
             </div>
             <div class="receipt-row">
@@ -85,7 +85,7 @@
 
             <p id="receipt-footer">
                 Thank you for choosing FitHub! This receipt has been saved to your account.<br />
-                You can view all transactions in your <a asp-controller="Transaction" asp-action="Index">Transaction History</a>.
+                You can view all Transactions in your <a asp-controller="Transactions" asp-action="Index">Transactions History</a>.
             </p>
         </div>
 
@@ -93,7 +93,7 @@
             <a asp-controller="User" asp-action="Dashboard" class="btn-primary">
                 Go to Dashboard
             </a>
-            <a asp-controller="Transaction" asp-action="Index" class="btn-secondary">
+            <a asp-controller="Transactions" asp-action="Index" class="btn-secondary">
                 View Transactions
             </a>
         </div>

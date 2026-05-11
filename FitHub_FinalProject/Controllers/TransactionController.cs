@@ -9,12 +9,12 @@ using Microsoft.EntityFrameworkCore;
 namespace FitHub_FinalProject.Controllers
 {
     [Authorize]
-    public class TransactionController : Controller
+    public class TransactionsController : Controller
     {
         private const int PageSize = 10;
         private readonly FitHubDbContext _context;
 
-        public TransactionController(FitHubDbContext context)
+        public TransactionsController(FitHubDbContext context)
         {
             _context = context;
         }
@@ -45,7 +45,7 @@ namespace FitHub_FinalProject.Controllers
             if (page < 1) page = 1;
             if (page > totalPages) page = totalPages;
 
-            var transactions = await query
+            var Transactions = await query
                 .OrderByDescending(t => t.Date)
                 .Skip((page - 1) * PageSize)
                 .Take(PageSize)
@@ -89,7 +89,7 @@ namespace FitHub_FinalProject.Controllers
             ViewBag.CurrentPage = page;
             ViewBag.TotalPages = totalPages;
 
-            return View("~/Views/User/Transaction.cshtml", transactions);
+            return View("~/Views/User/Transactions.cshtml", Transactions);
         }
 
         [HttpGet]
@@ -101,7 +101,7 @@ namespace FitHub_FinalProject.Controllers
 
             if (tx == null)
             {
-                TempData["ErrorMessage"] = "Transaction not found.";
+                TempData["ErrorMessage"] = "Transactions not found.";
                 return RedirectToAction("Index");
             }
 
@@ -127,7 +127,7 @@ namespace FitHub_FinalProject.Controllers
             }
 
             var bytes = Encoding.UTF8.GetBytes(sb.ToString());
-            var fileName = format == "pdf" ? "transactions.pdf" : "transactions.csv";
+            var fileName = format == "pdf" ? "Transactions.pdf" : "Transactions.csv";
             return File(bytes, "text/csv", fileName);
         }
     }

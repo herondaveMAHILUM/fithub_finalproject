@@ -30,13 +30,13 @@ namespace FitHub_FinalProject.Filters
                         .Take(5)
                         .ToListAsync();
 
-                    var notifList = rawNotifs.Select(n => new
+                    var notifList = rawNotifs.Select(n => new Dictionary<string, object?>
                     {
-                        n.Type,
-                        n.Title,
-                        Description = n.Description ?? "",
-                        TimeAgo = TimeAgo(n.CreatedAt)
-                    }).Cast<dynamic>().ToList();
+                        ["Type"] = n.Type,
+                        ["Title"] = n.Title,
+                        ["Description"] = n.Description ?? "",
+                        ["TimeAgo"] = TimeAgo(n.CreatedAt)
+                    }).ToList();
 
                     var unreadCount = await _context.Notifications
                         .CountAsync(n => n.UserId == userId && !n.IsRead);

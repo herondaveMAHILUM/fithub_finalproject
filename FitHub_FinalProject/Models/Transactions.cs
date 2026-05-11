@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FitHub_FinalProject.Models
 {
-    public class Transaction
+    public class Transactions
     {
         [Key]
         public int TransactionId { get; set; }
@@ -14,7 +14,7 @@ namespace FitHub_FinalProject.Models
         public string Description { get; set; } = string.Empty;
 
         [Required, MaxLength(30)]
-        public string Type { get; set; } = string.Empty; // Subscription, Upgrade, Renewal, Refund
+        public string Type { get; set; } = string.Empty;
 
         [Column(TypeName = "decimal(10,2)")]
         public decimal Amount { get; set; }
@@ -23,11 +23,10 @@ namespace FitHub_FinalProject.Models
         public string PaymentMethod { get; set; } = string.Empty;
 
         [Required, MaxLength(20)]
-        public string Status { get; set; } = "Paid"; // Paid, Pending, Failed, Refunded
+        public string Status { get; set; } = "Paid";
 
         public DateTime Date { get; set; } = DateTime.UtcNow;
 
-        // Navigation
         public User User { get; set; } = null!;
     }
 }

@@ -1,29 +1,29 @@
-﻿#transaction-page {
+﻿#Transactions-page {
     max-width: var(--max-width);
     margin: 0 auto;
     padding: 60px 40px 80px;
 }
 
-#transaction-hero {
+#Transactions-hero {
     margin-bottom: 40px;
 }
 
-    #transaction-hero h1 {
+    #Transactions-hero h1 {
         margin-bottom: 10px;
     }
 
-    #transaction-hero p {
+    #Transactions-hero p {
         font-size: 1rem;
     }
 
-#transaction-summary {
+#Transactions-summary {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 20px;
     margin-bottom: 36px;
 }
 
-    #transaction-summary > div {
+    #Transactions-summary > div {
         background-color: var(--black-card);
         border: 1px solid var(--black-border);
         border-radius: var(--radius-md);
@@ -33,7 +33,7 @@
         gap: 6px;
     }
 
-        #transaction-summary > div h3 {
+        #Transactions-summary > div h3 {
             font-size: 0.75rem;
             font-family: var(--font-body);
             font-weight: 600;
@@ -42,7 +42,7 @@
             color: var(--white-muted);
         }
 
-        #transaction-summary > div p {
+        #Transactions-summary > div p {
             font-family: var(--font-heading);
             font-size: 1.8rem;
             font-weight: 700;
@@ -50,14 +50,14 @@
             line-height: 1;
         }
 
-        #transaction-summary > div span {
+        #Transactions-summary > div span {
             font-size: 0.78rem;
             color: var(--white-muted);
             text-transform: uppercase;
             letter-spacing: 0.05em;
         }
 
-#transaction-filters {
+#Transactions-filters {
     background-color: var(--black-card);
     border: 1px solid var(--black-border);
     border-radius: var(--radius-md);
@@ -65,30 +65,30 @@
     margin-bottom: 28px;
 }
 
-    #transaction-filters form {
+    #Transactions-filters form {
         display: grid;
         grid-template-columns: 2fr 1fr 1fr 1fr 1fr auto;
         gap: 16px;
         align-items: end;
     }
 
-        #transaction-filters form > div {
+        #Transactions-filters form > div {
             margin-bottom: 0;
         }
 
-            #transaction-filters form > div:last-child {
+            #Transactions-filters form > div:last-child {
                 display: flex;
                 gap: 10px;
                 align-items: flex-end;
             }
 
-                #transaction-filters form > div:last-child button {
+                #Transactions-filters form > div:last-child button {
                     width: auto;
                     padding: 12px 20px;
                     font-size: 0.88rem;
                 }
 
-                #transaction-filters form > div:last-child a {
+                #Transactions-filters form > div:last-child a {
                     display: inline-block;
                     padding: 12px 16px;
                     font-size: 0.88rem;
@@ -100,12 +100,12 @@
                     white-space: nowrap;
                 }
 
-                    #transaction-filters form > div:last-child a:hover {
+                    #Transactions-filters form > div:last-child a:hover {
                         color: var(--white);
                         border-color: var(--white-muted);
                     }
 
-#transaction-table-section {
+#Transactions-table-section {
     background-color: var(--black-card);
     border: 1px solid var(--black-border);
     border-radius: var(--radius-md);
@@ -113,11 +113,11 @@
     margin-bottom: 28px;
 }
 
-#transaction-table {
+#Transactions-table {
     width: 100%;
 }
 
-    #transaction-table tbody td:last-child a {
+    #Transactions-table tbody td:last-child a {
         font-size: 0.82rem;
         color: var(--white-muted);
         border: 1px solid var(--black-border);
@@ -127,12 +127,12 @@
         font-weight: 500;
     }
 
-        #transaction-table tbody td:last-child a:hover {
+        #Transactions-table tbody td:last-child a:hover {
             border-color: var(--lime);
             color: var(--lime);
         }
 
-    #transaction-table tbody td span {
+    #Transactions-table tbody td span {
         display: inline-block;
         padding: 4px 12px;
         border-radius: 100px;
@@ -142,7 +142,7 @@
         text-transform: uppercase;
     }
 
-#transaction-pagination {
+#Transactions-pagination {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -151,7 +151,7 @@
     border-top: 1px solid var(--black-border);
 }
 
-    #transaction-pagination a {
+    #Transactions-pagination a {
         font-size: 0.85rem;
         color: var(--white-muted);
         border: 1px solid var(--black-border);
@@ -161,17 +161,17 @@
         font-weight: 500;
     }
 
-        #transaction-pagination a:hover {
+        #Transactions-pagination a:hover {
             border-color: var(--lime);
             color: var(--lime);
         }
 
-    #transaction-pagination span {
+    #Transactions-pagination span {
         font-size: 0.85rem;
         color: var(--white-muted);
     }
 
-#no-transactions {
+#no-Transactions {
     padding: 60px 40px;
     text-align: center;
     display: flex;
@@ -180,12 +180,12 @@
     gap: 20px;
 }
 
-    #no-transactions p {
+    #no-Transactions p {
         font-size: 1rem;
         color: var(--white-muted);
     }
 
-    #no-transactions a {
+    #no-Transactions a {
         display: inline-block;
         background-color: var(--lime);
         color: var(--black);
@@ -196,48 +196,48 @@
         border-radius: var(--radius-sm);
     }
 
-        #no-transactions a:hover {
+        #no-Transactions a:hover {
             background-color: var(--lime-dark);
             color: var(--black);
         }
 
 @media (max-width: 1024px) {
-    #transaction-page {
+    #Transactions-page {
         padding: 48px 24px 60px;
     }
 
-    #transaction-summary {
+    #Transactions-summary {
         grid-template-columns: repeat(2, 1fr);
     }
 
-    #transaction-filters form {
+    #Transactions-filters form {
         grid-template-columns: 1fr 1fr;
     }
 
-        #transaction-filters form > div:first-child {
+        #Transactions-filters form > div:first-child {
             grid-column: 1 / -1;
         }
 
-        #transaction-filters form > div:last-child {
+        #Transactions-filters form > div:last-child {
             grid-column: 1 / -1;
         }
 
-    #transaction-table-section {
+    #Transactions-table-section {
         overflow-x: auto;
     }
 }
 
 @media (max-width: 768px) {
-    #transaction-page {
+    #Transactions-page {
         padding: 32px 16px 48px;
     }
 
-    #transaction-summary {
+    #Transactions-summary {
         grid-template-columns: repeat(2, 1fr);
         gap: 12px;
     }
 
-    #transaction-filters form {
+    #Transactions-filters form {
         grid-template-columns: 1fr;
     }
 

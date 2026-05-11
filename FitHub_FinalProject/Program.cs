@@ -5,14 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Register EF Core with SQL Server
 builder.Services.AddDbContext<FitHubDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("FitHubDb")));
 
-// Register NotificationFilter for DI
 builder.Services.AddScoped<NotificationFilter>();
 
-// Add MVC with the global notification filter
 builder.Services.AddControllersWithViews(options =>
 {
     options.Filters.AddService<NotificationFilter>();

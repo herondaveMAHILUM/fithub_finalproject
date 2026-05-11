@@ -217,7 +217,6 @@
 @section Scripts {
     <script src="~/js/profile-edit.js" asp-append-version="true"></script>
     <script>
-        // ── Update Profile form validation ──────────────────────────────────────
         (function () {
             const profileForm = document.querySelector('#personal-info form');
             if (!profileForm) return;
@@ -259,7 +258,6 @@
             });
         })();
 
-        // ── Change Password form validation ──────────────────────────────────────
         (function () {
             const form = document.querySelector('#change-password form');
             if (!form) return;
@@ -297,7 +295,6 @@
             });
         })();
 
-        // ── Danger Zone confirmations ────────────────────────────────────────────
         (function () {
             const deactivate = document.getElementById('deactivate-form');
             if (deactivate) {

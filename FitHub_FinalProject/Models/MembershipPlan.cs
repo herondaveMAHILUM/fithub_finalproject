@@ -9,7 +9,7 @@ namespace FitHub_FinalProject.Models
         public int PlanId { get; set; }
 
         [Required, MaxLength(50)]
-        public string Name { get; set; } = string.Empty; // Basic, Pro, Elite
+        public string Name { get; set; } = string.Empty;
 
         [MaxLength(500)]
         public string? Description { get; set; }
@@ -26,7 +26,6 @@ namespace FitHub_FinalProject.Models
 
         public bool IsActive { get; set; } = true;
 
-        // Navigation
         public ICollection<Membership> Memberships { get; set; } = new List<Membership>();
     }
 }

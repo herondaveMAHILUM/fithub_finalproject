@@ -86,7 +86,7 @@
     grid-column: 1 / 2;
 }
 
-#admin-recent-transactions {
+#admin-recent-Transactions {
     grid-column: 2 / 3;
 }
 
@@ -99,7 +99,7 @@
 }
 
 #admin-recent-members,
-#admin-recent-transactions,
+#admin-recent-Transactions,
 #admin-plan-breakdown,
 #admin-quick-actions {
     background-color: var(--black-card);
@@ -109,7 +109,7 @@
 }
 
     #admin-recent-members > div:first-child,
-    #admin-recent-transactions > div:first-child,
+    #admin-recent-Transactions > div:first-child,
     #admin-plan-breakdown > div:first-child,
     #admin-quick-actions > div:first-child {
         display: flex;
@@ -121,14 +121,14 @@
     }
 
     #admin-recent-members h2,
-    #admin-recent-transactions h2,
+    #admin-recent-Transactions h2,
     #admin-plan-breakdown h2,
     #admin-quick-actions h2 {
         font-size: 1.05rem;
     }
 
     #admin-recent-members > div:first-child a,
-    #admin-recent-transactions > div:first-child a,
+    #admin-recent-Transactions > div:first-child a,
     #admin-plan-breakdown > div:first-child a {
         font-size: 0.82rem;
         color: var(--white-muted);
@@ -136,7 +136,7 @@
     }
 
         #admin-recent-members > div:first-child a:hover,
-        #admin-recent-transactions > div:first-child a:hover,
+        #admin-recent-Transactions > div:first-child a:hover,
         #admin-plan-breakdown > div:first-child a:hover {
             color: var(--lime);
         }
@@ -177,7 +177,7 @@
     }
 
     #admin-recent-members,
-    #admin-recent-transactions,
+    #admin-recent-Transactions,
     #admin-plan-breakdown,
     #admin-quick-actions {
         grid-column: 1 / 2;

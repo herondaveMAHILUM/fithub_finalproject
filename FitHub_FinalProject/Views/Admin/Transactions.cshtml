@@ -1,0 +1,244 @@
+@using FitHub_FinalProject.Models
+@model IEnumerable<TransactionsViewModel>
+@{
+    ViewData["Title"] = "Manage Transactions - FitHub Admin";
+    var Transactionss = Model?.ToList() ?? new List<TransactionsViewModel>();
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/admin-transaction.css" asp-append-version="true" />
+}
+
+<div id="admin-Transactions">
+
+    <section id="admin-Transactions-header">
+        <div>
+            <h1>Transactions</h1>
+            <p>View and manage all FitHub payment and billing records.</p>
+        </div>
+    </section>
+
+    <section id="admin-Transactions-stats">
+
+        <div>
+            <h3>Total Transactions</h3>
+            <p>@ViewBag.TotalTransactions</p>
+            <span>All time</span>
+        </div>
+
+        <div>
+            <h3>Total Revenue</h3>
+            <p>@ViewBag.TotalRevenue</p>
+            <span>All time</span>
+        </div>
+
+        <div>
+            <h3>This Month</h3>
+            <p>@ViewBag.MonthlyRevenue</p>
+            <span>@DateTime.Now.ToString("MMMM yyyy")</span>
+        </div>
+
+        <div>
+            <h3>Pending</h3>
+            <p>@ViewBag.PendingCount</p>
+            <span>Awaiting payment</span>
+        </div>
+
+        <div>
+            <h3>Failed</h3>
+            <p>@ViewBag.FailedCount</p>
+            <span>Requires attention</span>
+        </div>
+
+        <div>
+            <h3>Refunded</h3>
+            <p>@ViewBag.RefundedCount</p>
+            <span>Total refunds issued</span>
+        </div>
+
+    </section>
+
+    <section id="admin-Transactions-filters">
+        <form asp-controller="Admin" asp-action="Transactions" method="get">
+
+            <div>
+                <label for="search">Search</label>
+                <input type="text" id="search" name="search" value="@ViewBag.Search" placeholder="Search by member name or Transactions ID..." />
+            </div>
+
+            <div>
+                <label for="status">Status</label>
+                <select id="status" name="status">
+                    <option value="">All Statuses</option>
+                    <option value="Paid" selected="@(ViewBag.StatusFilter == "Paid")">Paid</option>
+                    <option value="Pending" selected="@(ViewBag.StatusFilter == "Pending")">Pending</option>
+                    <option value="Failed" selected="@(ViewBag.StatusFilter == "Failed")">Failed</option>
+                    <option value="Refunded" selected="@(ViewBag.StatusFilter == "Refunded")">Refunded</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="type">Type</label>
+                <select id="type" name="type">
+                    <option value="">All Types</option>
+                    <option value="Subscription" selected="@(ViewBag.TypeFilter == "Subscription")">Subscription</option>
+                    <option value="Renewal" selected="@(ViewBag.TypeFilter == "Renewal")">Renewal</option>
+                    <option value="Upgrade" selected="@(ViewBag.TypeFilter == "Upgrade")">Upgrade</option>
+                    <option value="Refund" selected="@(ViewBag.TypeFilter == "Refund")">Refund</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="plan">Plan</label>
+                <select id="plan" name="plan">
+                    <option value="">All Plans</option>
+                    <option value="Basic" selected="@(ViewBag.PlanFilter == "Basic")">Basic</option>
+                    <option value="Pro" selected="@(ViewBag.PlanFilter == "Pro")">Pro</option>
+                    <option value="Elite" selected="@(ViewBag.PlanFilter == "Elite")">Elite</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="method">Payment Method</label>
+                <select id="method" name="method">
+                    <option value="">All Methods</option>
+                    <option value="GCash" selected="@(ViewBag.MethodFilter == "GCash")">GCash</option>
+                    <option value="Maya" selected="@(ViewBag.MethodFilter == "Maya")">Maya</option>
+                    <option value="CreditCard" selected="@(ViewBag.MethodFilter == "CreditCard")">Credit Card</option>
+                    <option value="BankTransfer" selected="@(ViewBag.MethodFilter == "BankTransfer")">Bank Transfer</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="dateFrom">Date From</label>
+                <input type="date" id="dateFrom" name="dateFrom" value="@ViewBag.DateFrom" />
+            </div>
+
+            <div>
+                <label for="dateTo">Date To</label>
+                <input type="date" id="dateTo" name="dateTo" value="@ViewBag.DateTo" />
+            </div>
+
+            <div>
+                <button type="submit">Filter</button>
+                <a asp-controller="Admin" asp-action="Transactions">Reset</a>
+            </div>
+
+        </form>
+    </section>
+
+    <section id="admin-Transactions-table">
+
+        @if (Transactionss.Count > 0)
+        {
+            <div id="admin-Transactions-summary">
+                <p>Showing <strong>@Transactionss.Count</strong> of <strong>@ViewBag.TotalTransactions</strong> Transactions</p>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Transactions ID</th>
+                        <th>Member</th>
+                        <th>Plan</th>
+                        <th>Type</th>
+                        <th>Amount</th>
+                        <th>Method</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var t in Transactionss)
+                    {
+                        var statusClass = t.Status switch
+                        {
+                            "Paid"     => "badge badge-success",
+                            "Pending"  => "badge badge-warning",
+                            "Failed"   => "badge badge-danger",
+                            "Refunded" => "badge badge-muted",
+                            _          => "badge badge-muted"
+                        };
+                        <tr>
+                            <td>@t.TransactionId</td>
+                            <td>
+                                <a asp-controller="Admin" asp-action="MemberDetails" asp-route-id="@t.MemberId">
+                                    @t.MemberName
+                                </a>
+                            </td>
+                            <td>@t.Plan</td>
+                            <td>@t.Type</td>
+                            <td>@t.Amount.ToString("C")</td>
+                            <td>@t.PaymentMethod</td>
+                            <td>@t.Date.ToString("MMM dd, yyyy")</td>
+                            <td><span class="@statusClass">@t.Status</span></td>
+                            <td>
+                                <a asp-controller="Admin" asp-action="TransactionsDetails" asp-route-id="@t.TransactionId">View</a>
+                                @if (t.Status == "Pending" || t.Status == "Failed")
+                                {
+                                    <form asp-controller="Admin" asp-action="MarkAsPaid" asp-route-id="@t.TransactionId" method="post" style="display:inline">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" onclick="return confirm('Mark this Transactions as Paid?')">Mark Paid</button>
+                                    </form>
+                                }
+                                @if (t.Status == "Paid")
+                                {
+                                    <form asp-controller="Admin" asp-action="RefundTransactions" asp-route-id="@t.TransactionId" method="post" style="display:inline">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" onclick="return confirm('Issue a refund for this Transactions?')">Refund</button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <div id="admin-Transactions-pagination">
+                @if (ViewBag.CurrentPage > 1)
+                {
+                    <a asp-controller="Admin" asp-action="Transactions"
+                       asp-route-page="@(ViewBag.CurrentPage - 1)"
+                       asp-route-search="@ViewBag.Search"
+                       asp-route-status="@ViewBag.StatusFilter"
+                       asp-route-type="@ViewBag.TypeFilter"
+                       asp-route-plan="@ViewBag.PlanFilter">
+                        Previous
+                    </a>
+                }
+
+                <span>Page @ViewBag.CurrentPage of @ViewBag.TotalPages</span>
+
+                @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                {
+                    <a asp-controller="Admin" asp-action="Transactions"
+                       asp-route-page="@(ViewBag.CurrentPage + 1)"
+                       asp-route-search="@ViewBag.Search"
+                       asp-route-status="@ViewBag.StatusFilter"
+                       asp-route-type="@ViewBag.TypeFilter"
+                       asp-route-plan="@ViewBag.PlanFilter">
+                        Next
+                    </a>
+                }
+            </div>
+        }
+        else
+        {
+            <div id="admin-Transactions-empty">
+                <p>No Transactionss found.</p>
+            </div>
+        }
+
+    </section>
+
+    <section id="admin-Transactions-export">
+        <h3>Export Transactions</h3>
+        <p>Download the full Transactions history for reporting.</p>
+        <div>
+            <a asp-controller="Admin" asp-action="ExportTransactions" asp-route-format="pdf">Download as PDF</a>
+            <a asp-controller="Admin" asp-action="ExportTransactions" asp-route-format="csv">Download as CSV</a>
+        </div>
+    </section>
+
+</div>

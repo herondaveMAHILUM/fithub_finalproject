@@ -21,7 +21,6 @@ namespace FitHub_FinalProject.Controllers
 
         public async Task<IActionResult> Dashboard()
         {
-            // Admins should not land on the user dashboard
             if (User.IsInRole("Admin"))
                 return RedirectToAction("Dashboard", "Admin");
 
@@ -53,9 +52,7 @@ namespace FitHub_FinalProject.Controllers
             ViewBag.ExpiryDate       = user.Membership?.ExpiryDate.ToString("MMM dd, yyyy") ?? "—";
             ViewBag.NextBillingDate  = user.Membership?.NextBillingDate.ToString("MMM dd, yyyy") ?? "—";
             ViewBag.TrainerName      = user.AssignedTrainer?.FullName;
-
-            // Fix 4: pass the actual profile photo path to the dashboard
-            ViewBag.ProfilePhoto = user.ProfilePhotoPath ?? "/images/default-avatar.png";
+            ViewBag.ProfilePhoto     = user.ProfilePhotoPath ?? "/images/default-avatar.png";
 
             var plan = await _context.WorkoutPlans
                 .Include(wp => wp.WorkoutDays).ThenInclude(wd => wd.Exercises)
@@ -74,8 +71,6 @@ namespace FitHub_FinalProject.Controllers
                 IsToday   = i == todayDow
             }).ToList();
 
-            // Notifications are now injected globally by NotificationFilter,
-            // but we also keep local ViewBag.Notifications for the dashboard widget.
             var rawNotifs = await _context.Notifications
                 .Where(n => n.UserId == userId)
                 .OrderByDescending(n => n.CreatedAt)

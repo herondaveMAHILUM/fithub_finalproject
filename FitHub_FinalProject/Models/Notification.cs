@@ -16,13 +16,12 @@ namespace FitHub_FinalProject.Models
         public string? Description { get; set; }
 
         [Required, MaxLength(30)]
-        public string Type { get; set; } = "Info"; // Info, Warning, Success, Alert
+        public string Type { get; set; } = "Info";
 
         public bool IsRead { get; set; } = false;
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        // Navigation
         public User User { get; set; } = null!;
     }
 }

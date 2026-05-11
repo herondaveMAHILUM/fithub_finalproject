@@ -104,7 +104,7 @@
             </table>
         </div>
 
-        <div id="admin-recent-transactions">
+        <div id="admin-recent-Transactions">
             <div>
                 <h2>Recent Transactions</h2>
                 <a asp-controller="Admin" asp-action="Transactions">View All</a>
@@ -123,21 +123,21 @@
                 <tbody>
                     @if (ViewBag.RecentTransactions != null)
                     {
-                        foreach (var transaction in ViewBag.RecentTransactions)
+                        foreach (var Transactions in ViewBag.RecentTransactions)
                         {
                             <tr>
-                                <td>@transaction.MemberName</td>
-                                <td>@transaction.Amount.ToString("C")</td>
-                                <td>@transaction.Type</td>
-                                <td>@transaction.Date.ToString("MMM dd, yyyy")</td>
-                                <td>@transaction.Status</td>
+                                <td>@Transactions.MemberName</td>
+                                <td>@Transactions.Amount.ToString("C")</td>
+                                <td>@Transactions.Type</td>
+                                <td>@Transactions.Date.ToString("MMM dd, yyyy")</td>
+                                <td>@Transactions.Status</td>
                             </tr>
                         }
                     }
                     else
                     {
                         <tr>
-                            <td colspan="5">No transactions found.</td>
+                            <td colspan="5">No Transactions found.</td>
                         </tr>
                     }
                 </tbody>

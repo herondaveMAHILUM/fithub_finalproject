@@ -139,7 +139,6 @@ namespace FitHub_FinalProject.Controllers
             });
             await _context.SaveChangesAsync();
 
-            // Do NOT auto-login — redirect to Login so the user signs in manually
             TempData["SuccessMessage"] = "Account created successfully! Please log in.";
             return RedirectToAction("Login");
         }

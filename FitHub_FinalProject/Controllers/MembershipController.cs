@@ -38,7 +38,6 @@ namespace FitHub_FinalProject.Controllers
             return View("~/Views/User/Membership.cshtml");
         }
 
-        // ─── NEW: Show checkout / payment form ────────────────────────────────
         [HttpGet]
         public async Task<IActionResult> Checkout(int planId, string billing = "monthly")
         {
@@ -58,7 +57,6 @@ namespace FitHub_FinalProject.Controllers
             return View("~/Views/User/Checkout.cshtml");
         }
 
-        // ─── NEW: Process simulated payment (POST) ────────────────────────────
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ProcessPayment(int planId, string billing, string paymentMethod)
@@ -72,7 +70,6 @@ namespace FitHub_FinalProject.Controllers
 
             if (plan == null) return RedirectToAction("Index");
 
-            // Validate payment method
             var validMethods = new[] { "GCash", "Maya", "Card" };
             if (!validMethods.Contains(paymentMethod)) paymentMethod = "GCash";
 
@@ -111,10 +108,9 @@ namespace FitHub_FinalProject.Controllers
                 txType = existing.PlanId == planId ? "Renewal" : "Upgrade";
             }
 
-            // Generate a realistic-looking reference number
             var refNumber = "FH" + DateTime.UtcNow.ToString("yyyyMMdd") + Random.Shared.Next(100000, 999999).ToString();
 
-            var transaction = new Transaction
+            var Transactions = new Transactions
             {
                 UserId        = userId,
                 Type          = txType,
@@ -125,7 +121,7 @@ namespace FitHub_FinalProject.Controllers
                 PaymentMethod = paymentMethod
             };
 
-            _context.Transactions.Add(transaction);
+            _context.Transactions.Add(Transactions);
 
             _context.Notifications.Add(new Notification
             {
@@ -138,8 +134,7 @@ namespace FitHub_FinalProject.Controllers
 
             await _context.SaveChangesAsync();
 
-            // Pass receipt data via TempData so the success page can display it
-            TempData["Receipt_TransactionId"] = transaction.TransactionId.ToString();
+            TempData["Receipt_TransactionId"] = Transactions.TransactionId.ToString();
             TempData["Receipt_RefNumber"]     = refNumber;
             TempData["Receipt_PlanName"]      = plan.Name;
             TempData["Receipt_Billing"]       = billing;
@@ -152,7 +147,6 @@ namespace FitHub_FinalProject.Controllers
             return RedirectToAction("PaymentSuccess");
         }
 
-        // ─── NEW: Payment success / receipt page ─────────────────────────────
         [HttpGet]
         public IActionResult PaymentSuccess()
         {

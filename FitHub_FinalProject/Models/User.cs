@@ -40,7 +40,7 @@ namespace FitHub_FinalProject.Models
         // Navigation
         public Membership? Membership { get; set; }
         public Trainer? AssignedTrainer { get; set; }
-        public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
+        public ICollection<Transactions> Transactions { get; set; } = new List<Transactions>();
         public ICollection<Notification> Notifications { get; set; } = new List<Notification>();
         public ICollection<WorkoutPlan> WorkoutPlans { get; set; } = new List<WorkoutPlan>();
     }

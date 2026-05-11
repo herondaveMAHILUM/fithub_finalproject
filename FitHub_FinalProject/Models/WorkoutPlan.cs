@@ -16,7 +16,6 @@ namespace FitHub_FinalProject.Models
         public bool IsActive { get; set; } = true;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        // Navigation
         public User User { get; set; } = null!;
         public Trainer? Trainer { get; set; }
         public ICollection<WorkoutDay> WorkoutDays { get; set; } = new List<WorkoutDay>();
@@ -29,13 +28,11 @@ namespace FitHub_FinalProject.Models
 
         public int WorkoutPlanId { get; set; }
 
-        // 0=Sunday, 1=Monday … 6=Saturday
         public int DayOfWeek { get; set; }
 
         [MaxLength(100)]
-        public string Focus { get; set; } = string.Empty; // e.g. "Chest & Triceps"
+        public string Focus { get; set; } = string.Empty;
 
-        // Navigation
         public WorkoutPlan WorkoutPlan { get; set; } = null!;
         public ICollection<Exercise> Exercises { get; set; } = new List<Exercise>();
     }
@@ -53,7 +50,6 @@ namespace FitHub_FinalProject.Models
         public int Sets { get; set; }
         public int Reps { get; set; }
 
-        // Navigation
         public WorkoutDay WorkoutDay { get; set; } = null!;
     }
 }

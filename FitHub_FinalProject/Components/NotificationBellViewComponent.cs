@@ -21,18 +21,19 @@ namespace FitHub_FinalProject.Components
 
             var userId = int.Parse(userIdClaim);
 
-            var notifications = await _context.Notifications
+            var rawNotifs = await _context.Notifications
                 .Where(n => n.UserId == userId)
                 .OrderByDescending(n => n.CreatedAt)
                 .Take(5)
-                .Select(n => new
-                {
-                    n.Type,
-                    n.Title,
-                    Description = n.Description ?? "",
-                    TimeAgo = GetTimeAgo(n.CreatedAt)
-                })
                 .ToListAsync();
+
+            var notifications = rawNotifs.Select(n => new Dictionary<string, object?>
+            {
+                ["Type"] = n.Type,
+                ["Title"] = n.Title,
+                ["Description"] = n.Description ?? "",
+                ["TimeAgo"] = GetTimeAgo(n.CreatedAt)
+            }).ToList();
 
             var unreadCount = await _context.Notifications
                 .CountAsync(n => n.UserId == userId && !n.IsRead);

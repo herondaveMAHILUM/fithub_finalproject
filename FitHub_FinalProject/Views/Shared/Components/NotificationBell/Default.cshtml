@@ -21,12 +21,16 @@
         <ul class="notif-dropdown-list">
             @if (ViewBag.Notifications != null)
             {
-                foreach (var notif in ViewBag.Notifications)
+                foreach (var notif in (IEnumerable<Dictionary<string, object?>>)ViewBag.Notifications)
                 {
-                    <li class="notif-dropdown-item notif-@notif.Type.ToLower()">
-                        <p class="notif-dropdown-title">@notif.Title</p>
-                        <p class="notif-dropdown-desc">@notif.Description</p>
-                        <span class="notif-dropdown-time">@notif.TimeAgo</span>
+                    var nType = notif["Type"]?.ToString()?.ToLower() ?? "";
+                    var nTitle = notif["Title"]?.ToString() ?? "";
+                    var nDesc = notif["Description"]?.ToString() ?? "";
+                    var nTime = notif["TimeAgo"]?.ToString() ?? "";
+                    <li class="notif-dropdown-item notif-@nType">
+                        <p class="notif-dropdown-title">@nTitle</p>
+                        <p class="notif-dropdown-desc">@nDesc</p>
+                        <span class="notif-dropdown-time">@nTime</span>
                     </li>
                 }
             }
